@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+android:background="#ff6699cc"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
+	
+    	<RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#fffffffb"
+        android:orientation="horizontal"
+        android:padding="40dp" >
+
+        <EditText
+            android:id="@+id/etSgAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
+            android:hint="@string/Account"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/etSgPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etSgAccount"
+            android:layout_marginBottom="20dp"
+            android:hint="@string/Password"
+            android:inputType="textPassword" />
+		 <EditText
+            android:id="@+id/etSgRePassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etSgPassword"
+            android:layout_marginBottom="20dp"
+            android:hint="@string/repassword"
+            android:inputType="textPassword" />
+        
+        
+        <Button
+            android:id="@+id/btnSign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etSgRePassword"
+            android:background="#ff6699cc"
+            android:onClick="onLogin"
+            android:text="@string/signup"
+            android:textColor="#ffffffff"
+            android:textSize="24sp" />
+
+        
+
+
+    </RelativeLayout>
+
+</LinearLayout>

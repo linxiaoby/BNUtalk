@@ -1,0 +1,14 @@
+<resources>
+
+    <string name="app_name">BNUtalk</string>
+    <string name="app_label">talk in Beijing Normal University</string>
+    <string name="Account">Username</string>
+	<string name="Password">Password</string>
+	<string name="signup">Signup</string>
+	<string name="login">Login</string>
+	<string name="pwdgrgt">Forgot password?</string>
+	<string name="username">username</string>
+	<string name="empty"></string>
+		<string name="repassword">Confirm Password</string>
+	
+</resources>
