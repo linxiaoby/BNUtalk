@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">BNUtalk</string>
     <string name="app_label">talk in Beijing Normal University</string>
-    <string name="Account">Username</string>
+    <string name="Nickname">nickname</string>
 	<string name="Password">Password</string>
 	<string name="signup">Signup</string>
 	<string name="login">Login</string>

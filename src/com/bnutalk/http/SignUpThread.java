@@ -10,9 +10,9 @@ import java.net.URL;
 import android.R.string;
 
 public class SignUpThread extends Thread {
-	String url;
-	String mailAdress;
-	String passwd;
+	private String url;
+	private String mailAdress;
+	private String passwd;
 	
 	public SignUpThread(String url, String mailAdress, String password) {
 		// TODO Auto-generated constructor stub

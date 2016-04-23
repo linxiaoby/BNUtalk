@@ -16,5 +16,11 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-
+	<style name="dialog" parent="@android:style/Theme.Dialog">
+    <item name="android:textSize">15sp</item>
+  </style>
+   <style name="takePhoto" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@animator/pop_in</item>
+        <item name="android:windowExitAnimation">@animator/pop_out</item>
+    </style>
 </resources>
