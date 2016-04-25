@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1" >
+
+    <include layout="@layout/item_personal_title" />
+	 <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeLayout"
+        android:layout_below="@+id/include"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <ImageView
+            android:id="@+id/take_photo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#00000000"
+            android:src="@drawable/photo"
+            android:gravity="top"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="upload your photo here"
+            android:id="@+id/textView2"
+            android:layout_below="@+id/take_photo"
+            android:layout_centerHorizontal="true" />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/genderBtn"
+            android:layout_below="@+id/textView2"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/manPic"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/man"
+                android:layout_weight="1"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/manBtn"></RadioButton>
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/womanPic"
+                android:layout_marginLeft="110dp"
+                android:layout_marginStart="110dp"
+                android:src="@drawable/woman"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/womanBtn"></RadioButton>
+        </RadioGroup>
+
+    </RelativeLayout>
+    
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#fffffffb"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/etNickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nickname"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/etBirthday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etNickname"
+            android:hint="Age"
+           />
+
+        <EditText
+            android:text="" 
+            android:id="@+id/etFaculty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etBirthday"
+            android:cursorVisible="false"
+            android:editable="false"
+            android:hint="Faculty"
+         />
+
+        <EditText
+            android:text="" 
+            android:id="@+id/etNationality"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etFaculty"
+               android:hint="Nationality"
+            android:cursorVisible="false"
+            android:editable="false"
+           />
+
+        <EditText
+            android:id="@+id/etNativeLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etNationality"
+            android:cursorVisible="false"
+            android:editable="false"
+            android:hint="Mother tone"
+             />
+
+        <EditText
+            android:id="@+id/etLikeLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etNativeLanguage"
+            android:cursorVisible="false"
+            android:editable="false"
+            android:hint="Languages you want to learn"
+         />
+    </RelativeLayout>
+
+</LinearLayout>

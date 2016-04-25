@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="faculty">
+<item >School of Journalism and Communication</item>
+<item >College of Chemistry</item>
+<item >College of Chinese Culture</item>
+<item >College of Nuclear Science and Technology</item>
+<item >College of P.E and Sports</item>
+<item >College of Resources Science and Technology</item>
+<item >College of Information Science and Technology</item>
+<item >College of Philosophy and Sociology</item>
+<item >Department of Physics</item>
+<item >Departmentof Astronomy</item>
+<item >Faculty Of Education</item>
+<item >Law School</item>
+<item >School of Chinese Language and Literature</item>
+<item >School of Continuing Education and Teacher Training</item>
+<item >School of Environment</item>
+<item >School of Foreign Language and Literature</item>
+<item >School of Geography</item>
+<item >School of Government</item>
+<item >School of History</item>
+<item >School of Life Science</item>
+<item >School of Marxism</item>
+<item >School of Mathematical Science</item>
+<item >School of Psychology</item>
+<item >School of Social Development and Public Policy</item>
+<item >School of Statistic</item>
+<item >School of System Science</item>
+<item >School of Teacher Education</item>
+<item >School of Economics and Business Administration</item>
+<item >Schoolof Arts and Media</item>
+<item >Sociology Department</item>
+    </string-array>
+</resources>
