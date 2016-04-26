@@ -24,12 +24,4 @@
             android:orientation="horizontal" >
         </LinearLayout>
     </RelativeLayout>
-    <Button
-        android:id="@+id/btLanuchlogin"
-        android:layout_width="310dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="35dip"
-        android:background="@drawable/login_button"
-        android:text="login" />
-             /></RelativeLayout>
+</RelativeLayout>
