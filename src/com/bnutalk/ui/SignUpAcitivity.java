@@ -32,13 +32,15 @@ public class SignUpAcitivity extends Activity {
 		etPasswd=(EditText) findViewById(R.id.key_signup_text);
 		etRePasswd=(EditText) findViewById(R.id.key_ensure_signup_text);
 		btSignUp=(Button) findViewById(R.id.signup);
-		//在客户端判断两次密码是否吻合
+		
 	}
 	public void onSignUp(View v)
 	{
 		mailAdress=etMailAdress.getText().toString();
 		passwd=etPasswd.getText().toString();
 		rePasswd=etRePasswd.getText().toString();
+		//自力：客户端的输入限制处理大致写在这里
+		//全部符合了才能进入else条件，else用来跳转到“个人信息”界面
 		
 		if(!passwd.equals(rePasswd))//两次密码不一致
 		{

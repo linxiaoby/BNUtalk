@@ -16,16 +16,14 @@ import android.util.Log;
  * AsyncHttpClient本身就实现了可以在非UI执行，因此不需要自己new一个thread，直接写成方法调用即可
  */
 public class AHttpImageUpload {
-	public static final String url = "http://172.31.105.199:8080/web/ImageUploadServlet";
+	
 	private String strUid;
 	private Bitmap bmPhoto;
-
 	public AHttpImageUpload(String uid,Bitmap bitmap) {
 		Log.i("imageuploadThread", "construct");
 		this.strUid=uid;
 		this.bmPhoto = bitmap;
 	}
-
 	public void sendImage() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -43,6 +41,9 @@ public class AHttpImageUpload {
 			RequestParams params = new RequestParams();
 			params.put("strPhoto", strPhoto);
 			params.put("strUid", strUid);// 传输的字符数据
+			
+			String ip = new GetServerIp().getServerIp();
+			String url = ip+"/web/ImageUploadServlet";
 			AsyncHttpClient client = new AsyncHttpClient();
 			client.post(url, params, new AsyncHttpResponseHandler() {
 
@@ -51,14 +52,11 @@ public class AHttpImageUpload {
 					// TODO Auto-generated method stub
 
 				}
-
 				@Override
 				public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
 					// TODO Auto-generated method stub
-
 				}
 			});
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

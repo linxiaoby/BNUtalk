@@ -89,12 +89,16 @@ public class SignUpPersInfoActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_personal_info);
+		initEvent();
+	}
 
+	// 初始化
+	public void initEvent() {
 		/* 获取注册界面传过来的mailAdress,相当于用户uid */
 		Bundle bundle = this.getIntent().getExtras();
 		strUid = bundle.getString("mailAdress");
 		strPasswd = bundle.getString("passwd");
-//		Log.v("uid", strUid);
+		// Log.v("uid", strUid);
 
 		/* 头像 */
 		take_photo = (ImageView) findViewById(R.id.take_photo);
@@ -114,7 +118,7 @@ public class SignUpPersInfoActivity extends Activity {
 		etMother = (EditText) findViewById(R.id.etNativeLanguage);
 		etLike = (EditText) findViewById(R.id.etLikeLanguage);
 
-//		// 性别监听事件
+		// // 性别监听事件
 		rgSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
 			@Override
@@ -165,9 +169,7 @@ public class SignUpPersInfoActivity extends Activity {
 				return false;
 			}
 		});
-
 	}
-
 	// ==================图像操作的执行函数===========================================
 
 	View.OnClickListener photoClick = new View.OnClickListener() {
@@ -221,7 +223,7 @@ public class SignUpPersInfoActivity extends Activity {
 					 */
 					// new ImageUploadThread(bitmap2).run();
 					// 上传至服务器，使用AsyncHttpClient
-					new AHttpImageUpload(strUid,bmPhoto).sendImage();
+					new AHttpImageUpload(strUid, bmPhoto).sendImage();
 					/*
 					 * saveBitmap(Environment.getExternalStorageDirectory() +
 					 * "/crop_" + System.currentTimeMillis() + ".png",bitmap2);
@@ -564,7 +566,7 @@ public class SignUpPersInfoActivity extends Activity {
 	// ========================next按钮点击事件，上传除了头像外的所有数据到服务器==========================
 	public void nextClick(View v) {
 		AHttpPersInfoUpload persInfoUpload = new AHttpPersInfoUpload();
-		//成员赋值
+		// 成员赋值
 		persInfoUpload.setStrUid(strUid);
 		persInfoUpload.setStrPasswd(strPasswd);
 		persInfoUpload.setStrSex(strSex);
@@ -574,7 +576,7 @@ public class SignUpPersInfoActivity extends Activity {
 		persInfoUpload.setStrNationality(etNationality.getText().toString());
 		persInfoUpload.setStrMother(etMother.getText().toString());
 		persInfoUpload.setStrLike(etLike.getText().toString());
-		//上传个人信息到服务器
+		// 上传个人信息到服务器
 		persInfoUpload.sendPersInfo();
 	}
 }
