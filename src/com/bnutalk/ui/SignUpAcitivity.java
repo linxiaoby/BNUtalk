@@ -40,12 +40,12 @@ public class SignUpAcitivity extends Activity {
 		passwd=etPasswd.getText().toString();
 		rePasswd=etRePasswd.getText().toString();
 		
-		private int i=inputLimitation(mailAdress,passwd);//判断是否按要求填写
+		int i=inputLimitation(mailAdress,passwd);//判断是否按要求填写
 		if(i==1)
 		{
 			if(!passwd.equals(rePasswd))//两次密码不一致
 			{
-				Toast.makeText(SignUpAcitivity.this, "两次密码不一致", Toast.LENGTH_SHORT).show();
+				Toast.makeText(SignUpAcitivity.this, "Passwords you typed do not match", Toast.LENGTH_SHORT).show();
 			}
 			else
 			{
@@ -65,16 +65,16 @@ public class SignUpAcitivity extends Activity {
 		}
 		else{
 			if(i==2)
-			Toast.makeText(SignUpAcitivity.this,"注册邮箱需要BNU邮箱",Toast.LENGTH_SHORT)
+			Toast.makeText(SignUpAcitivity.this,"A BNU ID is required in the first column",Toast.LENGTH_SHORT)
 					.show();
 			else if(i==0)
-				Toast.makeText(SignUpAcitivity.this,"密码需同时包含数字和字母",Toast.LENGTH_SHORT)
+				Toast.makeText(SignUpAcitivity.this,"Password should include at least a number and a letter",Toast.LENGTH_SHORT)
 						.show();
 			else if(i==3)
-				Toast.makeText(SignUpAcitivity.this,"密码需大于或等于6位",Toast.LENGTH_SHORT)
+				Toast.makeText(SignUpAcitivity.this,"Password should consist at least 6 digits",Toast.LENGTH_SHORT)
 						.show();
 			else
-				Toast.makeText(SignUpAcitivity.this,"未知错误",Toast.LENGTH_SHORT)
+				Toast.makeText(SignUpAcitivity.this,"Mysterious mistakes",Toast.LENGTH_SHORT)
 						.show();
 		}
 		
@@ -82,10 +82,12 @@ public class SignUpAcitivity extends Activity {
 	private int inputLimitation(String mail,String pas) {
 		int re=-1;
 		String psw = "^[a-zA-Z0-9]+$";
-		String addr="^([a-zA-Z0-9_\\-\\.]+)@mail.bnu.edu.cn)$";//这个正则式不知道够不够
+		String addr="^[0-9]+$";
 
 		boolean isDigit = false;//定义一个boolean值，用来表示是否包含数字
 		boolean isLetter = false;//定义一个boolean值，用来表示是否包含字母
+		if(mail.length()!=12)
+			return 2;
 		if(pas.length()<6)
 			return 3;
 		//以下为检查密码格式
@@ -103,8 +105,8 @@ public class SignUpAcitivity extends Activity {
 		}else{
 			return 0;
 		}
-		//以下为检查邮箱地址格式
-		if (null==mail || "".equals(mail)) return 2;//邮箱未填写
+		//以下为检查学号格式
+		if (null==mail || "".equals(mail)) return 2;//学号未填写
 
 		Pattern p =  Pattern.compile(addr);
 		Matcher m = p.matcher(mail);
