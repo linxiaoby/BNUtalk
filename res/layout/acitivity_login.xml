@@ -31,6 +31,7 @@
         android:layout_height="50dp"
         android:background="@drawable/login_button"
         android:text="login"
+        android:onClick="doSocket"
         android:layout_gravity="center"
         android:layout_marginTop="35dip"/>
 	
