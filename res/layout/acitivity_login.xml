@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1">
-    <include layout="@layout/item_sign_title"/>
+    <include layout="@layout/item_sign_title"
+        android:id="@+id/include2" />
 
     <EditText
         android:id="@+id/mail_text"
         android:layout_width="310dp"
         android:layout_height="wrap_content"
-        android:hint=""
+        android:hint="Enter your BNU ID"
         android:maxLines="2"
         android:layout_weight="0.10"
         android:layout_gravity="center"
-        android:layout_marginTop="65dip"/>
+        android:layout_marginTop="92dp"
+        android:layout_below="@+id/include2"
+        android:layout_alignLeft="@+id/login" />
 
     <EditText
         android:id="@+id/key_text"
         android:layout_width="310dp"
         android:layout_height="wrap_content"
-        android:hint="key"
+        android:hint="Enter your password"
         android:maxLines="2"
         android:layout_weight="0.10"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:layout_below="@+id/mail_text"
+        android:layout_alignLeft="@+id/mail_text" />
 
     <Button
         android:id="@+id/login"
@@ -32,6 +37,33 @@
         android:background="@drawable/login_button"
         android:text="login"
         android:layout_gravity="center"
-        android:layout_marginTop="35dip"/>
-	
-</LinearLayout>
+        android:layout_marginTop="36dp"
+        android:layout_below="@+id/key_text"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="forget password?"
+        android:id="@+id/forget_key"
+        android:layout_alignTop="@+id/textView10"
+        android:layout_toLeftOf="@+id/textView10" />
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="20dp"
+        android:background="@drawable/vertical_divider"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/textView10"
+        android:layout_below="@+id/login"
+        android:layout_toLeftOf="@+id/sign_up" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sign up"
+        android:id="@+id/sign_up"
+        android:layout_alignTop="@+id/forget_key"
+        android:layout_alignRight="@+id/login"
+        android:layout_marginRight="21dp" />
+
+</RelativeLayout>
