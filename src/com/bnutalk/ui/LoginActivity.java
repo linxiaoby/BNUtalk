@@ -1,6 +1,11 @@
 package com.bnutalk.ui;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import com.bnutalk.ui.R;
 public class LoginActivity extends Activity {
 	@Override
@@ -9,9 +14,9 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.acitivity_login);
 		
-		forget=(TextView)findViewById(R.id.forget_key);
-		signIn=(Button)findViewById(R.id.login);
-		signUp=(TextView)findViewById(R.id.sign_up);
+		TextView forget = (TextView)findViewById(R.id.forget_key);
+		Button signIn = (Button)findViewById(R.id.login);
+		TextView signUp = (TextView)findViewById(R.id.sign_up);
 
 		signIn.setOnClickListener(signInClick);
 		forget.setOnClickListener(forgetClick);
@@ -20,7 +25,7 @@ public class LoginActivity extends Activity {
 	View.OnClickListener forgetClick=new View.OnClickListener(){
 		@Override
 		public void onClick(View v){
-		//需补充forgetPassword活动的转换
+		//闇�琛ュ厖forgetPassword娲诲姩鐨勮浆鎹�
 		}
 	};
 	View.OnClickListener signUpClick=new View.OnClickListener(){
@@ -34,7 +39,7 @@ public class LoginActivity extends Activity {
 	View.OnClickListener signInClick=new View.OnClickListener(){
 		@Override
 		public void onClick(View v){
-			//此处建立与服务器的连接
+			//姝ゅ寤虹珛涓庢湇鍔″櫒鐨勮繛鎺�
 		}
 	};
 }
