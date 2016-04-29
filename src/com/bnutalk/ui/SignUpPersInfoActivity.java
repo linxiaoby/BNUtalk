@@ -578,5 +578,12 @@ public class SignUpPersInfoActivity extends Activity {
 		persInfoUpload.setStrLike(etLike.getText().toString());
 		// 上传个人信息到服务器
 		persInfoUpload.sendPersInfo();
+		//开启下一个activity
+		Intent it = new Intent();
+		it.setClass(this, LoginActivity.class);
+		startActivity(it);
+		finish();
+		overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+
 	}
 }
