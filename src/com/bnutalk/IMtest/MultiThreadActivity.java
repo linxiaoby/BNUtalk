@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import android.R.string;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,23 +38,27 @@ public class MultiThreadActivity extends Activity {
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				Log.v("handler", "µ÷ÓÃhandler");
-				// Èç¹ûÏûÏ¢À´×Ô×ÓÏß³Ì
+				Log.v("handler", "è°ƒç”¨handler");
+				// å¦‚æœæ¶ˆæ¯æ¥è‡ªå­çº¿ç¨‹
 				 if (msg.what == 0x234) {
-				 // ½«¶ÁÈ¡µÄÄÚÈİ×·¼ÓÏÔÊ¾ÔÚÎÄ±¾¿òÖĞ
+				 // å°†è¯»å–çš„å†…å®¹è¿½åŠ æ˜¾ç¤ºåœ¨æ–‡æœ¬æ¡†ä¸­
 				 show.append("\n" + msg.obj.toString());
 				 }
 			}
 		};
+		final String  uid="201211011064";
 		new Thread(new Runnable() {
 			public void run() {
 				try {
 					String servIp = new GetServerIp().getServerIp();
 					int servPort = new GetServerIp().getServScoketPrt();
 					socket = new Socket(servIp, servPort);
-					Log.v("SocketÏß³Ì","socket½¨Á¢³É¹¦");
+					Log.v("Socketçº¿ç¨‹","socketå»ºç«‹æˆåŠŸ");
 					new Thread(new ClientThread(socket, handler)).start();
 					os = socket.getOutputStream();
+					//åœ¨åˆ›å»ºsocketçš„æ—¶å€™å‘é€uid
+					os.write((uid+"\r\n").getBytes());
+					os.flush();
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -63,14 +68,17 @@ public class MultiThreadActivity extends Activity {
 				}
 			}
 		}).start();
+		final String sendToUid="201211011063";
 		sendBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				try {
-					// ½«ÓÃ»§ÔÚÎÄ±¾¿òÄÚÊäÈëµÄÄÚÈİĞ´ÈëÍøÂç
+					// å°†ç”¨æˆ·åœ¨æ–‡æœ¬æ¡†å†…è¾“å…¥çš„å†…å®¹å†™å…¥ç½‘ç»œ
 					String strText = input.getText().toString();
+					os.write("sendToUid".getBytes());
+					os.write((sendToUid+"\r\n").getBytes());
 					os.write((strText + "\r\n").getBytes());
-					// Çå¿ÕinputÎÄ±¾¿òÊı¾İ
+					// æ¸…ç©ºinputæ–‡æœ¬æ¡†æ•°æ®
 					input.setText("");
 					os.flush();
 				} catch (Exception e) {
