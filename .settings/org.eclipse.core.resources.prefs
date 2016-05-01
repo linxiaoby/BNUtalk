@@ -1,6 +1,10 @@
 eclipse.preferences.version=1
+<<<<<<< HEAD
 encoding//src/com/bnutalk/IMtest/MsgFriendListActivity.java=UTF-8
 encoding//src/com/bnutalk/lanunch/FirstFragment.java=UTF-8
 encoding//src/com/bnutalk/lanunch/FourFragment.java=UTF-8
+=======
+encoding//src/com/bnutalk/ui/LoginActivity.java=UTF-8
+>>>>>>> refs/remotes/origin/master
 encoding//src/com/bnutalk/ui/SignUpAcitivity.java=UTF-8
 encoding//src/com/bnutalk/ui/SignUpPersInfoActivity.java=UTF-8
