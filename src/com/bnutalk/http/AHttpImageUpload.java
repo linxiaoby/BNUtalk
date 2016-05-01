@@ -13,7 +13,7 @@ import android.util.Base64;
 import android.util.Log;
 
 /*
- * AsyncHttpClient±¾Éí¾ÍÊµÏÖÁË¿ÉÒÔÔÚ·ÇUIÖ´ĞĞ£¬Òò´Ë²»ĞèÒª×Ô¼ºnewÒ»¸öthread£¬Ö±½ÓĞ´³É·½·¨µ÷ÓÃ¼´¿É
+ * AsyncHttpClientæœ¬èº«å°±å®ç°äº†å¯ä»¥åœ¨éUIæ‰§è¡Œï¼Œå› æ­¤ä¸éœ€è¦è‡ªå·±newä¸€ä¸ªthreadï¼Œç›´æ¥å†™æˆæ–¹æ³•è°ƒç”¨å³å¯
  */
 public class AHttpImageUpload {
 	
@@ -28,19 +28,19 @@ public class AHttpImageUpload {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-			// ½«bitmapÒ»×Ö½ÚÁ÷Êä³ö Bitmap.CompressFormat.PNG Ñ¹Ëõ¸ñÊ½£¬100£ºÑ¹ËõÂÊ£¬baos£º×Ö½ÚÁ÷
+			// å°†bitmapä¸€å­—èŠ‚æµè¾“å‡º Bitmap.CompressFormat.PNG å‹ç¼©æ ¼å¼ï¼Œ100ï¼šå‹ç¼©ç‡ï¼Œbaosï¼šå­—èŠ‚æµ
 			bmPhoto.compress(Bitmap.CompressFormat.PNG, 100, baos);
 			baos.close();
 			byte[] buffer = baos.toByteArray();
-			System.out.println("Í¼Æ¬µÄ´óĞ¡£º" + buffer.length);
+			System.out.println("å›¾ç‰‡çš„å¤§å°ï¼š" + buffer.length);
 
-			// ½«Í¼Æ¬µÄ×Ö½ÚÁ÷Êı¾İ¼ÓÃÜ³Ébase64×Ö·ûÊä³ö
+			// å°†å›¾ç‰‡çš„å­—èŠ‚æµæ•°æ®åŠ å¯†æˆbase64å­—ç¬¦è¾“å‡º
 			String strPhoto = Base64.encodeToString(buffer, 0, buffer.length, Base64.DEFAULT);
 
 			// photo=URLEncoder.encode(photo,"UTF-8");
 			RequestParams params = new RequestParams();
 			params.put("strPhoto", strPhoto);
-			params.put("strUid", strUid);// ´«ÊäµÄ×Ö·ûÊı¾İ
+			params.put("strUid", strUid);// ä¼ è¾“çš„å­—ç¬¦æ•°æ®
 			
 			String ip = new GetServerIp().getServerIp();
 			String url = ip+"/web/ImageUploadServlet";
@@ -49,11 +49,12 @@ public class AHttpImageUpload {
 
 				@Override
 				public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-
+					arg3.printStackTrace();
 				}
 				@Override
 				public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
 				}
+				
 			});
 		} catch (Exception e) {
 			e.printStackTrace();

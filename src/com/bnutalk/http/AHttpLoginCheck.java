@@ -2,40 +2,57 @@ package com.bnutalk.http;
 
 import org.apache.http.Header;
 
+import com.bnutalk.ui.LoginActivity;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import android.os.Handler;
+import android.os.Message;
+
 public class AHttpLoginCheck {
 	private String uid;
 	private String passwd;
+	private String result;
+	private Handler handler;
+	private Message msg;
 
-	public AHttpLoginCheck(String uid, String passwd) {
+	public AHttpLoginCheck(Handler handler, String uid, String passwd) {
 		this.uid = uid;
 		this.passwd = passwd;
+		this.handler = handler;
 	}
-	public void doLoginCheck()
-	{
+
+	public void doLoginCheck() {
 		String ip = new GetServerIp().getServerIp();
-		String url = ip+"/web/LogServlet";
-		
-		RequestParams params=new RequestParams();
-		params.put("uid",uid);
-		params.put("passwd",passwd);
+		String url = "http://" + ip + ":8080/web/LogServlet";
+		// http://localhost:8080/web/logServlet
+		RequestParams params = new RequestParams();
+		params.put("uid", uid);
+		params.put("passwd", passwd);
 		AsyncHttpClient client = new AsyncHttpClient();
+		final Message msg = new Message();
 		client.post(url, params, new AsyncHttpResponseHandler() {
-			
 			@Override
 			public void onSuccess(int status, Header[] headers, byte[] responseBody) {
 				// called when response HTTP status is "200 OK"
-				System.out.println(responseBody);
+				result = new String(responseBody);
+				System.out.println(result);
+				if (result.equals("success"))
+					msg.what = 1;// 表示登录成功
+				else {
+					msg.what = 2;// 表示登录失败
+				}
+				System.out.println("what"+" "+msg.what);
+				handler.sendMessage(msg);
 			}
-			
+
 			@Override
 			public void onFailure(int status, Header[] header, byte[] eResponseBody, Throwable error) {
-				  // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-			error.printStackTrace();	
+				// called when response HTTP status is "4XX" (eg. 401, 403, 404)
+				error.printStackTrace();
 			}
 		});
+		
 	}
 }
