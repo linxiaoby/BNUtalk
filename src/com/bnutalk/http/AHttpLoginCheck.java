@@ -26,7 +26,6 @@ public class AHttpLoginCheck {
 	public void doLoginCheck() {
 		String ip = new GetServerIp().getServerIp();
 		String url = "http://" + ip + ":8080/web/LogServlet";
-		// http://localhost:8080/web/logServlet
 		RequestParams params = new RequestParams();
 		params.put("uid", uid);
 		params.put("passwd", passwd);

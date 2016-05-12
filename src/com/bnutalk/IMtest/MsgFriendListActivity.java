@@ -16,9 +16,12 @@ import java.util.Map;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.CursorJoiner.Result;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -27,32 +30,38 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 
+import com.bnutalk.http.AHttpMsgFriendDload;
 import com.bnutalk.http.GetServerIp;
 import com.bnutalk.IMtest.ReadFromServThread;
+import com.bnutalk.ui.LoginActivity;
 import com.bnutalk.ui.R;
 import com.bnutalk.ui.SignUpPersInfoActivity;
+import com.google.gson.Gson;
 
 public class MsgFriendListActivity extends Activity implements OnItemClickListener, OnScrollListener {
 	private ListView listView;
 	private SimpleAdapter simple_adapter;
 	private List<Map<String, Object>> list;
 	private int i = 0;
-
+	private Handler handler;
 	// 服务器操作：用于socket的成员变量
 	public static OutputStream os;
 	public static Socket socket;
-
+	public String strUid;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_msgfriend_list);
 		// 匹配布局文件中的ListView控件
 		listView = (ListView) findViewById(R.id.lvMsgFriend);
-
+		
+		/*
 		// 数据适配器的定义
 		String[] data = new String[] { "java", "C++", "JavaScript", "Php", "Python" };
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(MsgFriendListActivity.this,
@@ -61,17 +70,58 @@ public class MsgFriendListActivity extends Activity implements OnItemClickListen
 		listView.setAdapter(adapter);
 		// 设置ListView的元素被选中时的事件处理监听器
 		listView.setOnItemClickListener(this);
-		getData();
+		*/
+		
+//		getData();
+		/*server operation*/
+		handler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				Log.v("handler", "handler called");
+			System.out.println("msgwhat"+msg.what);
+				if (msg.what == 0x001) {
+					simple_adapter = new SimpleAdapter(MsgFriendListActivity.this, list, R.layout.item_megfriend_list,
+							new String[] { "image", "nickname","info"}, new int[] { R.id.image, R.id.nickname,R.id.info});
+					simple_adapter.setViewBinder(binder);
+					listView.setAdapter(simple_adapter);
+				}
+			}
+		};
+		list = new ArrayList<Map<String, Object>>();
+		strUid="201211011063";
+		new AHttpMsgFriendDload(strUid,handler, list).msgFriDloadRequest();
+		
+		
 		// 设置SimpleAdapter监听器
-		simple_adapter = new SimpleAdapter(MsgFriendListActivity.this, list, R.layout.item_megfriend_list,
-				new String[] { "image", "text" }, new int[] { R.id.image, R.id.text });
-		listView.setAdapter(simple_adapter);
-		listView.setOnScrollListener(this);
+//		simple_adapter = new SimpleAdapter(MsgFriendListActivity.this, list, R.layout.item_megfriend_list,
+//				new String[] { "image", "text" }, new int[] { R.id.image, R.id.text });
+//		listView.setAdapter(simple_adapter);
+//		listView.setOnScrollListener(this);
 
 		// 服务器操作：创建一个thread，用于和服务器建立socket连接
-		serverConn();
+//		serverConn();
+//		// 服务器操作：创建一个thread，用于和服务器建立socket连接
+	
+		
+		listView.setOnScrollListener(this);
+		//serverConn();
 	}
-
+	
+	ViewBinder binder=new ViewBinder() {
+		@Override
+		public boolean setViewValue(View view, Object data, String textRepresentation) {
+			if((view instanceof ImageView)&(data instanceof Bitmap))
+	        {
+	            ImageView iv = (ImageView)view;
+	            iv.setAdjustViewBounds(true);  
+	            Bitmap bmp = (Bitmap)data;
+	            iv.setImageBitmap(bmp);
+	            return true;
+	        }
+			return false;
+		}
+	};
+	
 	// 加载SimpleAdapter数据集
 	private List<Map<String, Object>> getData() {
 		list = new ArrayList<Map<String, Object>>();
@@ -96,6 +146,7 @@ public class MsgFriendListActivity extends Activity implements OnItemClickListen
 		list.add(map4);
 		list.add(map5);
 		Log.i("Main", list.size() + "");
+		
 		return list;
 	}
 
