@@ -1,5 +1,4 @@
 package com.bnutalk.ui;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;

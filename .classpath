@@ -7,6 +7,15 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="lib" path="libs/httpcore-4.4.4.jar"/>
 	<classpathentry kind="lib" path="libs/httpmime-4.5.2.jar"/>
-	<classpathentry kind="lib" path="libs/android-async-http-1.4.5.jar"/>
+	<classpathentry kind="lib" path="libs/android-async-http-1.4.5.jar" sourcepath="G:/请找这里/大三下/软件工程/工具存档/android-async-http-master/android-async-http-master/library/src/main/java/com/loopj/android/http">
+		<attributes>
+			<attribute name="source_encoding" value="UTF-8"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libs/gson-2.2.4.jar" sourcepath="G:/请找这里/大三下/软件工程/工具存档/gson/gson-2.3.1-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/G:/请找这里/大三下/软件工程/工具存档/gson/gson-2.3.1-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
