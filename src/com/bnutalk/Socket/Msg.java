@@ -1,4 +1,4 @@
-package com.bnutalk.IMtest;
+package com.bnutalk.Socket;
 
 /**
  * Created by huangtianyous on 2016/4/9.

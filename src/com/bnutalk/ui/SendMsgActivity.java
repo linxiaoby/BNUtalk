@@ -1,4 +1,4 @@
-package com.bnutalk.IMtest;
+package com.bnutalk.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,7 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.bnutalk.IMtest.ReadFromServThread;
+import com.bnutalk.Socket.Msg;
+import com.bnutalk.Socket.MsgAdapter;
+import com.bnutalk.Socket.ReadFromServThread;
 import com.bnutalk.ui.R;
 
 import java.io.IOException;
@@ -35,24 +37,24 @@ public class SendMsgActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_sendmsg);
 		initMsgs();
-		// ÊÊÅäÆ÷¼ÓÔØÊý¾ÝÔ´
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´
 		adapter = new MsgAdapter(SendMsgActivity.this, R.layout.item_message, msgList);
 		inputText = (EditText) findViewById(R.id.input_text);
 		send = (Button) findViewById(R.id.send);
 
 		msgListView = (ListView) findViewById(R.id.msg_list_view);
-		// ÊÓÍ¼¼ÓÔØÊÊÅäÆ÷
+		// ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		msgListView.setAdapter(adapter);
 
 		//
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				Log.v("handler", "µ÷ÓÃhandler");
-				// Èç¹ûÏûÏ¢À´×Ô×ÓÏß³Ì
+				Log.v("handler", "ï¿½ï¿½ï¿½ï¿½handler");
+				// ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½
 				if (msg.what == 0x234) {
 					String content = msg.obj.toString();
-					if (!"".equals(content)) {// Èç¹ûÏûÏ¢²»Îª¿Õ
+					if (!"".equals(content)) {// ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Îªï¿½ï¿½
 						Msg rmsg = new Msg(content, Msg.TYPE_RECEIVED);
 						msgList.add(rmsg);
 						adapter.notifyDataSetChanged();
@@ -62,7 +64,7 @@ public class SendMsgActivity extends Activity {
 			}
 		};
 
-		// ´´½¨Ò»¸öÏß³Ì£¬²»¶Ï¶ÁÈ¡À´×Ô·þÎñÆ÷µÄÏûÏ¢
+		// ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ß³Ì£ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½È¡ï¿½ï¿½ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 		try {
 			new Thread(new ReadFromServThread(MsgFriendListActivity.socket, handler)).start();
 		} catch (IOException e) {
@@ -74,14 +76,14 @@ public class SendMsgActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				String content = inputText.getText().toString();
-				if (!"".equals(content)) {// Èç¹ûÏûÏ¢²»Îª¿Õ
+				if (!"".equals(content)) {// ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Îªï¿½ï¿½
 					Msg smsg = new Msg(content, Msg.TYPE_SENT);
 					msgList.add(smsg);
 					adapter.notifyDataSetChanged();
 					msgListView.setSelection(msgList.size());
 					inputText.setText("");
 					
-					//½«ÏûÏ¢ÄÚÈÝÐ´ÈësocketÊä³öÁ÷£¬ÔÚ·þÎñÆ÷¶Ë½ÓÊÕ£¬²¢·¢ËÍ¸ø¶Ô·½ºÃÓÑ
+					//ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½socketï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë½ï¿½ï¿½Õ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½
 					try {
 						MsgFriendListActivity.os.write("sendToUid".getBytes());
 						MsgFriendListActivity.os.write((sendToUid + "\r\n").getBytes());

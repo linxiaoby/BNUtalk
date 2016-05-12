@@ -1,4 +1,4 @@
-package com.bnutalk.IMtest;
+package com.bnutalk.ui;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,9 +36,9 @@ import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 
+import com.bnutalk.Socket.ReadFromServThread;
 import com.bnutalk.http.AHttpMsgFriendDload;
 import com.bnutalk.http.GetServerIp;
-import com.bnutalk.IMtest.ReadFromServThread;
 import com.bnutalk.ui.LoginActivity;
 import com.bnutalk.ui.R;
 import com.bnutalk.ui.SignUpPersInfoActivity;

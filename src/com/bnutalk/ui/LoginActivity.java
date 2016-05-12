@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import org.apache.http.Header;
 
-import com.bnutalk.IMtest.Msg;
+import com.bnutalk.Socket.Msg;
 import com.bnutalk.http.AHttpLoginCheck;
 import com.bnutalk.http.GetServerIp;
 import com.bnutalk.ui.R;

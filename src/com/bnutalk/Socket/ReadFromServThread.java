@@ -1,4 +1,4 @@
-package com.bnutalk.IMtest;
+package com.bnutalk.Socket;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,20 +6,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import com.bnutalk.IMtest.MsgFriendListActivity;
+import com.bnutalk.ui.MsgFriendListActivity;
 
 import android.os.Handler;
 import android.os.Message;
 
 /*
  * Author:linxiaobai 2016/04/30
- * ¹¦ÄÜ£ºÑ­»·¶ÁÈ¡·þÎñÆ÷·¢À´µÄÏûÏ¢£¬Í¨¹ýhandlerÍ¨ÖªUIÏÔÊ¾  
+ * ï¿½ï¿½ï¿½Ü£ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Í¨ï¿½ï¿½handlerÍ¨ÖªUIï¿½ï¿½Ê¾  
  */
 public class ReadFromServThread implements Runnable {
 	private Handler handler;
-	// ï¿½ï¿½ï¿½ß³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Socketï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?
-	private BufferedReader br = null;// ÓÃÓÚ¶ÁÈ¡ÏûÏ¢±¨Í·
-	private InputStream isAll;// ÓÃÓÚ¶ÁÈ¡ÏûÏ¢ÕýÎÄ
+	// ï¿½ï¿½ï¿½ß³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Socketï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
+	private BufferedReader br = null;// ï¿½ï¿½ï¿½Ú¶ï¿½È¡ï¿½ï¿½Ï¢ï¿½ï¿½Í·
+	private InputStream isAll;// ï¿½ï¿½ï¿½Ú¶ï¿½È¡ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
 
 	public ReadFromServThread(Socket socket, Handler handler) throws IOException {
 		this.handler = handler;
@@ -35,7 +35,7 @@ public class ReadFromServThread implements Runnable {
 	// String content = null;
 	// // ï¿½ï¿½ï¿½Ï¶ï¿½È¡Socketï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	// while ((content = br.readLine()) != null) {
-	// // Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö®ï¿½ó£¬·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢Í¨Öªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿?
+	// // Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö®ï¿½ó£¬·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢Í¨Öªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½?
 	// Message msg = new Message();
 	// msg.what = 0x234;
 	// msg.obj = content;
@@ -50,7 +50,7 @@ public class ReadFromServThread implements Runnable {
 	public void run() {
 		try {
 			String content = null;
-			byte[] b = new byte[1000];// Ò»ÌõÏûÏ¢µÄÕýÎÄ³¬¹ý1000×Ö½ÚÒª³öÊÂ¶ù£¬¼ÇµÃ»ØÀ´¸Ä
+			byte[] b = new byte[1000];// Ò»ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½1000ï¿½Ö½ï¿½Òªï¿½ï¿½ï¿½Â¶ï¿½ÇµÃ»ï¿½ï¿½ï¿½ï¿½ï¿½
 			while (true) {
 				isAll.read(b);
 				if (b != null) {

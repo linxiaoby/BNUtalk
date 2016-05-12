@@ -4,11 +4,11 @@
 eclipse.preferences.version=1
 encoding//gen/com/bnutalk/ui/BuildConfig.java=UTF-8
 encoding//gen/com/bnutalk/ui/R.java=UTF-8
-encoding//src/com/bnutalk/IMtest/MsgFriendListActivity.java=UTF-8
-encoding//src/com/bnutalk/IMtest/ReadFromServThread.java=UTF-8
+encoding//src/com/bnutalk/Socket/ReadFromServThread.java=UTF-8
 encoding//src/com/bnutalk/lanunch/FirstFragment.java=UTF-8
 encoding//src/com/bnutalk/lanunch/FourFragment.java=UTF-8
 encoding//src/com/bnutalk/ui=UTF-8
 encoding//src/com/bnutalk/ui/LoginActivity.java=UTF-8
+encoding//src/com/bnutalk/ui/MsgFriendListActivity.java=UTF-8
 encoding//src/com/bnutalk/ui/SignUpPersInfoActivity.java=UTF-8
 encoding/<project>=UTF-8

@@ -8,7 +8,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import android.R.string;
-
+/**
+ * 
+ * @author linxiaobai
+ *	upload user infomation to server ,don't delete!
+ */
 public class SignUpThread extends Thread {
 	private String url;
 	private String mailAdress;
@@ -22,10 +26,10 @@ public class SignUpThread extends Thread {
 	}
 
 	private void doGet() throws IOException {
-		System.out.print("signUpHttpÏß³Ì¿ªÊ¼");
+		System.out.print("signUpHttpï¿½ß³Ì¿ï¿½Ê¼");
 		url=url+"?mailAdress="+mailAdress+"&passwd="+passwd;
 		try {
-			//½«Êý¾Ý´«ËÍ¸øServer
+			//ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½Í¸ï¿½Server
 			URL httpUrl = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection) httpUrl.openConnection();
 			conn.setRequestMethod("GET");
@@ -34,12 +38,12 @@ public class SignUpThread extends Thread {
 			BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String str;
 			StringBuffer sb=new StringBuffer();
-			//¶ÁÈ¡·þÎñÆ÷·µ»ØµÄÐÅÏ¢
+			//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½Ï¢
 			while((str=reader.readLine())!=null)
 			{
 				sb.append(str);
 			}
-			//°Ñ·þÎñ¶Ë·µ»ØµÄÊý¾Ý´òÓ¡³öÀ´
+			//ï¿½Ñ·ï¿½ï¿½ï¿½Ë·ï¿½ï¿½Øµï¿½ï¿½ï¿½Ý´ï¿½Ó¡ï¿½ï¿½ï¿½ï¿½
 			System.out.println("result"+sb.toString());
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
@@ -48,7 +52,7 @@ public class SignUpThread extends Thread {
 
 	}
 
-	/*ÔÚrunÖÐµ÷ÓÃdoGet*/
+	/*ï¿½ï¿½runï¿½Ðµï¿½ï¿½ï¿½doGet*/
 	@Override
 	public void run() {
 		try {
