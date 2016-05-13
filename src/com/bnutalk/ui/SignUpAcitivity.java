@@ -10,6 +10,8 @@ import com.bnutalk.http.SignUpThread;
 import android.R.string;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,35 +19,37 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class SignUpAcitivity extends Activity {
-	//2涓暟鎹垚鍛�
-	private String mailAdress;
-	private String passwd;
-	private String rePasswd;
-	//3涓狤ditText
-	private EditText etMailAdress;
-	private EditText etPasswd;
-	private EditText etRePasswd;
-	//1涓猙utton
+	private String uid,passwd,rePasswd;
+	private EditText etUid,etPasswd,etRePasswd;
 	private Button btSignUp;
+	
+	private SharedPreferences pref;
+	private Editor editor;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_signup);
-		etMailAdress=(EditText) findViewById(R.id.mail_signup_text);
+		findView();
+		
+		pref = getSharedPreferences("user_login", 0);
+		editor = pref.edit();
+	}
+	public void findView()
+	{
+		etUid=(EditText) findViewById(R.id.mail_signup_text);
 		etPasswd=(EditText) findViewById(R.id.key_signup_text);
 		etRePasswd=(EditText) findViewById(R.id.key_ensure_signup_text);
 		btSignUp=(Button) findViewById(R.id.signup);
 	}
 	public void onSignUp(View v)
 	{
-		mailAdress=etMailAdress.getText().toString();
+		uid=etUid.getText().toString();
 		passwd=etPasswd.getText().toString();
 		rePasswd=etRePasswd.getText().toString();
 		//自力：客户端的输入限制处理大致写在这里
 		//全部符合了才能进入else条件，else用来跳转到“个人信息”界面
 		
-		int i=inputLimitation(mailAdress,passwd);//鍒ゆ柇鏄惁鎸夎姹傚～鍐�
+		int i=inputLimitation(uid,passwd);//鍒ゆ柇鏄惁鎸夎姹傚～鍐�
 		if(i==1)
 		{
 			if(!passwd.equals(rePasswd))//涓ゆ瀵嗙爜涓嶄竴鑷�
@@ -54,17 +58,18 @@ public class SignUpAcitivity extends Activity {
 			}
 			else
 			{
-//			String url="http://172.31.105.199:8080/web/SignUpServlet";
-//			new SignUpThread(url,mailAdress,passwd).start();
-			/*鎼哄甫Mail鏁版嵁璺宠浆鍒颁釜浜轰俊鎭晫闈�*/
+				Toast.makeText(SignUpAcitivity.this,"sign up success!", Toast.LENGTH_SHORT).show();
+				//sava uid to local cache,filename:user_login
+				editor.putString("uid", uid);
+				editor.commit();
+				
 				Bundle bundle = new Bundle();
-				bundle.putString("mailAdress", mailAdress);
+				bundle.putString("mailAdress", uid);
 				bundle.putString("passwd",passwd);
+				
 				Intent intent = new Intent();
-				//瑷畾涓嬩竴鍊婣ctitity
 				intent.setClass(this, SignUpPersInfoActivity.class);
 				intent.putExtras(bundle);
-				//闁嬪暉Activity
 				startActivity(intent);
 			}
 		}

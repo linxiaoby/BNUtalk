@@ -12,9 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.bnutalk.Socket.Msg;
-import com.bnutalk.Socket.MsgAdapter;
-import com.bnutalk.Socket.ReadFromServThread;
+import com.bnutalk.socket.Msg;
+import com.bnutalk.socket.MsgAdapter;
 import com.bnutalk.ui.R;
 
 import java.io.IOException;
@@ -63,14 +62,8 @@ public class SendMsgActivity extends Activity {
 				}
 			}
 		};
+		new Thread(new ReadFromServThread(handler)).start();
 
-		// ����һ���̣߳����϶�ȡ���Է���������Ϣ
-		try {
-			new Thread(new ReadFromServThread(MsgFriendListActivity.socket, handler)).start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		final String sendToUid = "201211011064";
 		send.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -82,13 +75,15 @@ public class SendMsgActivity extends Activity {
 					adapter.notifyDataSetChanged();
 					msgListView.setSelection(msgList.size());
 					inputText.setText("");
-					
-					//����Ϣ����д��socket��������ڷ������˽��գ������͸�Է�����
+
+					// ����Ϣ����д��socket��������ڷ������˽��գ������͸�Է�����
 					try {
-						MsgFriendListActivity.os.write("sendToUid".getBytes());
-						MsgFriendListActivity.os.write((sendToUid + "\r\n").getBytes());
-						MsgFriendListActivity.os.write((content + "\r\n").getBytes());
-						MsgFriendListActivity.os.flush();
+						if (MsgFriendListActivity.os != null) {
+							MsgFriendListActivity.os.write("sendToUid".getBytes());
+							MsgFriendListActivity.os.write((sendToUid + "\r\n").getBytes());
+							MsgFriendListActivity.os.write((content + "\r\n").getBytes());
+							MsgFriendListActivity.os.flush();
+						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -98,7 +93,6 @@ public class SendMsgActivity extends Activity {
 		});
 
 	}
-
 	private void initMsgs() {
 		Msg msg1 = new Msg("Hello guy.", Msg.TYPE_RECEIVED);
 		msgList.add(msg1);

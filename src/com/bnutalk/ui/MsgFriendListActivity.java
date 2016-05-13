@@ -36,9 +36,9 @@ import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 
-import com.bnutalk.Socket.ReadFromServThread;
 import com.bnutalk.http.AHttpMsgFriendDload;
 import com.bnutalk.http.GetServerIp;
+import com.bnutalk.socket.ReadFromServThread;
 import com.bnutalk.ui.LoginActivity;
 import com.bnutalk.ui.R;
 import com.bnutalk.ui.SignUpPersInfoActivity;
@@ -50,7 +50,8 @@ public class MsgFriendListActivity extends Activity implements OnItemClickListen
 	private List<Map<String, Object>> list;
 	private int i = 0;
 	private Handler handler;
-	// 服务器操作：用于socket的成员变量
+	
+	// server operation：用于socket的成员变量
 	public static OutputStream os;
 	public static Socket socket;
 	public String strUid;
@@ -61,19 +62,8 @@ public class MsgFriendListActivity extends Activity implements OnItemClickListen
 		// 匹配布局文件中的ListView控件
 		listView = (ListView) findViewById(R.id.lvMsgFriend);
 		
-		/*
-		// 数据适配器的定义
-		String[] data = new String[] { "java", "C++", "JavaScript", "Php", "Python" };
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(MsgFriendListActivity.this,
-				android.R.layout.simple_list_item_1, data);
-		// 给ListView设置数据适配器
-		listView.setAdapter(adapter);
-		// 设置ListView的元素被选中时的事件处理监听器
-		listView.setOnItemClickListener(this);
-		*/
 		
-//		getData();
-		/*server operation*/
+		/*server operation:get msgfriend data,and update ui*/
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
@@ -84,10 +74,14 @@ public class MsgFriendListActivity extends Activity implements OnItemClickListen
 							new String[] { "image", "nickname","info"}, new int[] { R.id.image, R.id.nickname,R.id.info});
 					simple_adapter.setViewBinder(binder);
 					listView.setAdapter(simple_adapter);
+					
 				}
 			}
 		};
 		list = new ArrayList<Map<String, Object>>();
+		
+		
+		/*download msgfriends from server*/
 		strUid="201211011063";
 		new AHttpMsgFriendDload(strUid,handler, list).msgFriDloadRequest();
 		
@@ -102,9 +96,9 @@ public class MsgFriendListActivity extends Activity implements OnItemClickListen
 //		serverConn();
 //		// 服务器操作：创建一个thread，用于和服务器建立socket连接
 	
-		
+		listView.setOnItemClickListener(this);
 		listView.setOnScrollListener(this);
-		//serverConn();
+		serverConn();
 	}
 	
 	ViewBinder binder=new ViewBinder() {
@@ -215,6 +209,14 @@ public class MsgFriendListActivity extends Activity implements OnItemClickListen
 		new Thread(new Runnable() {
 			public void run() {
 				try {
+					//check network state
+					boolean flag=new GetServerIp().checkNetworkState(MsgFriendListActivity.this);
+					if(flag)
+					{
+						Log.v("network state", "network is  available");
+					}
+					else 
+						Log.v("network state", "network is not available");
 					String servIp = new GetServerIp().getServerIp();
 					int servPort = new GetServerIp().getServScoketPrt();
 					socket = new Socket(servIp, servPort);

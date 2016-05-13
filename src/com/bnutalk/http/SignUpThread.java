@@ -11,7 +11,7 @@ import android.R.string;
 /**
  * 
  * @author linxiaobai
- *	upload user infomation to server ,don't delete!
+ *	upload user infomation to server ,don't delete just because no ahttp using
  */
 public class SignUpThread extends Thread {
 	private String url;

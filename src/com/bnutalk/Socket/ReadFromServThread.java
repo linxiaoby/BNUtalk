@@ -1,4 +1,4 @@
-package com.bnutalk.Socket;
+package com.bnutalk.socket;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +17,6 @@ import android.os.Message;
  */
 public class ReadFromServThread implements Runnable {
 	private Handler handler;
-	// ���߳������Socket���Ӧ��������?
 	private BufferedReader br = null;// ���ڶ�ȡ��Ϣ��ͷ
 	private InputStream isAll;// ���ڶ�ȡ��Ϣ����
 
@@ -29,28 +28,11 @@ public class ReadFromServThread implements Runnable {
 		isAll = MsgFriendListActivity.socket.getInputStream();
 	}
 
-	// @Override
-	// public void run() {
-	// try {
-	// String content = null;
-	// // ���϶�ȡSocket������������
-	// while ((content = br.readLine()) != null) {
-	// // ÿ���������Է����������֮�󣬷�����Ϣ֪ͨ���������ʾ�����?
-	// Message msg = new Message();
-	// msg.what = 0x234;
-	// msg.obj = content;
-	// handler.sendMessage(msg);
-	// }
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-
 	@Override
 	public void run() {
 		try {
 			String content = null;
-			byte[] b = new byte[1000];// һ����Ϣ�����ĳ���1000�ֽ�Ҫ���¶�ǵû�����
+			byte[] b = new byte[1000];
 			while (true) {
 				isAll.read(b);
 				if (b != null) {
@@ -62,10 +44,7 @@ public class ReadFromServThread implements Runnable {
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
-
 }

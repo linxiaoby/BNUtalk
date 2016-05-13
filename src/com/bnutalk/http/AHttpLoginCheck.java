@@ -2,11 +2,13 @@ package com.bnutalk.http;
 
 import org.apache.http.Header;
 
+import com.bnutalk.cache.PrefCacheUserInfo;
 import com.bnutalk.ui.LoginActivity;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
@@ -16,7 +18,7 @@ public class AHttpLoginCheck {
 	private String result;
 	private Handler handler;
 	private Message msg;
-
+	private Context context;
 	public AHttpLoginCheck(Handler handler, String uid, String passwd) {
 		this.uid = uid;
 		this.passwd = passwd;
@@ -38,12 +40,14 @@ public class AHttpLoginCheck {
 				result = new String(responseBody);
 				System.out.println(result);
 				if (result.equals("success"))
-					msg.what = 1;// 表示登录成功
+					msg.what = 1;// user info is right
 				else {
 					msg.what = 2;// 表示登录失败
 				}
 				System.out.println("what"+" "+msg.what);
 				handler.sendMessage(msg);
+				
+				/*write uid and passwd to local cache*/
 			}
 
 			@Override
@@ -54,4 +58,5 @@ public class AHttpLoginCheck {
 		});
 		
 	}
+	
 }

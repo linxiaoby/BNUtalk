@@ -1,4 +1,4 @@
-package com.bnutalk.Socket;
+package com.bnutalk.socket;
 
 /**
  * Created by huangtianyous on 2016/4/9.

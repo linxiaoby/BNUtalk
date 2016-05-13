@@ -95,7 +95,7 @@ public class SignUpPersInfoActivity extends Activity {
 	public void initEvent() {
 		/* 获取注册界面传过来的mailAdress,相当于用户uid */
 		Bundle bundle = this.getIntent().getExtras();
-		strUid = bundle.getString("mailAdress");
+		strUid = bundle.getString("uid");
 		strPasswd = bundle.getString("passwd");
 		// Log.v("uid", strUid);
 
