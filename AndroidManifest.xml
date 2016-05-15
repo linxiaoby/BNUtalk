@@ -26,7 +26,7 @@
         </activity>
         <activity android:name="com.bnutalk.ui.LoginActivity"></activity>
         <activity android:name="com.bnutalk.ui.SignUpPersInfoActivity"></activity>
-        <activity android:name="com.bnutalk.ui.SendMsgActivity"></activity>
-        <activity android:name="com.bnutalk.ui.MsgFriendListActivity"></activity>
+        <activity android:name="com.bnutalk.ui.RecentMsgListActivity"></activity>
+        <activity android:name="com.bnutalk.ui.ChatActivity"></activity>
     </application>
 </manifest>

@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bnutalk.ui.RecentMsgEntity;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.loopj.android.http.AsyncHttpClient;
@@ -32,7 +33,8 @@ import android.util.Log;
  */
 public class AHttpMsgFriendDload {
 	private Handler handler;
-	private List<Map<String, Object>> list;
+//	private List<Map<String, Object>> list;
+	private List<RecentMsgEntity> list;
 	private String strJson;
 	private Bitmap bmPhoto;
 	private Message msg;
@@ -40,7 +42,7 @@ public class AHttpMsgFriendDload {
 	
 	private String strUid;//send uid to server
 
-	public AHttpMsgFriendDload(String uid,Handler handler, List<Map<String, Object>> list) {
+	public AHttpMsgFriendDload(String uid,Handler handler, List<RecentMsgEntity> list) {
 		this.strUid=uid;
 		this.handler = handler;
 		this.list = list;
@@ -62,14 +64,45 @@ public class AHttpMsgFriendDload {
 				msg.what = 0x001;
 				handler.sendMessage(msg);
 			}
-
 			@Override
 			public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
 
 			}
 		});
 	}
+	public void parseJson(String strJson) {
+		try {
+			JSONArray jsonArray = new JSONArray(strJson);
+			for(int i=0;i<jsonArray.length();i++)
+			{
+				JSONObject user = jsonArray.getJSONObject(i);
+				String strUid = user.getString("strUid");
+				String strNickname = user.getString("strNickname");
+				String strPhoto = user.getString("strPhoto");
+				// 图片string转换成Bitmap
+				imgStrToDrwble(strPhoto);
+//				Map<String, Object> map = new HashMap<String, Object>();
+				String content="good morning!";
+				String time="2015-5-15";
+				Boolean isRead=true;
+				RecentMsgEntity rEntity=new RecentMsgEntity(bmPhoto,strUid, strNickname, content, time, isRead);
+				list.add(rEntity);
+				/*
+				map.put("uid",strUid);
+				map.put("nickname", strNickname);
+				map.put("image", bmPhoto);
+				map.put("info", "to be a better girl");
+				list.add(map);
+				*/
+			}
+			Log.v("parseJson", "parseJson success");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+	}
+	/*
 	public void parseJson(String strJson) {
 		try {
 			JSONArray jsonArray = new JSONArray(strJson);
@@ -82,6 +115,7 @@ public class AHttpMsgFriendDload {
 				// 图片string转换成png
 				imgStrToDrwble(strPhoto);
 				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("uid",strUid);
 				map.put("nickname", strNickname);
 				map.put("image", bmPhoto);
 				map.put("info", "to be a better girl");
@@ -94,7 +128,7 @@ public class AHttpMsgFriendDload {
 		}
 
 	}
-
+*/
 	public void imgStrToDrwble(String strPhoto) {
 		byte[] photoimg = Base64.decode(strPhoto, 0);
 		for (int i = 0; i < photoimg.length; ++i) {

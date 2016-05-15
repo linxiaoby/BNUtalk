@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,7 +21,6 @@ import org.apache.http.Header;
 
 import com.bnutalk.http.AHttpLoginCheck;
 import com.bnutalk.http.GetServerIp;
-import com.bnutalk.socket.Msg;
 import com.bnutalk.ui.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -43,6 +43,7 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.acitivity_login);
 		findView();
 		readUidFromCache();
@@ -102,7 +103,7 @@ public class LoginActivity extends Activity {
 
 					//jump into MsgFriendListActivity
 					Intent intent = new Intent();
-					intent.setClass(LoginActivity.this, MsgFriendListActivity.class);
+					intent.setClass(LoginActivity.this, RecentMsgListActivity.class);
 					startActivity(intent);
 
 				} else {

@@ -25,7 +25,7 @@
         android:id="@+id/etPasswd"
         android:layout_width="310dp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/mail_text"
+        android:layout_alignLeft="@+id/etUid"
         android:layout_below="@+id/etUid"
         android:layout_gravity="center"
         android:layout_weight="0.10"
@@ -62,6 +62,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="25dp"
         android:layout_toLeftOf="@+id/sign_up"
+        android:onClick="signUpClick"
         android:background="@drawable/vertical_divider" />
 
     <TextView

@@ -5,7 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 public class GetServerIp {
-	private final String serverIp = "172.31.104.189";
+	private final String serverIp = "123.206.59.147";
 	private final int servScoketPrt = 7777;
 
 	public int getServScoketPrt() {

@@ -10,21 +10,30 @@ import java.net.UnknownHostException;
  */
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.CursorJoiner.Result;
+import android.database.DefaultDatabaseErrorHandler;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
@@ -38,111 +47,90 @@ import android.widget.Toast;
 
 import com.bnutalk.http.AHttpMsgFriendDload;
 import com.bnutalk.http.GetServerIp;
+import com.bnutalk.socket.CommonUtil;
+import com.bnutalk.socket.MsgEntity;
 import com.bnutalk.socket.ReadFromServThread;
 import com.bnutalk.ui.LoginActivity;
 import com.bnutalk.ui.R;
 import com.bnutalk.ui.SignUpPersInfoActivity;
 import com.google.gson.Gson;
 
-public class MsgFriendListActivity extends Activity implements OnItemClickListener, OnScrollListener {
+public class RecentMsgListActivity extends Activity implements OnItemClickListener, OnScrollListener {
 	private ListView listView;
-	private SimpleAdapter simple_adapter;
-	private List<Map<String, Object>> list;
+	private List<RecentMsgEntity> list;
 	private int i = 0;
 	private Handler handler;
-	
+	private RecentMsgAdapter recentMsgAdapter;
+
 	// server operation：用于socket的成员变量
 	public static OutputStream os;
 	public static Socket socket;
-	public String strUid;
+	private String uid;
+
+	private SharedPreferences pref;
+	private Editor editor;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_msgfriend_list);
+		
 		// 匹配布局文件中的ListView控件
 		listView = (ListView) findViewById(R.id.lvMsgFriend);
-		
-		
-		/*server operation:get msgfriend data,and update ui*/
+		listView.setOnItemClickListener(this);
+		listView.setOnScrollListener(this);
+		list=new ArrayList<RecentMsgEntity>();
+		recentMsgAdapter=new RecentMsgAdapter(RecentMsgListActivity.this, list);
+
+		// get the current user id
+		getCurrentUid();
+		defHandler();
+
+		/* download msgfriends from server */
+		new AHttpMsgFriendDload(uid, handler, list).msgFriDloadRequest();
+		// get socket with server
+		serverConn();
+	}
+
+	/**
+	 * define handler server operation:get msgfriend data,and update ui
+	 */
+	public void defHandler() {
+		/* server operation:get msgfriend data,and update ui */
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
 				Log.v("handler", "handler called");
-			System.out.println("msgwhat"+msg.what);
-				if (msg.what == 0x001) {
-					simple_adapter = new SimpleAdapter(MsgFriendListActivity.this, list, R.layout.item_megfriend_list,
-							new String[] { "image", "nickname","info"}, new int[] { R.id.image, R.id.nickname,R.id.info});
-					simple_adapter.setViewBinder(binder);
-					listView.setAdapter(simple_adapter);
+				System.out.println("msgwhat" + msg.what);
+				switch (msg.what) {
+				case 0x001:// friend list download success
 					
+					listView.setAdapter(recentMsgAdapter);
+//					recentMsgAdapter.notifyDataSetChanged();
+					break;
+					
+				case 0x002:// there is a new message arrived
+					showBadge((MsgEntity) msg.obj);
+					break;
+				default:
+					break;
 				}
 			}
 		};
-		list = new ArrayList<Map<String, Object>>();
-		
-		
-		/*download msgfriends from server*/
-		strUid="201211011063";
-		new AHttpMsgFriendDload(strUid,handler, list).msgFriDloadRequest();
-		
-		
-		// 设置SimpleAdapter监听器
-//		simple_adapter = new SimpleAdapter(MsgFriendListActivity.this, list, R.layout.item_megfriend_list,
-//				new String[] { "image", "text" }, new int[] { R.id.image, R.id.text });
-//		listView.setAdapter(simple_adapter);
-//		listView.setOnScrollListener(this);
+	}
 
-		// 服务器操作：创建一个thread，用于和服务器建立socket连接
-//		serverConn();
-//		// 服务器操作：创建一个thread，用于和服务器建立socket连接
-	
-		listView.setOnItemClickListener(this);
-		listView.setOnScrollListener(this);
-		serverConn();
+	/**
+	 * get the current user uid from the local cache
+	 */
+	public void getCurrentUid() {
+		 pref = getSharedPreferences("user_login", 0);
+		 editor = pref.edit();
+		 uid=pref.getString("uid","");
+//		uid = "201211011063";
+		Log.v("get current uid", uid);
 	}
-	
-	ViewBinder binder=new ViewBinder() {
-		@Override
-		public boolean setViewValue(View view, Object data, String textRepresentation) {
-			if((view instanceof ImageView)&(data instanceof Bitmap))
-	        {
-	            ImageView iv = (ImageView)view;
-	            iv.setAdjustViewBounds(true);  
-	            Bitmap bmp = (Bitmap)data;
-	            iv.setImageBitmap(bmp);
-	            return true;
-	        }
-			return false;
-		}
-	};
-	
-	// 加载SimpleAdapter数据集
-	private List<Map<String, Object>> getData() {
-		list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("text", "java");
-		map.put("image", R.drawable.ic_launcher);
-		Map<String, Object> map2 = new HashMap<String, Object>();
-		map2.put("text", "C++");
-		map2.put("image", R.drawable.ic_launcher);
-		Map<String, Object> map3 = new HashMap<String, Object>();
-		map3.put("text", "JavaScript");
-		map3.put("image", R.drawable.ic_launcher);
-		Map<String, Object> map4 = new HashMap<String, Object>();
-		map4.put("text", "Php");
-		map4.put("image", R.drawable.ic_launcher);
-		Map<String, Object> map5 = new HashMap<String, Object>();
-		map5.put("text", "Python2");
-		map5.put("image", R.drawable.ic_launcher);
-		list.add(map);
-		list.add(map2);
-		list.add(map3);
-		list.add(map4);
-		list.add(map5);
-		Log.i("Main", list.size() + "");
-		
-		return list;
-	}
+
 
 	// @Override
 	// public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,22 +142,24 @@ public class MsgFriendListActivity extends Activity implements OnItemClickListen
 	// (5)事件处理监听器方法
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		// TODO Auto-generated method stub
 		// 获取点击ListView item中的内容信息
-		// String text = listView.getItemAtPosition(position) + "";
-		// // 弹出Toast信息显示点击位置和内容
-		// Toast.makeText(MsgFriendListActivity.this,
-		// "position=" + position + " content=" + text, 0).show();
+		RecentMsgEntity rEntity = (RecentMsgEntity) listView.getItemAtPosition(position);
+		String fuid=rEntity.getUid();
+		// 弹出Toast信息显示点击位置和内容
+		Toast.makeText(RecentMsgListActivity.this, "position=" + position + " content=" + fuid, 0).show();
+		
+		//update listview:clear badge
+		rEntity.setRead(true);
+		recentMsgAdapter.notifyDataSetChanged();
+		
 		// 弹出聊天窗口
 		Bundle bundle = new Bundle();
-		bundle.putString("uid", "201211011063");
+		bundle.putString("uid", uid);
+		bundle.putString("fuid", fuid);
 		Intent intent = new Intent();
-		// �O����һ��Actitity
-		intent.setClass(this, SendMsgActivity.class);
+		intent.setClass(this, ChatActivity.class);
 		intent.putExtras(bundle);
-		// �_��Activity
 		startActivity(intent);
-
 	}
 
 	@Override
@@ -200,23 +190,58 @@ public class MsgFriendListActivity extends Activity implements OnItemClickListen
 		// TODO Auto-generated method stub
 
 	}
+
+	/**
+	 * show a badge on the specific listview item when there is a new message
+	 * arrived
+	 */
+	public void showBadge(MsgEntity msgEntity) {
+		String fuid=msgEntity.getFromUid();
+		//update listview
+		RecentMsgEntity re=new RecentMsgEntity();
+		 Iterator it=list.iterator();
+		 if(list!=null && list.size()!=0){
+		    	while(it.hasNext()){
+		    		re=(RecentMsgEntity) it.next();
+		    		if(re.getUid().equals(fuid)){
+		    			list.remove(re);
+		    			break;
+		    		}
+		    	}
+		    }
+		 	
+		 	//get friendInfo from server
+		 	getFriendInfo();
+		 	re.setMsgContent(msgEntity.getContent());
+		 	re.setTime(msgEntity.getTime());
+		 	re.setRead(false);
+		    list.add(re);
+		    
+		    //sort list by time
+		    CommonUtil.sortListByTime(list);
+		    recentMsgAdapter.notifyDataSetChanged();
+	}
 	
-	/*服务器操作：建立和服务器的socket连接
-	 *功能：创建一个线程，用来建立socket==>每次加载聊天消息界面都会重新建立socket
+	public void getFriendInfo()
+	{
+		
+		
+	}
+
+	/*
+	 * 服务器操作：建立和服务器的socket连接 功能：创建一个线程，用来建立socket==>每次加载聊天消息界面都会重新建立socket
 	 */
 	public void serverConn() {
-		final String uid = "201211011063";
 		new Thread(new Runnable() {
 			public void run() {
 				try {
-					//check network state
-					boolean flag=new GetServerIp().checkNetworkState(MsgFriendListActivity.this);
-					if(flag)
-					{
+					// check network state
+					boolean flag = new GetServerIp().checkNetworkState(RecentMsgListActivity.this);
+					if (flag) {
 						Log.v("network state", "network is  available");
-					}
-					else 
-						Log.v("network state", "network is not available");
+					} else
+						Log.v("network state", "network is unavailable");
+					
 					String servIp = new GetServerIp().getServerIp();
 					int servPort = new GetServerIp().getServScoketPrt();
 					socket = new Socket(servIp, servPort);
@@ -225,6 +250,9 @@ public class MsgFriendListActivity extends Activity implements OnItemClickListen
 					// 在创建socket的时候发送uid
 					os.write((uid + "\r\n").getBytes());
 					os.flush();
+
+					// read message from server
+					new Thread(new ReadFromServThread(handler)).start();
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

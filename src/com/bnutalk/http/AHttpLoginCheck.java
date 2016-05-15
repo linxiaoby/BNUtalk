@@ -2,7 +2,6 @@ package com.bnutalk.http;
 
 import org.apache.http.Header;
 
-import com.bnutalk.cache.PrefCacheUserInfo;
 import com.bnutalk.ui.LoginActivity;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;

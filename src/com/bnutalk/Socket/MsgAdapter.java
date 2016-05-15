@@ -13,16 +13,16 @@ import com.bnutalk.ui.R;
 /**
  * Created by huangtianyous on 2016/4/9.
  */
-public class MsgAdapter extends ArrayAdapter<Msg>{
+public class MsgAdapter extends ArrayAdapter<MsgEntity>{
     private int resourceId;
-    public MsgAdapter(Context context,int textViewResourceId, List<Msg> objects){
+    public MsgAdapter(Context context,int textViewResourceId, List<MsgEntity> objects){
         super(context, textViewResourceId,objects);
         resourceId = textViewResourceId;
     }
 
     @Override
     public View getView(int position,View convertView,ViewGroup parent){
-        Msg msg=getItem(position);
+        MsgEntity msg=getItem(position);
         View view;
         ViewHolder viewHolder;
         if(convertView == null){
@@ -37,11 +37,11 @@ public class MsgAdapter extends ArrayAdapter<Msg>{
             view=convertView;
             viewHolder=(ViewHolder) view.getTag();
         }
-        if(msg.getType()==Msg.TYPE_RECEIVED){
+        if(msg.getType()==MsgEntity.TYPE_RECEIVED){
             viewHolder.leftLayout.setVisibility(View.VISIBLE);
             viewHolder.rightLayout.setVisibility(View.GONE);
             viewHolder.leftMsg.setText(msg.getContent());
-        }else if(msg.getType()== Msg.TYPE_SENT){
+        }else if(msg.getType()== MsgEntity.TYPE_SENT){
             viewHolder.rightLayout.setVisibility(View.VISIBLE);
             viewHolder.leftLayout.setVisibility(View.GONE);
             viewHolder.rightMsg.setText(msg.getContent());

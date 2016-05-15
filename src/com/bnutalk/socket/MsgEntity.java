@@ -1,0 +1,132 @@
+package com.bnutalk.socket;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Calendar;
+
+/**
+ * Created by huangtianyous on 2016/4/9.
+ */
+public class MsgEntity implements Serializable {
+	private static final long serialVersionUID=-3982748458049500750L;
+	public static final int TYPE_RECEIVED = 0;
+	public static final int TYPE_SENT = 1;
+	private String fromUid, sendToUid, time;
+	private String content;
+	private int type;
+
+	public MsgEntity() {
+	}
+
+	public MsgEntity(String content, int type) {
+		this.content = content;
+		this.type = type;
+	}
+
+	public MsgEntity(String fromUid, String sendToUid, String time, String content, int type) {
+		this.fromUid = fromUid;
+		this.sendToUid = sendToUid;
+		this.time = time;
+		this.content = content;
+		this.type = type;
+	}
+
+	/**
+	 * transfer a msgentity to byte[]
+	 * 
+	 * @param obj
+	 * @return byte[]
+	 */
+	public static byte[] ObjectToByte(java.lang.Object obj) {
+		byte[] bytes = null;
+		try {
+			// object to bytearray
+			ByteArrayOutputStream bo = new ByteArrayOutputStream();
+			ObjectOutputStream oo = new ObjectOutputStream(bo);
+			oo.writeObject(obj);
+			bytes = bo.toByteArray();
+			bo.close();
+			oo.close();
+		} catch (Exception e) {
+			System.out.println("translation" + e.getMessage());
+			e.printStackTrace();
+		}
+		return bytes;
+	}
+
+	/**
+	 * transfer byte[] to msgEntity
+	 * 
+	 * @param bytes
+	 * @return
+	 */
+	public static Object ByteToObject(byte[] bytes) {
+		Object obj = null;
+		try {
+			// bytearray to object
+			ByteArrayInputStream bi = new ByteArrayInputStream(bytes);
+			ObjectInputStream oi = new ObjectInputStream(bi);
+
+			obj = oi.readObject();
+			bi.close();
+			oi.close();
+		} catch (Exception e) {
+			System.out.println("translation" + e.getMessage());
+			e.printStackTrace();
+		}
+		return obj;
+	}
+	
+	
+	public String getFromUid() {
+		return fromUid;
+	}
+
+	public void setFromUid(String fromUid) {
+		this.fromUid = fromUid;
+	}
+
+	public String getSendToUid() {
+		return sendToUid;
+	}
+
+	public void setSendToUid(String sendToUid) {
+		this.sendToUid = sendToUid;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public static int getTypeReceived() {
+		return TYPE_RECEIVED;
+	}
+
+	public static int getTypeSent() {
+		return TYPE_SENT;
+	}
+
+}

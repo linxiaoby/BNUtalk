@@ -6,41 +6,44 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import com.bnutalk.ui.MsgFriendListActivity;
+import com.bnutalk.ui.RecentMsgEntity;
+import com.bnutalk.ui.RecentMsgListActivity;
 
 import android.os.Handler;
 import android.os.Message;
 
 /*
  * Author:linxiaobai 2016/04/30
- * ���ܣ�ѭ����ȡ��������������Ϣ��ͨ��handler֪ͨUI��ʾ  
  */
 public class ReadFromServThread implements Runnable {
 	private Handler handler;
-	private BufferedReader br = null;// ���ڶ�ȡ��Ϣ��ͷ
-	private InputStream isAll;// ���ڶ�ȡ��Ϣ����
+	private BufferedReader br = null;
+	private InputStream isAll = null;
+	private MsgEntity msgEntity;
 
-	public ReadFromServThread(Socket socket, Handler handler) throws IOException {
+	public ReadFromServThread(Handler handler) throws IOException {
 		this.handler = handler;
-		// br = new BufferedReader(new
-		// InputStreamReader(socket.getInputStream()));
-		br = new BufferedReader(new InputStreamReader(MsgFriendListActivity.socket.getInputStream()));
-		isAll = MsgFriendListActivity.socket.getInputStream();
 	}
 
 	@Override
 	public void run() {
 		try {
-			String content = null;
-			byte[] b = new byte[1000];
-			while (true) {
-				isAll.read(b);
-				if (b != null) {
-					content = new String(b);
-					Message msg = new Message();
-					msg.what = 0x234;
-					msg.obj = content;
-					handler.sendMessage(msg);
+			if (RecentMsgListActivity.socket != null) {
+				br = new BufferedReader(new InputStreamReader(RecentMsgListActivity.socket.getInputStream()));
+				isAll = RecentMsgListActivity.socket.getInputStream();
+				String content = null;
+				byte[] b = new byte[1000];
+				while (true) {
+					//get from uid
+					isAll.read(b);
+					if (b != null) {
+						msgEntity=(MsgEntity) MsgEntity.ByteToObject(b);
+//						content = new String(b);
+						Message msg = new Message();
+						msg.what = 0x002;
+						msg.obj = msgEntity;
+						handler.sendMessage(msg);
+					}
 				}
 			}
 		} catch (IOException e) {
