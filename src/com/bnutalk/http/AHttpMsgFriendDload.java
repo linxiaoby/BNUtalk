@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.PasswordAuthentication;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,13 +13,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bnutalk.socket.CommonUtil;
+import com.bnutalk.socket.DBopenHelper;
+import com.bnutalk.socket.SaveRecentMsgList;
 import com.bnutalk.ui.RecentMsgEntity;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -33,111 +40,63 @@ import android.util.Log;
  */
 public class AHttpMsgFriendDload {
 	private Handler handler;
-//	private List<Map<String, Object>> list;
+	// private List<Map<String, Object>> list;
 	private List<RecentMsgEntity> list;
 	private String strJson;
 	private Bitmap bmPhoto;
-	private Message msg;
+	private Message msg=new Message();
 	private Drawable drawbPhoto;
-	
-	private String strUid;//send uid to server
 
-	public AHttpMsgFriendDload(String uid,Handler handler, List<RecentMsgEntity> list) {
-		this.strUid=uid;
+	private String strUid;// send uid to server
+	private SharedPreferences pref = null;
+	private DBopenHelper openHelper;
+
+	public AHttpMsgFriendDload() {
+	}
+
+	public AHttpMsgFriendDload(String uid, Handler handler, List<RecentMsgEntity> list, DBopenHelper openHelper) {
+		this.strUid = uid;
 		this.handler = handler;
 		this.list = list;
 		this.strJson = null;
+		this.openHelper = openHelper;
 	}
 
 	// send a doget to the server
 	public void msgFriDloadRequest() {
 		String ip = new GetServerIp().getServerIp();
-		String url = "http://" + ip + ":8080/web/MsgFriendDwnloadServlet?&strUid="+strUid;
+		String url = "http://" + ip + ":8080/web/MsgFriendDwnloadServlet?&strUid=" + strUid;
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(url, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(int status, Header[] header, byte[] response) {
 				// Json解析
 				strJson = new String(response);
-				parseJson(strJson);
-				msg = new Message();
+				CommonUtil.parseJson(strJson, list);
 				msg.what = 0x001;
 				handler.sendMessage(msg);
+				saveRecentMsgList(list);
 			}
+
 			@Override
 			public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-
+				msg.what = 0x002;
+				handler.sendMessage(msg);
 			}
 		});
 	}
-	public void parseJson(String strJson) {
-		try {
-			JSONArray jsonArray = new JSONArray(strJson);
-			for(int i=0;i<jsonArray.length();i++)
-			{
-				JSONObject user = jsonArray.getJSONObject(i);
-				String strUid = user.getString("strUid");
-				String strNickname = user.getString("strNickname");
-				String strPhoto = user.getString("strPhoto");
-				// 图片string转换成Bitmap
-				imgStrToDrwble(strPhoto);
-//				Map<String, Object> map = new HashMap<String, Object>();
-				String content="good morning!";
-				String time="2015-5-15";
-				Boolean isRead=true;
-				RecentMsgEntity rEntity=new RecentMsgEntity(bmPhoto,strUid, strNickname, content, time, isRead);
-				list.add(rEntity);
-				/*
-				map.put("uid",strUid);
-				map.put("nickname", strNickname);
-				map.put("image", bmPhoto);
-				map.put("info", "to be a better girl");
-				list.add(map);
-				*/
-			}
-			Log.v("parseJson", "parseJson success");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+	/**
+	 * save allRecentMsgList to local
+	 */
+	public void saveRecentMsgList(List<RecentMsgEntity> list) {
+		Iterator<RecentMsgEntity> iterator = list.iterator();
+		RecentMsgEntity rEntity = new RecentMsgEntity();
+		while (iterator.hasNext()) {
+			rEntity = iterator.next();
+			openHelper.addRecentMsgList(rEntity);
 		}
 
 	}
-	/*
-	public void parseJson(String strJson) {
-		try {
-			JSONArray jsonArray = new JSONArray(strJson);
-			for(int i=0;i<jsonArray.length();i++)
-			{
-				JSONObject user = jsonArray.getJSONObject(i);
-				String strUid = user.getString("strUid");
-				String strNickname = user.getString("strNickname");
-				String strPhoto = user.getString("strPhoto");
-				// 图片string转换成png
-				imgStrToDrwble(strPhoto);
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("uid",strUid);
-				map.put("nickname", strNickname);
-				map.put("image", bmPhoto);
-				map.put("info", "to be a better girl");
-				list.add(map);
-			}
-			Log.v("parseJson", "parseJson success");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-	}
-*/
-	public void imgStrToDrwble(String strPhoto) {
-		byte[] photoimg = Base64.decode(strPhoto, 0);
-		for (int i = 0; i < photoimg.length; ++i) {
-			if (photoimg[i] < 0) {
-				// 调整异常数据
-				photoimg[i] += 256;
-			}
-		}
-		bmPhoto = BitmapFactory.decodeByteArray(photoimg, 0, photoimg.length);
-//		drawbPhoto = new BitmapDrawable(bmPhoto);
-	}
 }

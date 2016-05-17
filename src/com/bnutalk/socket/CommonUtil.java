@@ -9,12 +9,20 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.bnutalk.ui.RecentMsgEntity;
+import com.google.gson.Gson;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.StaticLayout;
+import android.util.Base64;
 import android.util.Log;
 
 public class CommonUtil {
@@ -56,5 +64,41 @@ public class CommonUtil {
 	public static void sortListByTime(List<RecentMsgEntity> list)
 	{
 		Collections.sort(list);
+	}
+	
+	public static Bitmap imgStrToDrwble(String strPhoto) {
+		byte[] photoimg = Base64.decode(strPhoto, 0);
+		for (int i = 0; i < photoimg.length; ++i) {
+			if (photoimg[i] < 0) {
+				// 调整异常数据
+				photoimg[i] += 256;
+			}
+		}
+		return BitmapFactory.decodeByteArray(photoimg, 0, photoimg.length);
+	}
+		
+	public static void parseJson(String strJson,List<RecentMsgEntity> list) {
+		try {
+			JSONArray jsonArray = new JSONArray(strJson);
+			for(int i=0;i<jsonArray.length();i++)
+			{
+				JSONObject user = jsonArray.getJSONObject(i);
+				String strUid = user.getString("strUid");
+				String strNickname = user.getString("strNickname");
+				String strPhoto = user.getString("strPhoto");
+				// 图片string转换成Bitmap
+				Bitmap bmPhoto=CommonUtil.imgStrToDrwble(strPhoto);
+				
+				String content="good morning!";
+				String time="2015-5-15";
+				int isRead=RecentMsgEntity.READ;
+				RecentMsgEntity rEntity=new RecentMsgEntity(bmPhoto,strUid, strNickname, content, time, isRead);
+				list.add(rEntity);
+			}
+			Log.v("parseJson", "parseJson success");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -48,6 +47,7 @@ import android.widget.Toast;
 import com.bnutalk.http.AHttpMsgFriendDload;
 import com.bnutalk.http.GetServerIp;
 import com.bnutalk.socket.CommonUtil;
+import com.bnutalk.socket.DBopenHelper;
 import com.bnutalk.socket.MsgEntity;
 import com.bnutalk.socket.ReadFromServThread;
 import com.bnutalk.ui.LoginActivity;
@@ -66,31 +66,39 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	public static OutputStream os;
 	public static Socket socket;
 	private String uid;
-
+	private SharedPreferences msgListPref;
+	private DBopenHelper openHepler;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_msgfriend_list);
+		initEvent();
+		// download msgfriends from server
+		new AHttpMsgFriendDload(uid, handler, list,openHepler).msgFriDloadRequest();
 		
+		// get socket with server
+		serverConn();
+	}
+
+	public void initEvent() {
 		// 匹配布局文件中的ListView控件
 		listView = (ListView) findViewById(R.id.lvMsgFriend);
 		listView.setOnItemClickListener(this);
 		listView.setOnScrollListener(this);
-		list=new ArrayList<RecentMsgEntity>();
-		recentMsgAdapter=new RecentMsgAdapter(RecentMsgListActivity.this, list);
-
+		list = new ArrayList<RecentMsgEntity>();
+		recentMsgAdapter = new RecentMsgAdapter(RecentMsgListActivity.this, list);
+		msgListPref = getSharedPreferences("recent_msg_list", 0);
+		openHepler=new DBopenHelper(getApplicationContext(), "bnutalk.db");
 		// get the current user id
 		getCurrentUid();
-		
-		//handler operation
-		defHandler();
 
-		//download msgfriends from server 
-		new AHttpMsgFriendDload(uid, handler, list).msgFriDloadRequest();
-		
-		// get socket with server
-		serverConn();
+		// handler operation
+		defHandler();
+		//openHepler.updateDb();
+		openHepler.getAllRecentMsgList(list);
+		listView.setAdapter(recentMsgAdapter);
+		recentMsgAdapter.notifyDataSetChanged();
 	}
 
 	/**
@@ -105,15 +113,15 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 				System.out.println("msgwhat" + msg.what);
 				switch (msg.what) {
 				case 0x001:// friend list download success
-					
+
 					listView.setAdapter(recentMsgAdapter);
-//					recentMsgAdapter.notifyDataSetChanged();
+					recentMsgAdapter.notifyDataSetChanged();
 					break;
-					
+
 				case 0x002:// there is a new message arrived
 					showBadge((MsgEntity) msg.obj);
-					//save message to local file
-					
+					// save message to local file
+
 					break;
 				default:
 					break;
@@ -123,15 +131,39 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	}
 
 	/**
+	 * save allRecentMsgList to local
+	 */
+	public void saveRecentMsgList() {
+
+		Gson gson = new Gson();
+		String strJson = gson.toJson(list);
+		SharedPreferences pref = getSharedPreferences("recent_msg_list", 0);
+		Editor editor = pref.edit();
+		editor.clear();
+		editor.putString("allRecentMsgList", strJson);
+		editor.commit();
+	}
+
+	/**
+	 * get allRecentMsgList from local
+	 */
+	public void getAllRecentMsgList() {
+		SharedPreferences pref = getSharedPreferences("recent_msg_list", 0);
+		String strJson = null;
+		strJson = pref.getString("allRecentMsgList", "");
+		if (strJson != null)
+			CommonUtil.parseJson(strJson, list);
+	}
+
+	/**
 	 * get the current user uid from the local cache
 	 */
 	public void getCurrentUid() {
-		 SharedPreferences pref = getSharedPreferences("user_login", 0);
-		 uid=pref.getString("uid","");
-//		uid = "201211011063";
+		SharedPreferences pref = getSharedPreferences("user_login", 0);
+		uid = pref.getString("uid", "");
+		// uid = "201211011063";
 		Log.v("get current uid", uid);
 	}
-
 
 	// @Override
 	// public boolean onCreateOptionsMenu(Menu menu) {
@@ -145,14 +177,14 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		// 获取点击ListView item中的内容信息
 		RecentMsgEntity rEntity = (RecentMsgEntity) listView.getItemAtPosition(position);
-		String fuid=rEntity.getUid();
+		String fuid = rEntity.getUid();
 		// 弹出Toast信息显示点击位置和内容
 		Toast.makeText(RecentMsgListActivity.this, "position=" + position + " content=" + fuid, 0).show();
-		
-		//update listview:clear badge
-		rEntity.setRead(true);
+
+		// update listview:clear badge
+		rEntity.setRead(RecentMsgEntity.UNREAD);
 		recentMsgAdapter.notifyDataSetChanged();
-		
+
 		// 弹出聊天窗口
 		Bundle bundle = new Bundle();
 		bundle.putString("uid", uid);
@@ -197,36 +229,34 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	 * arrived
 	 */
 	public void showBadge(MsgEntity msgEntity) {
-		String fuid=msgEntity.getFromUid();
-		//update listview
-		RecentMsgEntity re=new RecentMsgEntity();
-		 Iterator it=list.iterator();
-		 if(list!=null && list.size()!=0){
-		    	while(it.hasNext()){
-		    		re=(RecentMsgEntity) it.next();
-		    		if(re.getUid().equals(fuid)){
-		    			list.remove(re);
-		    			break;
-		    		}
-		    	}
-		    }
-		 	
-		 	//get friendInfo from server
-		 	getFriendInfo();
-		 	re.setMsgContent(msgEntity.getContent());
-		 	re.setTime(msgEntity.getTime());
-		 	re.setRead(false);
-		    list.add(re);
-		    
-		    //sort list by time
-		    CommonUtil.sortListByTime(list);
-		    recentMsgAdapter.notifyDataSetChanged();
+		String fuid = msgEntity.getFromUid();
+		// update listview
+		RecentMsgEntity re = new RecentMsgEntity();
+		Iterator it = list.iterator();
+		if (list != null && list.size() != 0) {
+			while (it.hasNext()) {
+				re = (RecentMsgEntity) it.next();
+				if (re.getUid().equals(fuid)) {
+					list.remove(re);
+					break;
+				}
+			}
+		}
+
+		// get friendInfo from server
+		getFriendInfo();
+		re.setMsgContent(msgEntity.getContent());
+		re.setTime(msgEntity.getTime());
+		re.setRead(RecentMsgEntity.UNREAD);
+		list.add(re);
+
+		// sort list by time
+		CommonUtil.sortListByTime(list);
+		recentMsgAdapter.notifyDataSetChanged();
 	}
-	
-	public void getFriendInfo()
-	{
-		
-		
+
+	public void getFriendInfo() {
+
 	}
 
 	/*
@@ -242,7 +272,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 						Log.v("network state", "network is  available");
 					} else
 						Log.v("network state", "network is unavailable");
-					
+
 					String servIp = new GetServerIp().getServerIp();
 					int servPort = new GetServerIp().getServScoketPrt();
 					socket = new Socket(servIp, servPort);

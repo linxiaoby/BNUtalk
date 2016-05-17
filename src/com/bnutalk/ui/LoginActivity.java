@@ -48,7 +48,6 @@ public class LoginActivity extends Activity {
 		findView();
 		readUidFromCache();
 		handlerDef();
-		
 		writeUidToCache();
 	}
 
@@ -62,24 +61,23 @@ public class LoginActivity extends Activity {
 		tvForget = (TextView) findViewById(R.id.forget_key);
 		tvSignUp = (TextView) findViewById(R.id.sign_up);
 	}
+
 	/**
 	 * read uid from local cache and set EditText etUid
 	 */
-	public void readUidFromCache()
-	{
+	public void readUidFromCache() {
 		pref = getSharedPreferences("user_login", 0);
 		editor = pref.edit();
-		String cacheUid=pref.getString("uid","");
-		if(cacheUid!=null)
-		{
+		String cacheUid = pref.getString("uid", "");
+		if (cacheUid != null) {
 			etUid.setText(cacheUid);
 		}
 	}
+
 	/**
 	 * write uid to local cache:file user_login
 	 */
-	public void writeUidToCache()
-	{
+	public void writeUidToCache() {
 		editor.putString("uid", uid);
 		editor.commit();
 	}
@@ -93,20 +91,24 @@ public class LoginActivity extends Activity {
 			public void handleMessage(Message msg) {
 				Log.v("handler", "handler called");
 				System.out.println("msgwhat" + msg.what);
-
-				if (msg.what == 1) {
+				switch (msg.what) {
+				case 1:
 					Toast.makeText(LoginActivity.this, "login success!", Toast.LENGTH_LONG).show();
-
 					// info right,save uid into user_login
 					writeUidToCache();
-
-					//jump into MsgFriendListActivity
+					// jump into MsgFriendListActivity
 					Intent intent = new Intent();
 					intent.setClass(LoginActivity.this, RecentMsgListActivity.class);
 					startActivity(intent);
-
-				} else {
-					Toast.makeText(LoginActivity.this, "usename or password error!", Toast.LENGTH_SHORT).show();
+					break;
+				case 2:
+					Toast.makeText(LoginActivity.this, "usename or password error!", Toast.LENGTH_LONG).show();
+					break;
+				case -1:
+					Toast.makeText(LoginActivity.this, "Can't connect to server!", Toast.LENGTH_LONG).show();
+					break;
+				default:
+					break;
 				}
 			}
 		};

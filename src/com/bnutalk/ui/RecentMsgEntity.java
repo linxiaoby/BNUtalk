@@ -10,12 +10,14 @@ import com.bnutalk.socket.CommonUtil;
 import android.graphics.Bitmap;
 
 public class RecentMsgEntity implements Comparable<RecentMsgEntity> {
+	public static final int READ=1;
+	public static final int UNREAD=0;
 	private Bitmap avatar;
 	private String uid;
 	private String nick;
 	private String msgContent;
 	private String time;
-	private boolean isRead;
+	private int isRead;
 	private int type;
 
 	public int getType() {
@@ -29,7 +31,7 @@ public class RecentMsgEntity implements Comparable<RecentMsgEntity> {
 	public RecentMsgEntity() {
 	}
 
-	public RecentMsgEntity(Bitmap avatar, String uid, String nick, String content, String time, boolean isRead) {
+	public RecentMsgEntity(Bitmap avatar, String uid, String nick, String content, String time, int isRead) {
 		this.avatar = avatar;
 		this.uid = uid;
 		this.nick = nick;
@@ -78,12 +80,12 @@ public class RecentMsgEntity implements Comparable<RecentMsgEntity> {
 		this.time = time;
 	}
 
-	public boolean isRead() {
+	public int isRead() {
 		return isRead;
 	}
 
-	public void setRead(boolean isRead) {
-		this.isRead = isRead;
+	public void setRead(int i) {
+		this.isRead = i;
 	}
 
 	@Override

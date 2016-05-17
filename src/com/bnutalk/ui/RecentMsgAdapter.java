@@ -41,7 +41,7 @@ public class RecentMsgAdapter extends BaseAdapter{
 		isRead.setImageResource(R.drawable.tips_message);
 		time.setText(re.getTime());
 		
-		if(re.isRead())
+		if(re.isRead()==1)
 			isRead.setVisibility(convertView.GONE);
 
 		return convertView;
