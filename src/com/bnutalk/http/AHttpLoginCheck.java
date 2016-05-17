@@ -10,6 +10,7 @@ import com.loopj.android.http.RequestParams;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 public class AHttpLoginCheck {
 	private String uid;
@@ -51,7 +52,7 @@ public class AHttpLoginCheck {
 
 			@Override
 			public void onFailure(int status, Header[] header, byte[] eResponseBody, Throwable error) {
-				// called when response HTTP status is "4XX" (eg. 401, 403, 404)
+				Toast.makeText(context, "Can not connect to server!",Toast.LENGTH_SHORT).show();
 				error.printStackTrace();
 			}
 		});

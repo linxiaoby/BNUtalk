@@ -30,7 +30,9 @@
         android:layout_gravity="center"
         android:layout_weight="0.10"
         android:hint="Enter your password"
+        android:inputType="textPassword"
         android:maxLines="2" />
+
 
     <Button
         android:id="@+id/login"
@@ -62,8 +64,8 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="25dp"
         android:layout_toLeftOf="@+id/sign_up"
-        android:onClick="signUpClick"
-        android:background="@drawable/vertical_divider" />
+        android:background="@drawable/vertical_divider"
+        android:onClick="signUpClick" />
 
     <TextView
         android:id="@+id/sign_up"

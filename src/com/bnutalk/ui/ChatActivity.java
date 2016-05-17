@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.bnutalk.socket.MsgEntity;
+import com.bnutalk.socket.CommonUtil;
+import com.bnutalk.socket.DBopenHelper;
 import com.bnutalk.socket.MsgAdapter;
 import com.bnutalk.socket.MsgEntity;
 import com.bnutalk.socket.ReadFromServThread;
@@ -34,8 +36,9 @@ public class ChatActivity extends Activity {
 	private MsgAdapter adapter;
 	private Handler handler;
 	private List<MsgEntity> msgList = new ArrayList<MsgEntity>();
-	private String uid, sendToUid;
-
+	private String uid, fuid;
+	
+	private DBopenHelper dbOpenHelper;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,14 +57,16 @@ public class ChatActivity extends Activity {
 			public void onClick(View v) {
 				String content = inputText.getText().toString();
 				if (!"".equals(content)) {
-					MsgEntity smsg = new MsgEntity(content, MsgEntity.TYPE_SENT);
+					String time=CommonUtil.getCurrentTime();
+					MsgEntity smsg = new MsgEntity(content, time,MsgEntity.TYPE_SENT);
+					smsg.setSendToUid(fuid);
 					msgList.add(smsg);
 					adapter.notifyDataSetChanged();
-					msgListView.setSelection(msgList.size());
 					inputText.setText("");
+					msgListView.setSelection(msgList.size());
 					
-					
-					sendMessage(content);
+					sendMessage(smsg);
+					dbOpenHelper.addMsgHistory(smsg);//save message history to the local bd
 				}
 			}
 		});
@@ -75,10 +80,15 @@ public class ChatActivity extends Activity {
 
 		Bundle bundle = this.getIntent().getExtras();
 		uid = bundle.getString("uid");
-		sendToUid = bundle.getString("fuid");
-
+		fuid = bundle.getString("fuid");
+		
+		dbOpenHelper=new DBopenHelper(ChatActivity.this, "bnutalk.db");
+		dbOpenHelper.getAllMsgHistory(fuid, msgList);//get all history message from the local db
+		
 		adapter = new MsgAdapter(ChatActivity.this, R.layout.item_message, msgList);
 		msgListView.setAdapter(adapter);
+		msgListView.setSelection(msgList.size());
+		
 		defHandler();
 	}
 
@@ -103,36 +113,15 @@ public class ChatActivity extends Activity {
 	 * send msgentity to server
 	 * @param content
 	 */
-	public void sendMessage(String content) {
+	public void sendMessage(MsgEntity msgEntity) {
 		try {
 			if (RecentMsgListActivity.os != null) {
-				MsgEntity msgEntity=new MsgEntity();
 				msgEntity.setFromUid(uid);
-				msgEntity.setSendToUid(sendToUid);
-				
-				// get the current date
-				SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String time = sDateFormat.format(new java.util.Date());
-				msgEntity.setTime(time);
-				msgEntity.setContent(content);
+				msgEntity.setSendToUid(fuid);
+			
 				byte[] msg=MsgEntity.ObjectToByte(msgEntity);
-				
 				RecentMsgListActivity.os.write(msg);
 				RecentMsgListActivity.os.flush();
-				/*
-				//message header:fromUid+sendToUid+date
-				String fromUid=uid;
-				RecentMsgListActivity.os.write((fromUid+"\r\n").getBytes());
-				RecentMsgListActivity.os.write((sendToUid+"\r\n").getBytes());
-				// get the current date
-				SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd    hh:mm:ss");
-				String date = sDateFormat.format(new java.util.Date());
-				RecentMsgListActivity.os.write((date + "\r\n").getBytes());
-				
-				//message body
-				RecentMsgListActivity.os.write((content + "\r\n").getBytes());
-				RecentMsgListActivity.os.flush();
-				*/
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

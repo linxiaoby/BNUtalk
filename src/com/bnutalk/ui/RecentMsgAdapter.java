@@ -23,7 +23,7 @@ public class RecentMsgAdapter extends BaseAdapter{
 		inflater = LayoutInflater.from(context);
 	}
 /**
- * simplew getView,still needs to fine tuning
+ * simplew getView,still needs  fine tuning
  */
 	public View getView(int position, View convertView, ViewGroup root) {
 		convertView = inflater.inflate(R.layout.item_msgfriend_list, null);

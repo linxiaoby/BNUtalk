@@ -16,6 +16,15 @@ public class RecentMsgEntity implements Comparable<RecentMsgEntity> {
 	private String msgContent;
 	private String time;
 	private boolean isRead;
+	private int type;
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
 
 	public RecentMsgEntity() {
 	}

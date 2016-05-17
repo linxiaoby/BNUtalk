@@ -67,9 +67,6 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	public static Socket socket;
 	private String uid;
 
-	private SharedPreferences pref;
-	private Editor editor;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,10 +82,13 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 
 		// get the current user id
 		getCurrentUid();
+		
+		//handler operation
 		defHandler();
 
-		/* download msgfriends from server */
+		//download msgfriends from server 
 		new AHttpMsgFriendDload(uid, handler, list).msgFriDloadRequest();
+		
 		// get socket with server
 		serverConn();
 	}
@@ -112,6 +112,8 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 					
 				case 0x002:// there is a new message arrived
 					showBadge((MsgEntity) msg.obj);
+					//save message to local file
+					
 					break;
 				default:
 					break;
@@ -124,8 +126,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	 * get the current user uid from the local cache
 	 */
 	public void getCurrentUid() {
-		 pref = getSharedPreferences("user_login", 0);
-		 editor = pref.edit();
+		 SharedPreferences pref = getSharedPreferences("user_login", 0);
 		 uid=pref.getString("uid","");
 //		uid = "201211011063";
 		Log.v("get current uid", uid);

@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Calendar;
+import java.io.InputStream;
 
 /**
  * Created by huangtianyous on 2016/4/9.
@@ -17,12 +18,21 @@ public class MsgEntity implements Serializable {
 	private String fromUid, sendToUid, time;
 	private String content;
 	private int type;
+	
 
 	public MsgEntity() {
 	}
-
-	public MsgEntity(String content, int type) {
+	
+	public MsgEntity(String content,int type) {
 		this.content = content;
+		this.type = type;
+	}
+
+
+	public MsgEntity(String content, String time,int type) {
+		
+		this.content = content;
+		this.time=time;
 		this.type = type;
 	}
 
