@@ -44,15 +44,17 @@ import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 
-import com.bnutalk.http.AHttpMsgFriendDload;
-import com.bnutalk.http.GetServerIp;
-import com.bnutalk.socket.CommonUtil;
-import com.bnutalk.socket.DBopenHelper;
-import com.bnutalk.socket.MsgEntity;
-import com.bnutalk.socket.ReadFromServThread;
+import com.bnutalk.server.AHttpMsgFriendDload;
+import com.bnutalk.server.GetServerIp;
+import com.bnutalk.server.ReadFromServThread;
 import com.bnutalk.ui.LoginActivity;
 import com.bnutalk.ui.R;
 import com.bnutalk.ui.SignUpPersInfoActivity;
+import com.bnutalk.util.CommonUtil;
+import com.bnutalk.util.DBopenHelper;
+import com.bnutalk.util.MsgEntity;
+import com.bnutalk.util.RecentMsgAdapter;
+import com.bnutalk.util.RecentMsgEntity;
 import com.google.gson.Gson;
 
 public class RecentMsgListActivity extends Activity implements OnItemClickListener, OnScrollListener {
@@ -152,7 +154,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		String strJson = null;
 		strJson = pref.getString("allRecentMsgList", "");
 		if (strJson != null)
-			CommonUtil.parseJson(strJson, list);
+			CommonUtil.parseJsonMsg(strJson, list);
 	}
 
 	/**

@@ -14,13 +14,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.bnutalk.socket.MsgEntity;
-import com.bnutalk.socket.CommonUtil;
-import com.bnutalk.socket.DBopenHelper;
-import com.bnutalk.socket.MsgAdapter;
-import com.bnutalk.socket.MsgEntity;
-import com.bnutalk.socket.ReadFromServThread;
+import com.bnutalk.server.ReadFromServThread;
 import com.bnutalk.ui.R;
+import com.bnutalk.util.CommonUtil;
+import com.bnutalk.util.DBopenHelper;
+import com.bnutalk.util.MsgAdapter;
+import com.bnutalk.util.MsgEntity;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;

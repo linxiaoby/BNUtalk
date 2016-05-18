@@ -1,4 +1,4 @@
-package com.bnutalk.socket;
+package com.bnutalk.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

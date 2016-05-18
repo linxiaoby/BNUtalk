@@ -1,4 +1,4 @@
-package com.bnutalk.http;
+package com.bnutalk.server;
 
 import org.apache.http.Header;
 
@@ -7,7 +7,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 /*
-*ÉÏ´«ÓÃ»§×¢²áÊ±µÄ¸öÈËÐÅÏ¢
+*ï¿½Ï´ï¿½ï¿½Ã»ï¿½×¢ï¿½ï¿½Ê±ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 */
 public class AHttpPersInfoUpload {
 	private String strUid;
@@ -91,7 +91,7 @@ public class AHttpPersInfoUpload {
 	public void setStrLike(String strLike) {
 		this.strLike = strLike;
 	}
-	// ÉÏ´«Êý¾Ýµ½·þÎñÆ÷
+	// ï¿½Ï´ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public void sendPersInfo() {
 		String ip = new GetServerIp().getServerIp();
 		String url = ip + "/web/PersInfoUploadServlet";

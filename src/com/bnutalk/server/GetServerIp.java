@@ -1,4 +1,4 @@
-package com.bnutalk.http;
+package com.bnutalk.server;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

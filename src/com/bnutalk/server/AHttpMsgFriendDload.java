@@ -1,4 +1,4 @@
-package com.bnutalk.http;
+package com.bnutalk.server;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,10 +13,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bnutalk.socket.CommonUtil;
-import com.bnutalk.socket.DBopenHelper;
-import com.bnutalk.socket.SaveRecentMsgList;
-import com.bnutalk.ui.RecentMsgEntity;
+import com.bnutalk.util.CommonUtil;
+import com.bnutalk.util.DBopenHelper;
+import com.bnutalk.util.RecentMsgEntity;
+import com.bnutalk.util.SaveRecentMsgList;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -72,7 +72,7 @@ public class AHttpMsgFriendDload {
 			public void onSuccess(int status, Header[] header, byte[] response) {
 				// Json解析
 				strJson = new String(response);
-				CommonUtil.parseJson(strJson, list);
+				CommonUtil.parseJsonMsg(strJson, list);
 				msg.what = 0x001;
 				handler.sendMessage(msg);
 				saveRecentMsgList(list);

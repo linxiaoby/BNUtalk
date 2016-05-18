@@ -19,8 +19,8 @@ import android.widget.Toast;
 
 import org.apache.http.Header;
 
-import com.bnutalk.http.AHttpLoginCheck;
-import com.bnutalk.http.GetServerIp;
+import com.bnutalk.server.AHttpLoginCheck;
+import com.bnutalk.server.GetServerIp;
 import com.bnutalk.ui.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;

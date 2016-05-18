@@ -1,11 +1,10 @@
 package com.bnutalk.ui;
 
+import com.bnutalk.server.SignUpThread;
 import com.bnutalk.ui.R;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.bnutalk.http.SignUpThread;
 
 import android.R.string;
 import android.app.Activity;

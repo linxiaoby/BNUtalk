@@ -1,4 +1,4 @@
-package com.bnutalk.ui;
+package com.bnutalk.util;
 import java.util.List;
 
 
@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bnutalk.ui.R;
+import com.bnutalk.util.RecentMsgEntity;
 
 public class RecentMsgAdapter extends BaseAdapter{
 	private Context context;

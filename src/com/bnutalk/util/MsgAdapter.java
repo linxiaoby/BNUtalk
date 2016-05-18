@@ -1,4 +1,4 @@
-package com.bnutalk.socket;
+package com.bnutalk.util;
 
 import android.content.Context;
 import android.view.LayoutInflater;

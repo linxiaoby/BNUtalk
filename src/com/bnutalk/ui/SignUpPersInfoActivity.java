@@ -46,8 +46,8 @@ import java.io.IOException;
 
 import javax.security.auth.PrivateCredentialPermission;
 
-import com.bnutalk.http.AHttpImageUpload;
-import com.bnutalk.http.AHttpPersInfoUpload;
+import com.bnutalk.server.AHttpImageUpload;
+import com.bnutalk.server.AHttpPersInfoUpload;
 
 /**
  * Created by huangtianyous on 2016/4/20.

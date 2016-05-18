@@ -1,13 +1,12 @@
-package com.bnutalk.socket;
+package com.bnutalk.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
-
-import com.bnutalk.ui.RecentMsgEntity;
 import com.bnutalk.ui.RecentMsgListActivity;
+import com.bnutalk.util.MsgEntity;
 
 import android.os.Handler;
 import android.os.Message;

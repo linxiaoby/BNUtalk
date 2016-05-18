@@ -1,6 +1,6 @@
-package com.bnutalk.ui;
+package com.bnutalk.util;
 
-import com.bnutalk.socket.CommonUtil;
+import com.bnutalk.util.CommonUtil;
 
 /**
  * Created on 2016-05-15

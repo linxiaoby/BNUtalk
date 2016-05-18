@@ -1,4 +1,4 @@
-package com.bnutalk.socket;
+package com.bnutalk.util;
 
 /**
  * create by linxiaobai 2016-05-17
@@ -9,11 +9,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 
-import com.bnutalk.ui.RecentMsgEntity;
-
 import android.R.menu;
 import android.content.ContentValues;
-
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.database.Cursor;
