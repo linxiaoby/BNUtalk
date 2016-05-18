@@ -60,6 +60,13 @@ public class LoginActivity extends Activity {
 		btSignIn = (Button) findViewById(R.id.login);
 		tvForget = (TextView) findViewById(R.id.forget_key);
 		tvSignUp = (TextView) findViewById(R.id.sign_up);
+		tvSignUp.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent1=new Intent(LoginActivity.this,SignUpAcitivity.class);
+				startActivity(intent1);
+			}
+		});
 	}
 
 	/**

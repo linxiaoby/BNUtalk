@@ -19,7 +19,7 @@ public class SecondFragment extends LauncherBaseFragment{
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-		View rooView=inflater.inflate(R.layout.second_ui, null);
+		View rooView=inflater.inflate(R.layout.item_launch_second, null);
 		return rooView;
 	}
 	

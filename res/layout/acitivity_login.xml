@@ -74,7 +74,7 @@
         android:layout_alignRight="@+id/login"
         android:layout_alignTop="@+id/forget_key"
         android:layout_marginRight="21dp"
-        android:onClick="signUpClick"
-        android:text="sign up" />
+        android:text="@string/signup" 
+       android:clickable="true"  />
 
 </RelativeLayout>

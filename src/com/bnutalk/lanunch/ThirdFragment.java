@@ -21,7 +21,7 @@ public class ThirdFragment extends LauncherBaseFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-		View rooView=inflater.inflate(R.layout.third_ui, null);
+		View rooView=inflater.inflate(R.layout.item_launch_third, null);
 		return rooView;
 	}
 	

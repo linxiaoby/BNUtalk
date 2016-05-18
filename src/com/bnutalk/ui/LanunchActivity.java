@@ -12,17 +12,18 @@ import com.bnutalk.lanunch.SecondFragment;
 import com.bnutalk.lanunch.ThirdFragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-
-
 @SuppressLint("NewApi")
 public class LanunchActivity extends FragmentActivity {
 	private GuideViewPager vPager;
@@ -35,9 +36,24 @@ public class LanunchActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_luancher_main);
-		
-	
+		Button button1 =(Button)findViewById(R.id.btLaunLogin);
+		Button button2 =(Button)findViewById(R.id.btLaunSignUp);
+		button1.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent1=new Intent(LanunchActivity.this,LoginActivity.class);
+				startActivity(intent1);
+			}
+		});
+		button2.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent2=new Intent(LanunchActivity.this,SignUpAcitivity.class);
+				startActivity(intent2);
+			}
+		});
 		ViewGroup group = (ViewGroup)findViewById(R.id.viewGroup);
 		tips = new ImageView[4];
 		for (int i = 0; i < tips.length; i++) {
@@ -54,6 +70,7 @@ public class LanunchActivity extends FragmentActivity {
 			layoutParams.leftMargin = 20;
 			layoutParams.rightMargin = 20;
 			group.addView(imageView,layoutParams);
+			
 			
 		}
 		

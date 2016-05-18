@@ -21,7 +21,7 @@ public class FirstFragment extends LauncherBaseFragment{
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-		View rooView=inflater.inflate(R.layout.first_ui, null);
+		View rooView=inflater.inflate(R.layout.item_launch_first, null);
 	
 		startAnimation();
 		return rooView;

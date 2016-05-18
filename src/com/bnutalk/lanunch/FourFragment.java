@@ -15,7 +15,7 @@ public class FourFragment  extends LauncherBaseFragment{
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-		View rooView=inflater.inflate(R.layout.four_ui, null);
+		View rooView=inflater.inflate(R.layout.item_launch_four, null);
 		startAnimation();
 		return rooView;
 	}
