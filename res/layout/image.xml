@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <ImageView 
+        android:id="@+id/im_picture_fisrt"
+        android:src="@drawable/picture_fisrt"/>
+     <ImageView 
+        android:id="@+id/im_picture_second"
+        android:src="@drawable/picture_second"/>
+      <ImageView 
+        android:id="@+id/im_picture_third"
+        android:src="@drawable/picture_third"/>
+       <ImageView 
+        android:id="@+id/im_picture_four"
+        android:src="@drawable/picture_four"/>
+        <ImageView 
+        android:id="@+id/im_picture_five"
+        android:src="@drawable/picture_five"/>
+         <ImageView 
+        android:id="@+id/im_picture_six"
+        android:src="@drawable/picture_six"/>
+          <ImageView 
+        android:id="@+id/im_picture_seven"
+        android:src="@drawable/picture_seven"/>
+           <ImageView 
+        android:id="@+id/im_picture_eight"
+        android:src="@drawable/picture_eight"/>
+            <ImageView 
+        android:id="@+id/im_picture_nine"
+        android:src="@drawable/picture_nine"/>
+             <ImageView 
+        android:id="@+id/im_picture_ten"
+        android:src="@drawable/picture_ten"/>
+    
+
+</RelativeLayout>

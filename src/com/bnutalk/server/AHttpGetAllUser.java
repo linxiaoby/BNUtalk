@@ -17,8 +17,8 @@ import android.os.Message;
  *
  */
 public class AHttpGetAllUser {
-    private static final int  SERVEREXCEPTION=0X002;
-    private static final int  SUCCESS=0X001;
+    public static final int  SERVEREXCEPTION=0X002;
+    public static final int  SUCCESS=0X001;
     
 	private List<UserEntity> list;
 	private String uid;
@@ -45,9 +45,10 @@ public class AHttpGetAllUser {
 		this.handler=handler;
 	}
 	
-	public void getAllUser() {
+	public  void getAllUser() {
+		uid="201211011063";
 		String ip = new GetServerIp().getServerIp();
-		String url = "http://" + ip + ":8080/web/GetAllUserServlet?&strUid=" + uid;
+		String url = "http://" + ip + ":8080/web/GetAllUserServlet?&uid=" + uid;
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(url, new AsyncHttpResponseHandler() {
 			@Override
@@ -61,9 +62,8 @@ public class AHttpGetAllUser {
 			
 			@Override
 			public void onFailure(int status, Header[] header, byte[] response, Throwable error) {
-				msg.what=SERVEREXCEPTION;
-				msg.obj=list;
-				handler.sendMessage(msg);
+//				msg.what=SERVEREXCEPTION;
+//				handler.sendMessage(msg);
 			}
 		});
 

@@ -17,5 +17,6 @@
 			<attribute name="javadoc_location" value="jar:file:/G:/请找这里/大三下/软件工程/工具存档/gson/gson-2.3.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libs/glide-3.6.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
