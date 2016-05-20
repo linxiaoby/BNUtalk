@@ -91,7 +91,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		list = new ArrayList<RecentMsgEntity>();
 		recentMsgAdapter = new RecentMsgAdapter(RecentMsgListActivity.this, list);
 		msgListPref = getSharedPreferences("recent_msg_list", 0);
-		openHepler=new DBopenHelper(getApplicationContext(), "bnutalk.db");
+		openHepler=new DBopenHelper(getApplicationContext());
 		// get the current user id
 		getCurrentUid();
 

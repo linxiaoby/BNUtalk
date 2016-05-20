@@ -2,9 +2,12 @@ package com.bnutalk.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.DefaultDatabaseErrorHandler;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore.Video;
+import android.provider.SyncStateContract.Helpers;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 
 import com.bnutalk.server.AHttpGetAllUser;
 import com.bnutalk.ui.R;
+import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.FlingAdapterView;
 import com.bnutalk.util.UserEntity;
 
@@ -25,9 +29,9 @@ import org.apache.commons.logging.Log;
 
 public class AddFriendActivity extends Activity {
 
-//	private ArrayList<CardMode> al;
+	// private ArrayList<CardMode> al;
 	private List<UserEntity> al;
-	
+
 	// private ArrayList<ImageView> iv;
 	// 定义一个cardmode的数组al
 	private CardAdapter adapter;
@@ -41,17 +45,32 @@ public class AddFriendActivity extends Activity {
 	private ImageView left, right, music;
 	private Handler handler;
 	private String uid;
+	private DBopenHelper helper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_my);
+		initEvent();
+		
+		uid = "201211011063";
+		new AHttpGetAllUser(al, uid, handler,helper).getAllUser();
+	}
+	/**
+	 * init
+	 */
+	public void initEvent() {
 		// 定义左边和右边的图片，和监听
 		left = (ImageView) findViewById(R.id.left);
 		right = (ImageView) findViewById(R.id.right);
 		music = (ImageView) findViewById(R.id.iv_card_flag6);
-
+		al = new ArrayList<UserEntity>();
+		adapter = new CardAdapter(AddFriendActivity.this, al);
+		
+		
+		helper=new DBopenHelper(getApplicationContext());
+		
 		left.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -64,47 +83,25 @@ public class AddFriendActivity extends Activity {
 				right();
 			}
 		});
-		/*
-		 * music.setOnClickListener(new OnClickListener() {
-		 * 
-		 * @Override public void onClick(View v) { playmusic(); } });
-		 */
-		// iv=new ArrayList<>();
-		// iv.add(R.drawable.picture_fisrt);
-		// 初始化al数组
-
-		/*
-		 * al = new ArrayList<CardMode>(); al.add(new CardMode("胡欣语",
-		 * 21,R.drawable.picture_fisrt,"信息科学与技术","中文","英文","男","学五食堂"));
-		 * al.add(new CardMode("Norway",
-		 * 21,R.drawable.picture_second,"信息科学与技术","中文","英文","男","学五食堂"));
-		 * al.add(new CardMode("王清玉", 18,
-		 * R.drawable.picture_third,"信息科学与技术","中文","英文","男","学五食堂")); al.add(new
-		 * CardMode("测试1", 21,
-		 * R.drawable.picture_four,"信息科学与技术","中文","英文","男","学五食堂")); al.add(new
-		 * CardMode("测试2", 21,
-		 * R.drawable.picture_five,"信息科学与技术","中文","英文","男","学五食堂")); al.add(new
-		 * CardMode("测试3", 21,
-		 * R.drawable.picture_six,"信息科学与技术","中文","英文","男","学五食堂")); al.add(new
-		 * CardMode("测试4", 21,
-		 * R.drawable.picture_seven,"信息科学与技术","中文","英文","男","学五食堂")); al.add(new
-		 * CardMode("测试5", 21,
-		 * R.drawable.picture_eight,"信息科学与技术","中文","英文","男","学五食堂")); al.add(new
-		 * CardMode("测试6", 21,
-		 * R.drawable.picture_nine,"信息科学与技术","中文","英文","男","学五食堂")); al.add(new
-		 * CardMode("测试7", 21,
-		 * R.drawable.picture_ten,"信息科学与技术","中文","英文","男","学五食堂"));
-		 */
-
-		// 初始化arryAapter
-		// ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, R.layout.item,
-		// R.id.helloText, al);
+		
+		defHandler();
+		defFling();
+		
+		//read user cards from local cache to show first
+		helper.getUserCard(al);
+		adapter.notifyDataSetChanged();
+	}
+	/**
+	 * define handler operation
+	 */
+	public void defHandler()
+	{
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
 				case AHttpGetAllUser.SUCCESS:
-				  android.util.Log.v("msg.what","AHttpGetAllUser.SUCCESS");
+					android.util.Log.v("msg.what", "AHttpGetAllUser.SUCCESS");
 					// show listview
 					adapter.notifyDataSetChanged();
 					break;
@@ -117,16 +114,12 @@ public class AddFriendActivity extends Activity {
 				}
 			}
 		};
-		
-		al=new ArrayList<UserEntity>();
-		uid="201211011063";
-		new AHttpGetAllUser(al,uid,handler).getAllUser();
-		adapter = new CardAdapter(this, al);
-		// 定义一个主界面
+	}
+	
+	public void defFling()
+	{
 		flingContainer = (FlingAdapterView) findViewById(R.id.frame);
 		flingContainer.setAdapter(adapter);
-
-		
 
 		flingContainer.setFlingListener(new FlingAdapterView.onFlingListener() {
 			@Override
@@ -147,8 +140,9 @@ public class AddFriendActivity extends Activity {
 
 			@Override
 			public void onAdapterAboutToEmpty(int itemsInAdapter) {
-//				al.add(new CardMode("胡欣语", 21, R.drawable.picture_fisrt, "信息科学与技术", "中文", "英文", "男", "学五食堂"));
-				
+				// al.add(new CardMode("胡欣语", 21, R.drawable.picture_fisrt,
+				// "信息科学与技术", "中文", "英文", "男", "学五食堂"));
+
 				adapter.notifyDataSetChanged();
 				i++;
 			}
@@ -173,9 +167,7 @@ public class AddFriendActivity extends Activity {
 				makeToast(AddFriendActivity.this, "点击图片");
 			}
 		});
-
 	}
-
 	static void makeToast(Context ctx, String s) {
 		Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
 	}

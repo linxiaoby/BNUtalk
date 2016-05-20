@@ -81,7 +81,7 @@ public class ChatActivity extends Activity {
 		uid = bundle.getString("uid");
 		fuid = bundle.getString("fuid");
 		
-		dbOpenHelper=new DBopenHelper(ChatActivity.this, "bnutalk.db");
+		dbOpenHelper=new DBopenHelper(ChatActivity.this);
 		dbOpenHelper.getAllMsgHistory(fuid, msgList);//get all history message from the local db
 		
 		adapter = new MsgAdapter(ChatActivity.this, R.layout.item_message, msgList);

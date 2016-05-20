@@ -7,6 +7,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Iterator;
 import java.util.List;
 
 import android.R.menu;
@@ -26,7 +27,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "bnutalk.db";
 	private static final String TABLE_MESSAGE_HISTOTY = "message_history";
 	private static final String TABLE_RECENT_MSG = "rencent_message";
-
+	private static final String TABLE_USER_CARD = "user_card";
 	private static final int DATABASE_VERSION = 1;
 
 	private static final String KEY_UID = "uid";
@@ -36,11 +37,21 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	private static final String KEY_ISREAD = "isread";
 	private static final String KEY_AVATAR = "avatar";
 	private static final String KEY_NICK = "nick";
-
-	public DBopenHelper(Context context, String name) {
-		super(context, name, null, 1);
+	
+	private static final String KEY_SEX="sex";
+	private static final String KEY_AGE="age";
+	private static final String KEY_FACULTY="faculty";
+	private static final String KEY_NATIONALITY="nationality";
+	private static final String KEY_NATIVE_LANGUAGE="native_language";
+	private static final String KEY_LIKE_LANGUAGE="like_language";
+	private static final String KEY_PLACE="place";
+	
+	
+	
+	public DBopenHelper(Context context) {
+		super(context, DATABASE_NAME, null, 1);
 	}
-
+	
 	public DBopenHelper(Context context, String name, CursorFactory factory, int version) {
 		super(context, name, factory, version);
 	}
@@ -49,7 +60,17 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("create table if not exists message_history (" + "uid text," + "content text," + "time text,"
 				+ "type integer)");
-
+		
+		db.execSQL("create table if not exists rencent_message" + "(uid text primary key," + "nick text,"
+				+ "content text," + "time text," + "isread integer," + "avatar blob)");
+		
+		db.execSQL("create table if not exists user_card(uid text primary key,"
+				+ "sex int,nick text,age int,faculty text,"
+				+ "nationality text,"
+				+ "native_language text,"
+				+ "like_language text,"
+				+ "place text"
+				+ "avatar blob)");
 	}
 
 	@Override
@@ -57,15 +78,98 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE_HISTOTY);
 		this.onCreate(db);
 	}
-
+	/**
+	 * delete database
+	 * @param context
+	 * @return
+	 */
+	 public boolean deleteDatabase(Context context)
+	 { 
+		 return context.deleteDatabase(DATABASE_NAME); 
+	 } 
+	/**
+	 * 
+	 */
 	public void updateDb() {
 		SQLiteDatabase db = this.getWritableDatabase();
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECENT_MSG);
 		db.execSQL("create table if not exists rencent_message" + "(uid text primary key," + "nick text,"
 				+ "content text," + "time text," + "isread integer," + "avatar blob)");
-
+		
+		db.execSQL("create table if not exists user_card(uid text primary key,"
+				+ "sex int,nick text,age int,faculty text,"
+				+ "nationality text,"
+				+ "native_language text,"
+				+ "like_language text,"
+				+ "avatar blob)");
 	}
+	/**
+	 * save user cards to local cache
+	 * @param list
+	 */
+	public void  addUserCard(List<UserEntity> list)
+	{
+		
+		SQLiteDatabase db=this.getReadableDatabase();
+		ContentValues values=new ContentValues();
+		db.execSQL("delete from "+TABLE_USER_CARD);//delete first
+		
+		Iterator<UserEntity> iterator = list.iterator();
+		UserEntity uEntity = new UserEntity();
+		while (iterator.hasNext()) {
+			uEntity = iterator.next();
 
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			Bitmap bmp = uEntity.getAvatar();
+			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
+
+			values.put(KEY_AVATAR, os.toByteArray());
+			values.put(KEY_UID, uEntity.getUid());
+			values.put(KEY_NICK, uEntity.getNick());
+			values.put(KEY_SEX, uEntity.getSex());
+			values.put(KEY_AGE, uEntity.getAge());
+			values.put(KEY_FACULTY, uEntity.getFaculty());
+			values.put(KEY_NATIVE_LANGUAGE, uEntity.getMotherTone());
+			values.put(KEY_LIKE_LANGUAGE, uEntity.getLikeLanguage());
+			values.put(KEY_PLACE, uEntity.getPlace());
+			
+			
+			db.insert(TABLE_USER_CARD, null, values);
+		}
+	}
+	/**
+	 * get user card from TABLE_USER_CARD,this will be called when adding friend
+	 * @param list
+	 */
+	public void getUserCard(List<UserEntity> list)
+	{
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		String asql = "select* from " + TABLE_USER_CARD;
+		Cursor c = db.rawQuery(asql, null);
+		if (c != null) {
+			while (c.moveToNext()) {
+				UserEntity uEntity = new UserEntity();
+				uEntity.setUid(c.getString(c.getColumnIndex(KEY_UID)));
+				uEntity.setAge(c.getInt(c.getColumnIndex(KEY_AGE)));
+				uEntity.setNick(c.getString(c.getColumnIndex(KEY_NICK)));
+				uEntity.setFaculty(c.getString(c.getColumnIndex(KEY_FACULTY)));
+				uEntity.setMotherTone(c.getString(c.getColumnIndex(KEY_NATIVE_LANGUAGE)));
+				uEntity.setLikeLanguage(c.getString(c.getColumnIndex(KEY_LIKE_LANGUAGE)));
+				uEntity.setSex(c.getInt(c.getColumnIndex(KEY_SEX)));
+				
+				byte[] in = c.getBlob(c.getColumnIndex(KEY_AVATAR));
+				Bitmap bmp = BitmapFactory.decodeByteArray(in, 0, in.length);
+				uEntity.setAvatar(bmp);
+				list.add(uEntity);
+			}
+		}
+		
+	}
+	/**
+	 * save message history to local storage,this is call when a new message is sent or received
+	 * @param mEntity
+	 * @return
+	 */
 	public long addMsgHistory(MsgEntity mEntity) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -80,7 +184,11 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		db.close();
 		return ret;
 	}
-
+	/**
+	 * 
+	 * @param fuid
+	 * @param list
+	 */
 	public void getAllMsgHistory(String fuid, List<MsgEntity> list) {
 		// Integer id = Integer.valueOf(fuid);
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -100,10 +208,16 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		}
 		db.close();
 	}
-
+	/**
+	 * 
+	 * @param rEntity
+	 * @return
+	 */
 	public long addRecentMsgList(RecentMsgEntity rEntity) {
+		
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
+		
 
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		Bitmap bmp = rEntity.getAvatar();
@@ -119,7 +233,10 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		long res = db.insert(TABLE_RECENT_MSG, null, values);
 		return res;
 	}
-
+	/**
+	 * 
+	 * @param list
+	 */
 	public void getAllRecentMsgList(List<RecentMsgEntity> list) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();

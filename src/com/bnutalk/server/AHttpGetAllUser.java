@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.http.Header;
 
 import com.bnutalk.util.CommonUtil;
+import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.UserEntity;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -25,6 +26,7 @@ public class AHttpGetAllUser {
 	private String strJson;
 	private Handler handler;
 	private Message msg=new Message();
+	private DBopenHelper helper;
 	public AHttpGetAllUser() {
 
 	}
@@ -38,11 +40,12 @@ public class AHttpGetAllUser {
 		this.strJson=null;
 	}
 	
-	public AHttpGetAllUser(List<UserEntity> list,String uid,Handler handler) {
+	public AHttpGetAllUser(List<UserEntity> list,String uid,Handler handler,DBopenHelper helper) {
 		this.list=list;
 		this.uid=uid;
 		this.strJson=null;
 		this.handler=handler;
+		this.helper=helper;
 	}
 	
 	public  void getAllUser() {
@@ -58,6 +61,9 @@ public class AHttpGetAllUser {
 				msg.what=SUCCESS;
 				msg.obj=list;
 				handler.sendMessage(msg);
+				
+				//save data to local info
+				helper.addUserCard(list);
 			}
 			
 			@Override
