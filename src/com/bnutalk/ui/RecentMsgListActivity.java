@@ -190,7 +190,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		Toast.makeText(RecentMsgListActivity.this, "position=" + position + " content=" + fuid, 0).show();
 
 		// update listview:clear badge
-		rEntity.setRead(RecentMsgEntity.UNREAD);
+		rEntity.setRead(RecentMsgEntity.READ);
 		recentMsgAdapter.notifyDataSetChanged();
 
 		// 弹出聊天窗口

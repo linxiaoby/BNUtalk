@@ -24,5 +24,7 @@
     <string name="radio1_text">Chats</string>
     <string name="radio2_text">Contacts</string>
     <string name="radio4_text">Settings</string>
+    
+     <string name="next">next</string>
 
 </resources>

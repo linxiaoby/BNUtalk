@@ -75,7 +75,7 @@ public class SignUpPersInfoActivity extends Activity {
 	private final static int LIKE_DIA = 5;
 	private String strUid;// uid，passwd是从注册界面传过来的用户邮箱
 	private String strPasswd;
-	private String strSex;
+	private int sex;
 	private EditText etNickname;
 	private EditText etAge;
 	private EditText etFaculty;
@@ -126,9 +126,9 @@ public class SignUpPersInfoActivity extends Activity {
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				// TODO Auto-generated method stub
 				if (checkedId == rbMan.getId()) {
-					strSex = "male";
+					sex =0;
 				} else {
-					strSex = "female";
+					sex = 1;
 				}
 			}
 		});
@@ -224,7 +224,7 @@ public class SignUpPersInfoActivity extends Activity {
 					 */
 					// new ImageUploadThread(bitmap2).run();
 					// 上传至服务器，使用AsyncHttpClient
-					new AHttpImageUpload(strUid, bmPhoto).sendImage();
+					
 					/*
 					 * saveBitmap(Environment.getExternalStorageDirectory() +
 					 * "/crop_" + System.currentTimeMillis() + ".png",bitmap2);
@@ -566,13 +566,16 @@ public class SignUpPersInfoActivity extends Activity {
 
 	// ========================next按钮点击事件，上传除了头像外的所有数据到服务器==========================
 	public void nextClick(View v) {
+		//save photo
+		new AHttpImageUpload(strUid, bmPhoto).sendImage();
+		
 		AHttpPersInfoUpload persInfoUpload = new AHttpPersInfoUpload();
 		// 成员赋值
 		persInfoUpload.setStrUid(strUid);
 		persInfoUpload.setStrPasswd(strPasswd);
-		persInfoUpload.setStrSex(strSex);
+		persInfoUpload.setSex(sex);
 		persInfoUpload.setStrNickName(etNickname.getText().toString());
-		persInfoUpload.setStrAge(etAge.getText().toString());
+		persInfoUpload.setAge(Integer.valueOf(etAge.getText().toString()));
 		persInfoUpload.setStrFaculty(etFaculty.getText().toString());
 		persInfoUpload.setStrNationality(etNationality.getText().toString());
 		persInfoUpload.setStrMother(etMother.getText().toString());
@@ -583,6 +586,7 @@ public class SignUpPersInfoActivity extends Activity {
 		Intent it = new Intent();
 		it.setClass(this, LoginActivity.class);
 		startActivity(it);
+		
 		finish();
 		overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
 

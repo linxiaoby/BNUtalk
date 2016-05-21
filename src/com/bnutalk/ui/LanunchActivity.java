@@ -45,6 +45,7 @@ public class LanunchActivity extends FragmentActivity {
 			public void onClick(View v) {
 				Intent intent1=new Intent(LanunchActivity.this,LoginActivity.class);
 				startActivity(intent1);
+				finish();
 			}
 		});
 		button2.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +53,7 @@ public class LanunchActivity extends FragmentActivity {
 			public void onClick(View v) {
 				Intent intent2=new Intent(LanunchActivity.this,SignUpAcitivity.class);
 				startActivity(intent2);
+				finish();
 			}
 		});
 		ViewGroup group = (ViewGroup)findViewById(R.id.viewGroup);

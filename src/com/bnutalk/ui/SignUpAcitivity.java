@@ -65,13 +65,14 @@ public class SignUpAcitivity extends Activity {
 				editor.commit();
 				
 				Bundle bundle = new Bundle();
-				bundle.putString("mailAdress", uid);
+				bundle.putString("uid", uid);
 				bundle.putString("passwd",passwd);
 				
 				Intent intent = new Intent();
 				intent.setClass(this, SignUpPersInfoActivity.class);
 				intent.putExtras(bundle);
 				startActivity(intent);
+				finish();
 			}
 		}
 		else{

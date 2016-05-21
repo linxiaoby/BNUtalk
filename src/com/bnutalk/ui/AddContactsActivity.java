@@ -95,6 +95,12 @@ public class AddContactsActivity extends Activity {
 		
 		helper.updateDb();
 		addConServer=new AHttpAddContacts(list, uid, handler, helper);
+		if(list.size()==0)
+		{
+			Toast toast=Toast.makeText(AddContactsActivity.this, "正在加载数据，请耐心等待！(产品组帮我翻译成英文！)", Toast.LENGTH_LONG);
+			 toast.setGravity(Gravity.CENTER, 0, 0);
+			 toast.show();
+		}
 	}
 	/**
 	 * define handler operation

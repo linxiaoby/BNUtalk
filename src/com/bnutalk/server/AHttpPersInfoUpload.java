@@ -12,9 +12,25 @@ import com.loopj.android.http.RequestParams;
 public class AHttpPersInfoUpload {
 	private String strUid;
 	private String strPasswd;
-	private String strSex;
+	private int sex;
 	private String strNickName;
-	private String strAge;
+	public int getSex() {
+		return sex;
+	}
+
+	public void setSex(int sex) {
+		this.sex = sex;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	private int age;
 	private String strFaculty;
 	private String strNationality;
 	private String strMother;
@@ -36,28 +52,12 @@ public class AHttpPersInfoUpload {
 		this.strPasswd = strPasswd;
 	}
 
-	public String getStrSex() {
-		return strSex;
-	}
-
-	public void setStrSex(String strSex) {
-		this.strSex = strSex;
-	}
-
 	public String getStrNickName() {
 		return strNickName;
 	}
 
 	public void setStrNickName(String strNickName) {
 		this.strNickName = strNickName;
-	}
-
-	public String getStrAge() {
-		return strAge;
-	}
-
-	public void setStrAge(String strAge) {
-		this.strAge = strAge;
 	}
 
 	public String getStrFaculty() {
@@ -91,27 +91,29 @@ public class AHttpPersInfoUpload {
 	public void setStrLike(String strLike) {
 		this.strLike = strLike;
 	}
+
 	// �ϴ���ݵ�������
 	public void sendPersInfo() {
 		String ip = new GetServerIp().getServerIp();
-		String url = ip + "/web/PersInfoUploadServlet";
+		String url = "http://" + ip + ":8080/web/PersInfoUploadServlet";
 		RequestParams params = new RequestParams();
 		params.put("strUid", strUid);
 		params.put("strPasswd", strPasswd);
-		params.put("strSex", strSex); 
+		params.put("sex", sex);
 		params.put("strNickName", strNickName);
-		params.put("strAge", strAge);
+		params.put("age", age);
 		params.put("strFaculty", strFaculty);
 		params.put("strNationality", strNationality);
 		params.put("strMother", strMother);
 		params.put("strLike", strLike);
-		
+
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.post(url, params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
 				// TODO Auto-generated method stub
 			}
+
 			@Override
 			public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
 				// TODO Auto-generated method stub
