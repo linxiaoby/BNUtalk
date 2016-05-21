@@ -2,8 +2,6 @@
 <<<<<<<=HEAD
 >>>>>>>=refs/remotes/origin/master
 eclipse.preferences.version=1
-encoding//gen/com/bnutalk/ui/BuildConfig.java=UTF-8
-encoding//gen/com/bnutalk/ui/R.java=UTF-8
 encoding//src/com/bnutalk/server/ReadFromServThread.java=UTF-8
 encoding//src/com/bnutalk/ui=UTF-8
 encoding//src/com/bnutalk/ui/ChatActivity.java=UTF-8

@@ -71,6 +71,10 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				+ "like_language text,"
 				+ "place text"
 				+ "avatar blob)");
+		
+		db.execSQL("create table if not exists contacts" + "(uid text primary key," + "nick text,"
+				+ "nationality text," +   "avatar blob)");
+		
 	}
 
 	@Override
@@ -92,6 +96,9 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 */
 	public void updateDb() {
 		SQLiteDatabase db = this.getWritableDatabase();
+		db.execSQL("create table if not exists message_history (" + "uid text," + "content text," + "time text,"
+				+ "type integer)");
+		
 		db.execSQL("create table if not exists rencent_message" + "(uid text primary key," + "nick text,"
 				+ "content text," + "time text," + "isread integer," + "avatar blob)");
 		
@@ -100,8 +107,13 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				+ "nationality text,"
 				+ "native_language text,"
 				+ "like_language text,"
+				+ "place text"
 				+ "avatar blob)");
+		
+		db.execSQL("create table if not exists contacts" + "(uid text primary key," + "nick text,"
+				+ "nationality text," +   "avatar blob)");
 	}
+	
 	/**
 	 * save user cards to local cache
 	 * @param list
@@ -258,5 +270,62 @@ public class DBopenHelper extends SQLiteOpenHelper {
 			}
 		}
 
+	}
+	
+	
+	/**
+	 * save contacs to local cache
+	 * @param list
+	 */
+	public void  addContacts(List<ContactEntity> list)
+	{
+		
+		SQLiteDatabase db=this.getReadableDatabase();
+		ContentValues values=new ContentValues();
+		db.execSQL("delete from "+TABLE_USER_CARD);//delete first
+		
+		Iterator<ContactEntity> iterator = list.iterator();
+		ContactEntity cEntity = new ContactEntity();
+		while (iterator.hasNext()) {
+			cEntity = iterator.next();
+
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			Bitmap bmp = cEntity.getAvatar();
+			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
+
+			values.put(KEY_AVATAR, os.toByteArray());
+			values.put(KEY_UID, cEntity.getUid());
+			values.put(KEY_NICK, cEntity.getNick());
+			values.put(KEY_NATIONALITY, cEntity.getNationality());
+			
+			db.insert(TABLE_USER_CARD, null, values);
+		}
+	}
+	
+	/**
+	 * get contacs from local 
+	 * @param list
+	 */
+	public void getContacts(List<ContactEntity> list)
+	{
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		String asql = "select* from " + TABLE_USER_CARD;
+		Cursor c = db.rawQuery(asql, null);
+		if (c != null) {
+			while (c.moveToNext()) {
+				ContactEntity cEntity = new ContactEntity();
+				cEntity.setUid(c.getString(c.getColumnIndex(KEY_UID)));
+				cEntity.setNick(c.getString(c.getColumnIndex(KEY_NICK)));
+				cEntity.setNationality(c.getString(c.getColumnIndex(KEY_NATIONALITY)));
+				
+				byte[] in = c.getBlob(c.getColumnIndex(KEY_AVATAR));
+				Bitmap bmp = BitmapFactory.decodeByteArray(in, 0, in.length);
+				cEntity.setAvatar(bmp);
+				
+				list.add(cEntity);
+			}
+		}
+		
 	}
 }

@@ -98,7 +98,7 @@ public class CommonUtil {
 				RecentMsgEntity rEntity=new RecentMsgEntity(bmPhoto,strUid, strNickname, content, time, isRead);
 				list.add(rEntity);
 			}
-			Log.v("parseJson", "parseJson success");
+			Log.v("parseJsonMsg", "parseJsonMsg success");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -133,6 +133,35 @@ public class CommonUtil {
 				list.add(uEntity);
 			}
 			Log.v("parseJsonUser", "parseJsonUser success");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	/**
+	 * transfer json to List<ContactEntity> list
+	 * @param strJson
+	 * @param list
+	 */
+	public static void parseJsonContact(String strJson,List<ContactEntity> list) {
+		try {
+			JSONArray jsonArray = new JSONArray(strJson);
+			for(int i=0;i<jsonArray.length();i++)
+			{
+				ContactEntity cEntity=new ContactEntity();
+				JSONObject contact = jsonArray.getJSONObject(i);
+				cEntity.setUid(contact.getString("uid"));
+				cEntity.setNick(contact.getString("nick"));
+				cEntity.setNationality(contact.getString("nationality"));
+				
+				String strPhoto=contact.getString("avatar");
+				Bitmap avatar=CommonUtil.imgStrToBitmap(strPhoto);
+				cEntity.setAvatar(avatar);
+				
+				list.add(cEntity);
+			}
+			Log.v("parseJsonContact", "parseJsonContact success");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

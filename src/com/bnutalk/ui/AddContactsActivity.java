@@ -8,14 +8,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore.Video;
 import android.provider.SyncStateContract.Helpers;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bnutalk.server.AHttpGetAllUser;
+import com.bnutalk.server.AHttpAddContacts;
 import com.bnutalk.ui.R;
+import com.bnutalk.util.ContactEntity;
 import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.FlingAdapterView;
 import com.bnutalk.util.UserEntity;
@@ -27,10 +29,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 
-public class AddFriendActivity extends Activity {
+public class AddContactsActivity extends Activity {
 
 	// private ArrayList<CardMode> al;
-	private List<UserEntity> al;
+	private List<UserEntity> list;
 
 	// private ArrayList<ImageView> iv;
 	// 定义一个cardmode的数组al
@@ -44,30 +46,30 @@ public class AddFriendActivity extends Activity {
 	// 定义下面的左右喜欢喝不喜欢的图片
 	private ImageView left, right, music;
 	private Handler handler;
-	private String uid;
+	private String uid,cuid,nick;
 	private DBopenHelper helper;
+	private AHttpAddContacts addConServer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_my);
+		setContentView(R.layout.activity_addfriend_main);
 		initEvent();
-		
-		uid = "201211011063";
-		new AHttpGetAllUser(al, uid, handler,helper).getAllUser();
+//		new AHttpAddContacts(list, uid, handler,helper).getAllUser();
+		addConServer.getAllUser();
 	}
 	/**
 	 * init
 	 */
 	public void initEvent() {
+		uid = "201211011063";
 		// 定义左边和右边的图片，和监听
 		left = (ImageView) findViewById(R.id.left);
 		right = (ImageView) findViewById(R.id.right);
 		music = (ImageView) findViewById(R.id.iv_card_flag6);
-		al = new ArrayList<UserEntity>();
-		adapter = new CardAdapter(AddFriendActivity.this, al);
-		
+		list = new ArrayList<UserEntity>();
+		adapter = new CardAdapter(AddContactsActivity.this, list);
 		
 		helper=new DBopenHelper(getApplicationContext());
 		
@@ -88,8 +90,11 @@ public class AddFriendActivity extends Activity {
 		defFling();
 		
 		//read user cards from local cache to show first
-		helper.getUserCard(al);
+		helper.getUserCard(list);
 		adapter.notifyDataSetChanged();
+		
+		helper.updateDb();
+		addConServer=new AHttpAddContacts(list, uid, handler, helper);
 	}
 	/**
 	 * define handler operation
@@ -100,14 +105,21 @@ public class AddFriendActivity extends Activity {
 			@Override
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
-				case AHttpGetAllUser.SUCCESS:
-					android.util.Log.v("msg.what", "AHttpGetAllUser.SUCCESS");
+				case AHttpAddContacts.GET_USER_SUCCESS:
+					android.util.Log.v("msg.what", "AHttpGetAllUser.GET_USER_SUCCESS");
 					// show listview
 					adapter.notifyDataSetChanged();
 					break;
-				case AHttpGetAllUser.SERVEREXCEPTION:
+				case AHttpAddContacts.GET_USER_FAILED:
 					// unable to access server
-					Toast.makeText(AddFriendActivity.this, "unable to access server!", Toast.LENGTH_SHORT).show();
+					Toast toast=Toast.makeText(AddContactsActivity.this, "unable to access server!", Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+					break;
+				case AHttpAddContacts.NOT_BEFRIEND:
+					break;
+				case AHttpAddContacts.BEFRIEND:
+					Toast.makeText(AddContactsActivity.this, "you and "+nick+"have been friend!", Toast.LENGTH_LONG).show();
 					break;
 				default:
 					break;
@@ -124,18 +136,23 @@ public class AddFriendActivity extends Activity {
 		flingContainer.setFlingListener(new FlingAdapterView.onFlingListener() {
 			@Override
 			public void removeFirstObjectInAdapter() {
-				al.remove(0);
+				cuid=list.get(0).getUid();
+				nick=list.get(0).getNick();
+				list.remove(0);
 				adapter.notifyDataSetChanged();
 			}
 
 			@Override
 			public void onLeftCardExit(Object dataObject) {
-				makeToast(AddFriendActivity.this, "不喜欢");
+				makeToast(AddContactsActivity.this, "不喜欢");
 			}
 
 			@Override
 			public void onRightCardExit(Object dataObject) {
-				makeToast(AddFriendActivity.this, "喜欢");
+				makeToast(AddContactsActivity.this, "喜欢");
+				
+				//send(uid,cuid) to server ,save into like_table
+				addConServer.rightOperation(cuid);
 			}
 
 			@Override
@@ -164,7 +181,7 @@ public class AddFriendActivity extends Activity {
 		flingContainer.setOnItemClickListener(new FlingAdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClicked(int itemPosition, Object dataObject) {
-				makeToast(AddFriendActivity.this, "点击图片");
+				makeToast(AddContactsActivity.this, "点击图片");
 			}
 		});
 	}

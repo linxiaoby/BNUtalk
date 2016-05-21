@@ -103,9 +103,9 @@ public class LoginActivity extends Activity {
 					Toast.makeText(LoginActivity.this, "login success!", Toast.LENGTH_LONG).show();
 					// info right,save uid into user_login
 					writeUidToCache();
-					// jump into MsgFriendListActivity
+					// jump into MainActivity
 					Intent intent = new Intent();
-					intent.setClass(LoginActivity.this, RecentMsgListActivity.class);
+					intent.setClass(LoginActivity.this, MainActivity.class);
 					startActivity(intent);
 					break;
 				case 2:
@@ -137,6 +137,7 @@ public class LoginActivity extends Activity {
 
 		// 服务器操作：用户合法性验证+其他（待写）
 		doLogin(uid, passwd);
+		
 	}
 
 	/**
