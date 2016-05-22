@@ -101,6 +101,7 @@ public class AddContactsActivity extends Activity {
 		if (cacheUid != null) {
 			uid=cacheUid;
 		}
+		//update database
 		helper.updateDb();
 		if(list.size()==0)
 		{

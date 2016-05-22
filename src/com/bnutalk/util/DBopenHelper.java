@@ -20,6 +20,7 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.nfc.NfcAdapter.CreateBeamUrisCallback;
+import android.os.DropBoxManager;
 import android.widget.TableLayout;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -69,8 +70,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				+ "nationality text,"
 				+ "native_language text,"
 				+ "like_language text,"
-				+ "place text"
-				+ "avatar blob)");
+				+ "place text,avatar blob)");
 		
 		db.execSQL("create table if not exists contacts" + "(uid text primary key," + "nick text,"
 				+ "nationality text," +   "avatar blob)");
@@ -95,7 +95,9 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * 
 	 */
 	public void updateDb() {
+		
 		SQLiteDatabase db = this.getWritableDatabase();
+		db.execSQL("drop table user_card");
 		db.execSQL("create table if not exists message_history (" + "uid text," + "content text," + "time text,"
 				+ "type integer)");
 		
@@ -107,7 +109,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				+ "nationality text,"
 				+ "native_language text,"
 				+ "like_language text,"
-				+ "place text"
+				+ "place text,"
 				+ "avatar blob)");
 		
 		db.execSQL("create table if not exists contacts" + "(uid text primary key," + "nick text,"
