@@ -95,15 +95,15 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		listView.setAdapter(recentMsgAdapter);
 		
 		msgListPref = getSharedPreferences("recent_msg_list", 0);
+		defHandler();
 		openHepler=new DBopenHelper(getApplicationContext());
+		
 		// get the current user id
 		getCurrentUid();
-
-		// handler operation
-		defHandler();
-		//openHepler.updateDb();
-		openHepler.getAllRecentMsgList(list);
+		openHepler.updateDb();
+		openHepler.getAllRecentMsgList(uid,list);
 		recentMsgAdapter.notifyDataSetChanged();
+		
 		if(list.size()==0)
 		{
 			Toast toast=Toast.makeText(RecentMsgListActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_LONG);
@@ -172,7 +172,6 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	public void getCurrentUid() {
 		SharedPreferences pref = getSharedPreferences("user_login", 0);
 		uid = pref.getString("uid", "");
-		// uid = "201211011063";
 		Log.v("get current uid", uid);
 	}
 

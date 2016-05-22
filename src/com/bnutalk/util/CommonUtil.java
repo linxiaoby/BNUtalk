@@ -86,16 +86,16 @@ public class CommonUtil {
 			for(int i=0;i<jsonArray.length();i++)
 			{
 				JSONObject user = jsonArray.getJSONObject(i);
-				String strUid = user.getString("strUid");
-				String strNickname = user.getString("strNickname");
-				String strPhoto = user.getString("strPhoto");
+				String strUid = user.getString("uid");
+				String strNickname = user.getString("nick");
+				String strAvatar = user.getString("avatar");
 				// 图片string转换成Bitmap
-				Bitmap bmPhoto=CommonUtil.imgStrToBitmap(strPhoto);
+				Bitmap avatar=CommonUtil.imgStrToBitmap(strAvatar);
 				
-				String content="good morning!";
-				String time="2015-5-15";
-				int isRead=RecentMsgEntity.READ;
-				RecentMsgEntity rEntity=new RecentMsgEntity(bmPhoto,strUid, strNickname, content, time, isRead);
+				String content=user.getString("content");
+				String time=user.getString("time");
+				int isRead=user.getInt("isRead");
+				RecentMsgEntity rEntity=new RecentMsgEntity(avatar,strUid, strNickname, content, time, isRead);
 				list.add(rEntity);
 			}
 			Log.v("parseJsonMsg", "parseJsonMsg success");

@@ -85,7 +85,6 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 
 	public void initEvent() {
 		// 匹配布局文件中的ListView控件
-		uid="201211011063";
 		listView = (ListView) findViewById(R.id.lsContacts);
 		listView.setOnItemClickListener(this);
 		listView.setOnScrollListener(this);
@@ -97,11 +96,11 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		openHepler=new DBopenHelper(getApplicationContext());
 		
 		// get the current user id
-//		getCurrentUid();
+		getCurrentUid();
 
 		// handler operation
 		defHandler();
-		openHepler.getContacts(list);
+		openHepler.getContacts(uid,list);
 		contactAdapter.notifyDataSetChanged();
 		if(list.size()==0)
 		{

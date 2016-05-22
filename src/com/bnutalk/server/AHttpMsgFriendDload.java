@@ -47,7 +47,7 @@ public class AHttpMsgFriendDload {
 	private Message msg=new Message();
 	private Drawable drawbPhoto;
 
-	private String strUid;// send uid to server
+	private String uid;// send uid to server
 	private SharedPreferences pref = null;
 	private DBopenHelper openHelper;
 
@@ -55,7 +55,7 @@ public class AHttpMsgFriendDload {
 	}
 
 	public AHttpMsgFriendDload(String uid, Handler handler, List<RecentMsgEntity> list, DBopenHelper openHelper) {
-		this.strUid = uid;
+		this.uid = uid;
 		this.handler = handler;
 		this.list = list;
 		this.strJson = null;
@@ -65,7 +65,7 @@ public class AHttpMsgFriendDload {
 	// send a doget to the server
 	public void msgFriDloadRequest() {
 		String ip = new GetServerIp().getServerIp();
-		String url = "http://" + ip + ":8080/web/MsgFriendDwnloadServlet?&strUid=" + strUid;
+		String url = "http://" + ip + ":8080/web/MsgFriendDwnloadServlet?&strUid=" + uid;
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(url, new AsyncHttpResponseHandler() {
 			@Override
@@ -94,7 +94,7 @@ public class AHttpMsgFriendDload {
 		RecentMsgEntity rEntity = new RecentMsgEntity();
 		while (iterator.hasNext()) {
 			rEntity = iterator.next();
-			openHelper.addRecentMsgList(rEntity);
+			openHelper.addRecentMsgList(uid,rEntity);
 		}
 
 	}

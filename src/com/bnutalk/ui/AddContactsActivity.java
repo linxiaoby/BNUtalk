@@ -101,8 +101,6 @@ public class AddContactsActivity extends Activity {
 		if (cacheUid != null) {
 			uid=cacheUid;
 		}
-		//update database
-		helper.updateDb();
 		if(list.size()==0)
 		{
 			Toast toast=Toast.makeText(AddContactsActivity.this, "正在加载数据，请耐心等待！(产品组帮我翻译成英文！)", Toast.LENGTH_LONG);
@@ -167,7 +165,7 @@ public class AddContactsActivity extends Activity {
 			public void onRightCardExit(Object dataObject) {
 				makeToast(AddContactsActivity.this, "喜欢");
 				
-				//send(uid,cuid) to server ,save into like_table
+				//server operation
 				new AHttpAddContacts(list, uid, handler, helper).rightOperation(cuid);
 			}
 

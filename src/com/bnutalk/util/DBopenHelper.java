@@ -29,9 +29,12 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	private static final String TABLE_MESSAGE_HISTOTY = "message_history";
 	private static final String TABLE_RECENT_MSG = "rencent_message";
 	private static final String TABLE_USER_CARD = "user_card";
+	private static final String TABLE_CONTACT= "contacts";
+	
 	private static final int DATABASE_VERSION = 1;
 
 	private static final String KEY_UID = "uid";
+	private static final String KEY_CUID = "cuid";
 	private static final String KEY_CONTENT = "content";
 	private static final String KEY_TIME = "time";
 	private static final String KEY_TYPE = "type";
@@ -59,20 +62,21 @@ public class DBopenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("create table if not exists message_history (" + "uid text," + "content text," + "time text,"
+		db.execSQL("create table if not exists message_history (" + "uid text,cuid text," + "content text," + "time text,"
 				+ "type integer)");
 		
-		db.execSQL("create table if not exists rencent_message" + "(uid text primary key," + "nick text,"
+		db.execSQL("create table if not exists rencent_message" + "(uid text,"
+				+ "cuid text," + "nick text,"
 				+ "content text," + "time text," + "isread integer," + "avatar blob)");
 		
-		db.execSQL("create table if not exists user_card(uid text primary key,"
+		db.execSQL("create table if not exists user_card(uid text,cuid text,"
 				+ "sex int,nick text,age int,faculty text,"
 				+ "nationality text,"
 				+ "native_language text,"
 				+ "like_language text,"
 				+ "place text,avatar blob)");
 		
-		db.execSQL("create table if not exists contacts" + "(uid text primary key," + "nick text,"
+		db.execSQL("create table if not exists contacts" + "(uid text,cuid text," + "nick text,"
 				+ "nationality text," +   "avatar blob)");
 		
 	}
@@ -97,22 +101,26 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	public void updateDb() {
 		
 		SQLiteDatabase db = this.getWritableDatabase();
+		db.execSQL("drop table message_history");
+		db.execSQL("drop table rencent_message");
 		db.execSQL("drop table user_card");
-		db.execSQL("create table if not exists message_history (" + "uid text," + "content text," + "time text,"
+		db.execSQL("drop table contacts");
+		
+		db.execSQL("create table if not exists message_history (" + "uid text,cuid text," + "content text," + "time text,"
 				+ "type integer)");
 		
-		db.execSQL("create table if not exists rencent_message" + "(uid text primary key," + "nick text,"
+		db.execSQL("create table if not exists rencent_message" + "(uid text,"
+				+ "cuid text," + "nick text,"
 				+ "content text," + "time text," + "isread integer," + "avatar blob)");
 		
-		db.execSQL("create table if not exists user_card(uid text primary key,"
+		db.execSQL("create table if not exists user_card(uid text,cuid text,"
 				+ "sex int,nick text,age int,faculty text,"
 				+ "nationality text,"
 				+ "native_language text,"
 				+ "like_language text,"
-				+ "place text,"
-				+ "avatar blob)");
+				+ "place text,avatar blob)");
 		
-		db.execSQL("create table if not exists contacts" + "(uid text primary key," + "nick text,"
+		db.execSQL("create table if not exists contacts" + "(uid text,cuid text," + "nick text,"
 				+ "nationality text," +   "avatar blob)");
 	}
 	
@@ -170,7 +178,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				uEntity.setMotherTone(c.getString(c.getColumnIndex(KEY_NATIVE_LANGUAGE)));
 				uEntity.setLikeLanguage(c.getString(c.getColumnIndex(KEY_LIKE_LANGUAGE)));
 				uEntity.setSex(c.getInt(c.getColumnIndex(KEY_SEX)));
-				
+				uEntity.setPlace(c.getString(c.getColumnIndex(KEY_PLACE)));
 				byte[] in = c.getBlob(c.getColumnIndex(KEY_AVATAR));
 				Bitmap bmp = BitmapFactory.decodeByteArray(in, 0, in.length);
 				uEntity.setAvatar(bmp);
@@ -227,7 +235,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * @param rEntity
 	 * @return
 	 */
-	public long addRecentMsgList(RecentMsgEntity rEntity) {
+	public long addRecentMsgList(String uid,RecentMsgEntity rEntity) {
 		
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -238,7 +246,9 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
 
 		values.put(KEY_AVATAR, os.toByteArray());
-		values.put(KEY_UID, rEntity.getUid());
+		values.put(KEY_UID,uid);
+		values.put(KEY_CUID, rEntity.getUid());
+		
 		values.put(KEY_NICK, rEntity.getNick());
 		values.put(KEY_TIME, rEntity.getTime());
 		values.put(KEY_CONTENT, rEntity.getMsgContent());
@@ -247,14 +257,40 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		long res = db.insert(TABLE_RECENT_MSG, null, values);
 		return res;
 	}
+	
+public void addAllRecentMsgList(String uid,List<RecentMsgEntity> list) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		db.execSQL("delete from "+TABLE_RECENT_MSG+" where uid="+uid);//delete first
+		Iterator<RecentMsgEntity> iterator=list.iterator();
+		while(iterator.hasNext())
+		{
+			RecentMsgEntity rEntity=new RecentMsgEntity();
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			Bitmap bmp = rEntity.getAvatar();
+			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
+
+			values.put(KEY_AVATAR, os.toByteArray());
+			values.put(KEY_UID,uid);
+			values.put(KEY_CUID, rEntity.getUid());
+			
+			values.put(KEY_NICK, rEntity.getNick());
+			values.put(KEY_TIME, rEntity.getTime());
+			values.put(KEY_CONTENT, rEntity.getMsgContent());
+			values.put(KEY_ISREAD, rEntity.isRead());
+			db.insert(TABLE_RECENT_MSG, null, values);
+		}
+	}
+	
+	
 	/**
 	 * 
 	 * @param list
 	 */
-	public void getAllRecentMsgList(List<RecentMsgEntity> list) {
+	public void getAllRecentMsgList(String uid,List<RecentMsgEntity> list) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		String sql = "select* from " + TABLE_RECENT_MSG;
+		String sql = "select* from " + TABLE_RECENT_MSG+" where uid="+uid;
 		Cursor c = db.rawQuery(sql, null);
 		if (c != null) {
 			while (c.moveToNext()) {
@@ -279,12 +315,12 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * save contacs to local cache
 	 * @param list
 	 */
-	public void  addContacts(List<ContactEntity> list)
+	public void  addContacts(String uid,List<ContactEntity> list)
 	{
 		
 		SQLiteDatabase db=this.getReadableDatabase();
 		ContentValues values=new ContentValues();
-		db.execSQL("delete from "+TABLE_USER_CARD);//delete first
+		db.execSQL("delete from "+TABLE_USER_CARD+" where uid="+uid);//delete first
 		
 		Iterator<ContactEntity> iterator = list.iterator();
 		ContactEntity cEntity = new ContactEntity();
@@ -294,13 +330,14 @@ public class DBopenHelper extends SQLiteOpenHelper {
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			Bitmap bmp = cEntity.getAvatar();
 			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
-
+			
 			values.put(KEY_AVATAR, os.toByteArray());
-			values.put(KEY_UID, cEntity.getUid());
+			values.put(KEY_UID, uid);
+			values.put(KEY_CUID, cEntity.getUid());
 			values.put(KEY_NICK, cEntity.getNick());
 			values.put(KEY_NATIONALITY, cEntity.getNationality());
 			
-			db.insert(TABLE_USER_CARD, null, values);
+			db.insert(TABLE_CONTACT, null, values);
 		}
 	}
 	
@@ -308,11 +345,11 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * get contacs from local 
 	 * @param list
 	 */
-	public void getContacts(List<ContactEntity> list)
+	public void getContacts(String uid,List<ContactEntity> list)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		String asql = "select* from " + TABLE_USER_CARD;
+		String asql = "select* from " + TABLE_CONTACT+" where uid="+uid+" order by nick asc";
 		Cursor c = db.rawQuery(asql, null);
 		if (c != null) {
 			while (c.moveToNext()) {

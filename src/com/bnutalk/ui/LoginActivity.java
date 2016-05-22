@@ -48,7 +48,6 @@ public class LoginActivity extends Activity {
 		findView();
 		readUidFromCache();
 		handlerDef();
-		writeUidToCache();
 	}
 
 	/**

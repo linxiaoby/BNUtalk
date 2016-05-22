@@ -85,18 +85,4 @@ public class AHttpGetContacts{
 			}
 		});
 	}
-
-	/**
-	 * save allRecentMsgList to local
-	 */
-	public void saveRecentMsgList(List<RecentMsgEntity> list) {
-		Iterator<RecentMsgEntity> iterator = list.iterator();
-		RecentMsgEntity rEntity = new RecentMsgEntity();
-		while (iterator.hasNext()) {
-			rEntity = iterator.next();
-			openHelper.addRecentMsgList(rEntity);
-		}
-
-	}
-
 }
