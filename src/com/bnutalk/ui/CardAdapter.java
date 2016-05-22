@@ -48,7 +48,7 @@ public class CardAdapter extends BaseAdapter {
             //实例化LayoutInflater
             LayoutInflater inflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.item, parent, false);
+            convertView = inflater.inflate(R.layout.item_add_contact, parent, false);
             //对holder赋值
             holder = new ViewHolder();
 //            holder.mCardImageView = (RotateTextImageView) convertView.findViewById(R.id.helloText);

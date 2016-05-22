@@ -90,7 +90,10 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		listView.setOnItemClickListener(this);
 		listView.setOnScrollListener(this);
 		list = new ArrayList<RecentMsgEntity>();
+		
 		recentMsgAdapter = new RecentMsgAdapter(RecentMsgListActivity.this, list);
+		listView.setAdapter(recentMsgAdapter);
+		
 		msgListPref = getSharedPreferences("recent_msg_list", 0);
 		openHepler=new DBopenHelper(getApplicationContext());
 		// get the current user id
@@ -100,7 +103,6 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		defHandler();
 		//openHepler.updateDb();
 		openHepler.getAllRecentMsgList(list);
-		listView.setAdapter(recentMsgAdapter);
 		recentMsgAdapter.notifyDataSetChanged();
 		if(list.size()==0)
 		{
@@ -108,6 +110,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 			 toast.setGravity(Gravity.CENTER, 0, 0);
 			 toast.show();
 		}
+	
 	}
 
 	/**

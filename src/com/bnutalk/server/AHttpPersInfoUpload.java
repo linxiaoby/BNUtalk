@@ -14,6 +14,12 @@ public class AHttpPersInfoUpload {
 	private String strPasswd;
 	private int sex;
 	private String strNickName;
+	private int age;
+	private int faculty;
+	private String strNationality;
+	private String strMother;
+	private String strLike;
+	
 	public int getSex() {
 		return sex;
 	}
@@ -29,12 +35,6 @@ public class AHttpPersInfoUpload {
 	public void setAge(int age) {
 		this.age = age;
 	}
-
-	private int age;
-	private String strFaculty;
-	private String strNationality;
-	private String strMother;
-	private String strLike;
 
 	public String getStrUid() {
 		return strUid;
@@ -60,12 +60,13 @@ public class AHttpPersInfoUpload {
 		this.strNickName = strNickName;
 	}
 
-	public String getStrFaculty() {
-		return strFaculty;
+
+	public int getFaculty() {
+		return faculty;
 	}
 
-	public void setStrFaculty(String strFaculty) {
-		this.strFaculty = strFaculty;
+	public void setFaculty(int faculty) {
+		this.faculty = faculty;
 	}
 
 	public String getStrNationality() {
@@ -102,7 +103,7 @@ public class AHttpPersInfoUpload {
 		params.put("sex", sex);
 		params.put("strNickName", strNickName);
 		params.put("age", age);
-		params.put("strFaculty", strFaculty);
+		params.put("faculty", faculty);
 		params.put("strNationality", strNationality);
 		params.put("strMother", strMother);
 		params.put("strLike", strLike);

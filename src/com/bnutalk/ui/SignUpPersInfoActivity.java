@@ -79,6 +79,7 @@ public class SignUpPersInfoActivity extends Activity {
 	private EditText etNickname;
 	private EditText etAge;
 	private EditText etFaculty;
+	private int faculty;
 	private EditText etNationality;
 	private EditText etMother;
 	private EditText etLike;
@@ -476,9 +477,10 @@ public class SignUpPersInfoActivity extends Activity {
 			// 0: 默认第一个单选按钮被选中
 			builder1.setSingleChoiceItems(R.array.faculty, 0, new OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					String faculty = getResources().getStringArray(R.array.faculty)[which];
+					String strFaculty = getResources().getStringArray(R.array.faculty)[which];
 					etFaculty.setTextSize(15);
-					etFaculty.setText(faculty);
+					etFaculty.setText(strFaculty);
+					faculty=which;
 				}
 			});
 
@@ -576,7 +578,7 @@ public class SignUpPersInfoActivity extends Activity {
 		persInfoUpload.setSex(sex);
 		persInfoUpload.setStrNickName(etNickname.getText().toString());
 		persInfoUpload.setAge(Integer.valueOf(etAge.getText().toString()));
-		persInfoUpload.setStrFaculty(etFaculty.getText().toString());
+		persInfoUpload.setFaculty(faculty);
 		persInfoUpload.setStrNationality(etNationality.getText().toString());
 		persInfoUpload.setStrMother(etMother.getText().toString());
 		persInfoUpload.setStrLike(etLike.getText().toString());

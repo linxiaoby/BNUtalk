@@ -2,6 +2,8 @@ package com.bnutalk.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.DefaultDatabaseErrorHandler;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,7 +50,8 @@ public class AddContactsActivity extends Activity {
 	private Handler handler;
 	private String uid,cuid,nick;
 	private DBopenHelper helper;
-	private AHttpAddContacts addConServer;
+	private SharedPreferences pref;
+	private Editor editor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,7 @@ public class AddContactsActivity extends Activity {
 		setContentView(R.layout.activity_addfriend_main);
 		initEvent();
 //		new AHttpAddContacts(list, uid, handler,helper).getAllUser();
-		addConServer.getAllUser();
+		new AHttpAddContacts(list, uid, handler, helper).getAllUser();
 	}
 	/**
 	 * init
@@ -92,15 +95,21 @@ public class AddContactsActivity extends Activity {
 		//read user cards from local cache to show first
 		helper.getUserCard(list);
 		adapter.notifyDataSetChanged();
-		
+		pref = getSharedPreferences("user_login", 0);
+		editor = pref.edit();
+		String cacheUid = pref.getString("uid", "");
+		if (cacheUid != null) {
+			uid=cacheUid;
+		}
 		helper.updateDb();
-		addConServer=new AHttpAddContacts(list, uid, handler, helper);
 		if(list.size()==0)
 		{
 			Toast toast=Toast.makeText(AddContactsActivity.this, "正在加载数据，请耐心等待！(产品组帮我翻译成英文！)", Toast.LENGTH_LONG);
 			 toast.setGravity(Gravity.CENTER, 0, 0);
 			 toast.show();
 		}
+		
+		
 	}
 	/**
 	 * define handler operation
@@ -158,7 +167,7 @@ public class AddContactsActivity extends Activity {
 				makeToast(AddContactsActivity.this, "喜欢");
 				
 				//send(uid,cuid) to server ,save into like_table
-				addConServer.rightOperation(cuid);
+				new AHttpAddContacts(list, uid, handler, helper).rightOperation(cuid);
 			}
 
 			@Override

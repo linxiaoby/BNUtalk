@@ -66,7 +66,6 @@ public class AHttpAddContacts {
 	}
 
 	public void getAllUser() {
-		uid = "201211011063";
 		String ip = GetServerIp.serverIp;
 		String url = "http://" + ip + ":8080/web/GetAllUserServlet?&uid=" + uid;
 		AsyncHttpClient client = new AsyncHttpClient();
@@ -108,7 +107,7 @@ public class AHttpAddContacts {
 					msg.what = BEFRIEND;
 				} else
 					msg.what = NOT_BEFRIEND;
-				handler.sendMessage(msg);
+					handler.sendMessage(msg);
 			}
 
 			@Override

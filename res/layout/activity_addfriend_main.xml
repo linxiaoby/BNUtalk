@@ -8,7 +8,7 @@
 
 
     <include layout="@layout/buttons" />
-    <include layout="@layout/top_title"/>
+    <include layout="@layout/item_add_contact_title"/>
 
     <com.bnutalk.util.FlingAdapterView
         android:id="@+id/frame"
