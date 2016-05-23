@@ -1,4 +1,5 @@
 package com.bnutalk.ui;
+
 /*
  * Author:by linxiaobai 2016/04/30
  * 功能：聊天好友列表
@@ -61,6 +62,7 @@ import com.bnutalk.util.RecentMsgEntity;
 import com.google.gson.Gson;
 
 public class ContactActivity extends Activity implements OnItemClickListener, OnScrollListener {
+	private static final String TAG = "ContactActivity";
 	private ListView listView;
 	private List<ContactEntity> list;
 	private int i = 0;
@@ -73,15 +75,35 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	private String uid;
 	private SharedPreferences msgListPref;
 	private DBopenHelper openHepler;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		android.util.Log.v(TAG, "onCreate() called!");
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_contacts);
 		initEvent();
 		// download msgfriends from server
-		if(list.size()==0)
-		new AHttpGetContacts(uid, handler, list,openHepler).getContactsRequest();
+		
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		android.util.Log.v(TAG, "onResume() called!");
+		getContact();
+		if (list.size() == 0)
+			new AHttpGetContacts(uid, handler, list, openHepler).getContactsRequest();
+	}
+
+	public void getContact() {
+		openHepler.getContacts(uid, list);
+		contactAdapter.notifyDataSetChanged();
+		if (list.size() == 0) {
+			Toast toast = Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+		}
 	}
 
 	public void initEvent() {
@@ -92,23 +114,24 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		list = new ArrayList<ContactEntity>();
 		contactAdapter = new ContactAdapter(ContactActivity.this, list);
 		listView.setAdapter(contactAdapter);
-		
+
 		msgListPref = getSharedPreferences("recent_msg_list", 0);
-		openHepler=new DBopenHelper(getApplicationContext());
-		
+		openHepler = new DBopenHelper(getApplicationContext());
+
 		// get the current user id
 		getCurrentUid();
 
 		// handler operation
 		defHandler();
-		openHepler.getContacts(uid,list);
-		contactAdapter.notifyDataSetChanged();
-		if(list.size()==0)
-		{
-			Toast toast=Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_SHORT);
-			 toast.setGravity(Gravity.CENTER, 0, 0);
-			 toast.show();
-		}
+		// openHepler.getContacts(uid,list);
+		// contactAdapter.notifyDataSetChanged();
+		// if(list.size()==0)
+		// {
+		// Toast toast=Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧",
+		// Toast.LENGTH_SHORT);
+		// toast.setGravity(Gravity.CENTER, 0, 0);
+		// toast.show();
+		// }
 	}
 
 	/**
@@ -124,11 +147,10 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 				switch (msg.what) {
 				case 0x001:// friend list download success
 					contactAdapter.notifyDataSetChanged();
-					if(list.size()==0)
-					{
-						Toast toast=Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_LONG);
-						 toast.setGravity(Gravity.CENTER, 0, 0);
-						 toast.show();
+					if (list.size() == 0) {
+						Toast toast = Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_LONG);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
 					}
 					break;
 

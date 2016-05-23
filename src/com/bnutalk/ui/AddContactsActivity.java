@@ -32,7 +32,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 public class AddContactsActivity extends Activity {
-
+	private static final String TAG="AddContactsActivity";
 	// private ArrayList<CardMode> al;
 	private List<UserEntity> list;
 
@@ -55,12 +55,19 @@ public class AddContactsActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		android.util.Log.v(TAG,"onCreate() called!");
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_addfriend_main);
 		initEvent();
 //		new AHttpAddContacts(list, uid, handler,helper).getAllUser();
 		new AHttpAddContacts(list, uid, handler, helper).getAllUser();
+	}
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		android.util.Log.v(TAG,"onResume() called!");
 	}
 	/**
 	 * init

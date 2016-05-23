@@ -74,46 +74,36 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	private DBopenHelper openHepler;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.v(TAG,"onCreate() called!");
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_recent_msglist);
 		initEvent();
 		// download msgfriends from server
-		new AHttpMsgFriendDload(uid, handler, list,openHepler).msgFriDloadRequest();
+//		new AHttpMsgFriendDload(uid, handler, list,openHepler).msgFriDloadRequest();
 		
 		// get socket with server
 		serverConn();
-	}
-	@Override
-	protected void onStart()
-	{
-		super.onStart();
-		Log.v(TAG,"onStart() called!");
 	}
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
 		Log.v(TAG,"onResume() called!");
+		getRecentMsg();
 	}
-	@Override
-	protected void onPause()
+	public void getRecentMsg()
 	{
-		super.onPause();
-		Log.v(TAG,"onPause() called!");
+		openHepler.getAllRecentMsgList(uid,list);
+		recentMsgAdapter.notifyDataSetChanged();
+		if(list.size()==0)
+		{
+			Toast toast=Toast.makeText(RecentMsgListActivity.this, "还没有消息，快找好友发起会话吧！(求产品组翻译)", Toast.LENGTH_LONG);
+			 toast.setGravity(Gravity.CENTER, 0, 0);
+			 toast.show();
+		}
 	}
-	@Override
-	protected void onStop()
-	{
-		super.onStop();
-		Log.v(TAG,"onStop() called!");
-	}
-	@Override
-	protected void onDestroy()
-	{
-		super.onDestroy();
-		Log.v(TAG,"onDestroy() called!");
-	}
+	
 	
 	public void initEvent() {
 		// 匹配布局文件中的ListView控件
@@ -131,16 +121,16 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		
 		// get the current user id
 		getCurrentUid();
-		//openHepler.updateDb();
-		openHepler.getAllRecentMsgList(uid,list);
-		recentMsgAdapter.notifyDataSetChanged();
-		
-		if(list.size()==0)
-		{
-			Toast toast=Toast.makeText(RecentMsgListActivity.this, "还没有消息，快找好友发起会话吧！(求产品组翻译)", Toast.LENGTH_LONG);
-			 toast.setGravity(Gravity.CENTER, 0, 0);
-			 toast.show();
-		}
+		openHepler.updateDb();
+//		openHepler.getAllRecentMsgList(uid,list);
+//		recentMsgAdapter.notifyDataSetChanged();
+//		
+//		if(list.size()==0)
+//		{
+//			Toast toast=Toast.makeText(RecentMsgListActivity.this, "还没有消息，快找好友发起会话吧！(求产品组翻译)", Toast.LENGTH_LONG);
+//			 toast.setGravity(Gravity.CENTER, 0, 0);
+//			 toast.show();
+//		}
 	
 	}
 

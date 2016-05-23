@@ -65,6 +65,7 @@ public class AHttpGetContacts{
 
 	// send a doget to the server
 	public void getContactsRequest() {
+		list.clear();
 		String ip = new GetServerIp().getServerIp();
 		String url = "http://" + ip + ":8080/web/getContactServlet?&uid=" + uid;
 		AsyncHttpClient client = new AsyncHttpClient();

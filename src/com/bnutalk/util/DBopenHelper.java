@@ -283,6 +283,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * @param list
 	 */
 	public void getAllRecentMsgList(String uid, List<RecentMsgEntity> list) {
+		list.clear();
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		String asql = "select a.cuid as cuid,nick,content,time,isread,avatar from"
@@ -351,6 +352,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * @param list
 	 */
 	public void getContacts(String uid, List<ContactEntity> list) {
+		list.clear();
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		String asql = "select* from " + TABLE_CONTACT + " where uid=" + uid + " order by nick asc";
