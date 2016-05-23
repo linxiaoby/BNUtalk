@@ -133,7 +133,9 @@ public class AddContactsActivity extends Activity {
 				case AHttpAddContacts.NOT_BEFRIEND:
 					break;
 				case AHttpAddContacts.BEFRIEND:
-					Toast.makeText(AddContactsActivity.this, "you and "+nick+"have been friend!", Toast.LENGTH_LONG).show();
+					Toast toast1=Toast.makeText(AddContactsActivity.this, "you and "+nick+" have been friend!", Toast.LENGTH_LONG);
+					 toast1.setGravity(Gravity.CENTER, 0, 0);
+					 toast1.show();
 					break;
 				default:
 					break;

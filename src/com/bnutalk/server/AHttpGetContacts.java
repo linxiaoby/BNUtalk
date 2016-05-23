@@ -76,6 +76,7 @@ public class AHttpGetContacts{
 				CommonUtil.parseJsonContact(strJson, list);
 				msg.what = 0x001;
 				handler.sendMessage(msg);
+				openHelper.addContacts(uid, list);
 			}
 
 			@Override

@@ -75,7 +75,7 @@ public class AHttpMsgFriendDload {
 				CommonUtil.parseJsonMsg(strJson, list);
 				msg.what = 0x001;
 				handler.sendMessage(msg);
-				saveRecentMsgList(list);
+//				openHelper.addAllRecentMsgList(uid, list);
 			}
 
 			@Override

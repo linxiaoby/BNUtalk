@@ -18,11 +18,18 @@ public class MsgEntity implements Serializable {
 	private String fromUid, sendToUid, time;
 	private String content;
 	private int type;
-	
-
+	private int isRead;
 	public MsgEntity() {
 	}
 	
+	public int getIsRead() {
+		return isRead;
+	}
+
+	public void setIsRead(int isRead) {
+		this.isRead = isRead;
+	}
+
 	public MsgEntity(String content,int type) {
 		this.content = content;
 		this.type = type;

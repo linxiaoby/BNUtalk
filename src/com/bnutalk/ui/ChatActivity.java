@@ -1,6 +1,7 @@
 package com.bnutalk.ui;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.database.DefaultDatabaseErrorHandler;
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,15 +65,20 @@ public class ChatActivity extends Activity {
 					inputText.setText("");
 					msgListView.setSelection(msgList.size());
 					
-					sendMessage(smsg);
-					dbOpenHelper.addMsgHistory(smsg);//save message history to the local bd
+					sendMessage(smsg);//send msg to server
+					smsg.setIsRead(1);
+					dbOpenHelper.addMsgHistory(uid,smsg);//save message history to the local bd
 				}
 			}
 		});
 	}
 
 	public void initEvent() {
-		initMsgs();
+//		initMsgs();
+		//get the current uid
+		SharedPreferences pref = getSharedPreferences("user_login", 0);
+		uid = pref.getString("uid", "");
+		
 		inputText = (EditText) findViewById(R.id.input_text);
 		send = (Button) findViewById(R.id.send);
 		msgListView = (ListView) findViewById(R.id.msg_list_view);
@@ -82,7 +88,7 @@ public class ChatActivity extends Activity {
 		fuid = bundle.getString("fuid");
 		
 		dbOpenHelper=new DBopenHelper(ChatActivity.this);
-		dbOpenHelper.getAllMsgHistory(fuid, msgList);//get all history message from the local db
+		dbOpenHelper.getAllMsgHistory(uid,fuid, msgList);//get all history message from the local db
 		
 		adapter = new MsgAdapter(ChatActivity.this, R.layout.item_message, msgList);
 		msgListView.setAdapter(adapter);

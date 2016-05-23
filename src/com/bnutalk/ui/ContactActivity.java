@@ -80,6 +80,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		setContentView(R.layout.activity_contacts);
 		initEvent();
 		// download msgfriends from server
+		if(list.size()==0)
 		new AHttpGetContacts(uid, handler, list,openHepler).getContactsRequest();
 	}
 
@@ -104,7 +105,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		contactAdapter.notifyDataSetChanged();
 		if(list.size()==0)
 		{
-			Toast toast=Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_LONG);
+			Toast toast=Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_SHORT);
 			 toast.setGravity(Gravity.CENTER, 0, 0);
 			 toast.show();
 		}

@@ -59,6 +59,7 @@ import com.bnutalk.util.RecentMsgEntity;
 import com.google.gson.Gson;
 
 public class RecentMsgListActivity extends Activity implements OnItemClickListener, OnScrollListener {
+	private static final String TAG="RecentMsgListActivity";
 	private ListView listView;
 	private List<RecentMsgEntity> list;
 	private int i = 0;
@@ -83,7 +84,37 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		// get socket with server
 		serverConn();
 	}
-
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		Log.v(TAG,"onStart() called!");
+	}
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		Log.v(TAG,"onResume() called!");
+	}
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		Log.v(TAG,"onPause() called!");
+	}
+	@Override
+	protected void onStop()
+	{
+		super.onStop();
+		Log.v(TAG,"onStop() called!");
+	}
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		Log.v(TAG,"onDestroy() called!");
+	}
+	
 	public void initEvent() {
 		// 匹配布局文件中的ListView控件
 		listView = (ListView) findViewById(R.id.lvMsgFriend);
@@ -100,13 +131,13 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		
 		// get the current user id
 		getCurrentUid();
-		openHepler.updateDb();
+		//openHepler.updateDb();
 		openHepler.getAllRecentMsgList(uid,list);
 		recentMsgAdapter.notifyDataSetChanged();
 		
 		if(list.size()==0)
 		{
-			Toast toast=Toast.makeText(RecentMsgListActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_LONG);
+			Toast toast=Toast.makeText(RecentMsgListActivity.this, "还没有消息，快找好友发起会话吧！(求产品组翻译)", Toast.LENGTH_LONG);
 			 toast.setGravity(Gravity.CENTER, 0, 0);
 			 toast.show();
 		}

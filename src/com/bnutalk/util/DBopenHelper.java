@@ -29,8 +29,8 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	private static final String TABLE_MESSAGE_HISTOTY = "message_history";
 	private static final String TABLE_RECENT_MSG = "rencent_message";
 	private static final String TABLE_USER_CARD = "user_card";
-	private static final String TABLE_CONTACT= "contacts";
-	
+	private static final String TABLE_CONTACT = "contacts";
+
 	private static final int DATABASE_VERSION = 1;
 
 	private static final String KEY_UID = "uid";
@@ -41,44 +41,37 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	private static final String KEY_ISREAD = "isread";
 	private static final String KEY_AVATAR = "avatar";
 	private static final String KEY_NICK = "nick";
-	
-	private static final String KEY_SEX="sex";
-	private static final String KEY_AGE="age";
-	private static final String KEY_FACULTY="faculty";
-	private static final String KEY_NATIONALITY="nationality";
-	private static final String KEY_NATIVE_LANGUAGE="native_language";
-	private static final String KEY_LIKE_LANGUAGE="like_language";
-	private static final String KEY_PLACE="place";
-	
-	
-	
+
+	private static final String KEY_SEX = "sex";
+	private static final String KEY_AGE = "age";
+	private static final String KEY_FACULTY = "faculty";
+	private static final String KEY_NATIONALITY = "nationality";
+	private static final String KEY_NATIVE_LANGUAGE = "native_language";
+	private static final String KEY_LIKE_LANGUAGE = "like_language";
+	private static final String KEY_PLACE = "place";
+
 	public DBopenHelper(Context context) {
 		super(context, DATABASE_NAME, null, 1);
 	}
-	
+
 	public DBopenHelper(Context context, String name, CursorFactory factory, int version) {
 		super(context, name, factory, version);
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("create table if not exists message_history (" + "uid text,cuid text," + "content text," + "time text,"
-				+ "type integer)");
-		
-		db.execSQL("create table if not exists rencent_message" + "(uid text,"
-				+ "cuid text," + "nick text,"
+		db.execSQL("create table if not exists message_history (" + "uid text,cuid text," + "content text,"
+				+ "time text," + "type integer,isread integer)");
+
+		db.execSQL("create table if not exists rencent_message" + "(uid text," + "cuid text," + "nick text,"
 				+ "content text," + "time text," + "isread integer," + "avatar blob)");
-		
+
 		db.execSQL("create table if not exists user_card(uid text,cuid text,"
-				+ "sex int,nick text,age int,faculty text,"
-				+ "nationality text,"
-				+ "native_language text,"
-				+ "like_language text,"
-				+ "place text,avatar blob)");
-		
-		db.execSQL("create table if not exists contacts" + "(uid text,cuid text," + "nick text,"
-				+ "nationality text," +   "avatar blob)");
-		
+				+ "sex int,nick text,age int,faculty text," + "nationality text," + "native_language text,"
+				+ "like_language text," + "place text,avatar blob)");
+
+		db.execSQL("create table if not exists contacts" + "(uid text,cuid text," + "nick text," + "nationality text,"
+				+ "avatar blob)");
 	}
 
 	@Override
@@ -86,55 +79,53 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE_HISTOTY);
 		this.onCreate(db);
 	}
+
 	/**
 	 * delete database
+	 * 
 	 * @param context
 	 * @return
 	 */
-	 public boolean deleteDatabase(Context context)
-	 { 
-		 return context.deleteDatabase(DATABASE_NAME); 
-	 } 
+	public boolean deleteDatabase(Context context) {
+		return context.deleteDatabase(DATABASE_NAME);
+	}
+
 	/**
 	 * 
 	 */
 	public void updateDb() {
-		
+
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.execSQL("drop table message_history");
 		db.execSQL("drop table rencent_message");
 		db.execSQL("drop table user_card");
 		db.execSQL("drop table contacts");
-		
-		db.execSQL("create table if not exists message_history (" + "uid text,cuid text," + "content text," + "time text,"
-				+ "type integer)");
-		
-		db.execSQL("create table if not exists rencent_message" + "(uid text,"
-				+ "cuid text," + "nick text,"
+
+		db.execSQL("create table if not exists message_history (" + "uid text,cuid text," + "content text,"
+				+ "time text," + "type integer,isread integer)");
+
+		db.execSQL("create table if not exists rencent_message" + "(uid text," + "cuid text," + "nick text,"
 				+ "content text," + "time text," + "isread integer," + "avatar blob)");
-		
+
 		db.execSQL("create table if not exists user_card(uid text,cuid text,"
-				+ "sex int,nick text,age int,faculty text,"
-				+ "nationality text,"
-				+ "native_language text,"
-				+ "like_language text,"
-				+ "place text,avatar blob)");
-		
-		db.execSQL("create table if not exists contacts" + "(uid text,cuid text," + "nick text,"
-				+ "nationality text," +   "avatar blob)");
+				+ "sex int,nick text,age int,faculty text," + "nationality text," + "native_language text,"
+				+ "like_language text," + "place text,avatar blob)");
+
+		db.execSQL("create table if not exists contacts" + "(uid text,cuid text," + "nick text," + "nationality text,"
+				+ "avatar blob)");
 	}
-	
+
 	/**
 	 * save user cards to local cache
+	 * 
 	 * @param list
 	 */
-	public void  addUserCard(List<UserEntity> list)
-	{
-		
-		SQLiteDatabase db=this.getReadableDatabase();
-		ContentValues values=new ContentValues();
-		db.execSQL("delete from "+TABLE_USER_CARD);//delete first
-		
+	public void addUserCard(List<UserEntity> list) {
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		ContentValues values = new ContentValues();
+		db.execSQL("delete from " + TABLE_USER_CARD);// delete first
+
 		Iterator<UserEntity> iterator = list.iterator();
 		UserEntity uEntity = new UserEntity();
 		while (iterator.hasNext()) {
@@ -153,17 +144,17 @@ public class DBopenHelper extends SQLiteOpenHelper {
 			values.put(KEY_NATIVE_LANGUAGE, uEntity.getMotherTone());
 			values.put(KEY_LIKE_LANGUAGE, uEntity.getLikeLanguage());
 			values.put(KEY_PLACE, uEntity.getPlace());
-			
-			
+
 			db.insert(TABLE_USER_CARD, null, values);
 		}
 	}
+
 	/**
 	 * get user card from TABLE_USER_CARD,this will be called when adding friend
+	 * 
 	 * @param list
 	 */
-	public void getUserCard(List<UserEntity> list)
-	{
+	public void getUserCard(List<UserEntity> list) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		String asql = "select* from " + TABLE_USER_CARD;
@@ -185,19 +176,23 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				list.add(uEntity);
 			}
 		}
-		
+
 	}
+
 	/**
-	 * save message history to local storage,this is call when a new message is sent or received
+	 * save message history to local storage,this is call when a new message is
+	 * sent or received
+	 * 
 	 * @param mEntity
 	 * @return
 	 */
-	public long addMsgHistory(MsgEntity mEntity) {
+	public long addMsgHistory(String uid, MsgEntity mEntity) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-
-		values.put(KEY_UID, mEntity.getSendToUid());
+		values.put(KEY_UID, uid);
+		values.put(KEY_CUID, mEntity.getSendToUid());
 		values.put(KEY_CONTENT, mEntity.getContent());
+		values.put(KEY_ISREAD, mEntity.getIsRead());
 		values.put(KEY_TYPE, mEntity.getType());
 		values.put(KEY_TIME, mEntity.getTime());
 
@@ -206,16 +201,17 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		db.close();
 		return ret;
 	}
+
 	/**
 	 * 
 	 * @param fuid
 	 * @param list
 	 */
-	public void getAllMsgHistory(String fuid, List<MsgEntity> list) {
+	public void getAllMsgHistory(String uid, String cuid, List<MsgEntity> list) {
 		// Integer id = Integer.valueOf(fuid);
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		String asql = "select* from " + TABLE_MESSAGE_HISTOTY + " where uid=" + fuid;
+		String asql = "select* from " + TABLE_MESSAGE_HISTOTY + " where uid=" + uid + " and cuid=" + cuid;
 		Cursor cursor = db.rawQuery(asql, null);
 
 		if (cursor.moveToFirst()) {
@@ -230,25 +226,25 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		}
 		db.close();
 	}
+
 	/**
 	 * 
 	 * @param rEntity
 	 * @return
 	 */
-	public long addRecentMsgList(String uid,RecentMsgEntity rEntity) {
-		
+	public long addRecentMsgList(String uid, RecentMsgEntity rEntity) {
+
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		
 
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		Bitmap bmp = rEntity.getAvatar();
 		bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
 
 		values.put(KEY_AVATAR, os.toByteArray());
-		values.put(KEY_UID,uid);
+		values.put(KEY_UID, uid);
 		values.put(KEY_CUID, rEntity.getUid());
-		
+
 		values.put(KEY_NICK, rEntity.getNick());
 		values.put(KEY_TIME, rEntity.getTime());
 		values.put(KEY_CONTENT, rEntity.getMsgContent());
@@ -257,23 +253,23 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		long res = db.insert(TABLE_RECENT_MSG, null, values);
 		return res;
 	}
-	
-public void addAllRecentMsgList(String uid,List<RecentMsgEntity> list) {
+
+	public void addAllRecentMsgList(String uid, List<RecentMsgEntity> list) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		db.execSQL("delete from "+TABLE_RECENT_MSG+" where uid="+uid);//delete first
-		Iterator<RecentMsgEntity> iterator=list.iterator();
-		while(iterator.hasNext())
-		{
-			RecentMsgEntity rEntity=new RecentMsgEntity();
+		db.execSQL("delete from " + TABLE_RECENT_MSG + " where uid=" + uid);// delete
+																			// first
+		Iterator<RecentMsgEntity> iterator = list.iterator();
+		while (iterator.hasNext()) {
+			RecentMsgEntity rEntity = new RecentMsgEntity();
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			Bitmap bmp = rEntity.getAvatar();
 			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
 
 			values.put(KEY_AVATAR, os.toByteArray());
-			values.put(KEY_UID,uid);
+			values.put(KEY_UID, uid);
 			values.put(KEY_CUID, rEntity.getUid());
-			
+
 			values.put(KEY_NICK, rEntity.getNick());
 			values.put(KEY_TIME, rEntity.getTime());
 			values.put(KEY_CONTENT, rEntity.getMsgContent());
@@ -281,47 +277,55 @@ public void addAllRecentMsgList(String uid,List<RecentMsgEntity> list) {
 			db.insert(TABLE_RECENT_MSG, null, values);
 		}
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param list
 	 */
-	public void getAllRecentMsgList(String uid,List<RecentMsgEntity> list) {
+	public void getAllRecentMsgList(String uid, List<RecentMsgEntity> list) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		String sql = "select* from " + TABLE_RECENT_MSG+" where uid="+uid;
-		Cursor c = db.rawQuery(sql, null);
+		String asql = "select a.cuid as cuid,nick,content,time,isread,avatar from"
+				+ "((select cuid,content,time,isread from"
+				+ "(select distinct  cuid,content,time,isread from message_history where uid=" + uid
+				+ " order by time asc)f "
+				+ "group by cuid)a left outer join (select cuid,nick,avatar from contacts where uid=" + uid
+				+ ")b on a.cuid=b.cuid)";
+		// String sql = "select* from " + TABLE_RECENT_MSG + " where uid=" +
+		// uid;
+		Cursor c = db.rawQuery(asql, null);
 		if (c != null) {
 			while (c.moveToNext()) {
 				RecentMsgEntity rEntity = new RecentMsgEntity();
-				rEntity.setUid(c.getString(c.getColumnIndex(KEY_UID)));
+				rEntity.setUid(c.getString(c.getColumnIndex(KEY_CUID)));
 				rEntity.setMsgContent(c.getString(c.getColumnIndex(KEY_CONTENT)));
 				rEntity.setNick(c.getString(c.getColumnIndex(KEY_NICK)));
 				rEntity.setTime(c.getString(c.getColumnIndex(KEY_TIME)));
 				rEntity.setRead(c.getInt(c.getColumnIndex(KEY_ISREAD)));
 
 				byte[] in = c.getBlob(c.getColumnIndex(KEY_AVATAR));
-				Bitmap bmp = BitmapFactory.decodeByteArray(in, 0, in.length);
-				rEntity.setAvatar(bmp);
+				if(in!=null)
+				{
+					Bitmap bmp = BitmapFactory.decodeByteArray(in, 0, in.length);
+					rEntity.setAvatar(bmp);
+				}	
 				list.add(rEntity);
 			}
 		}
 
 	}
-	
-	
+
 	/**
 	 * save contacs to local cache
+	 * 
 	 * @param list
 	 */
-	public void  addContacts(String uid,List<ContactEntity> list)
-	{
-		
-		SQLiteDatabase db=this.getReadableDatabase();
-		ContentValues values=new ContentValues();
-		db.execSQL("delete from "+TABLE_USER_CARD+" where uid="+uid);//delete first
-		
+	public void addContacts(String uid, List<ContactEntity> list) {
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		ContentValues values = new ContentValues();
+		db.execSQL("delete from " + TABLE_CONTACT + " where uid=" + uid);// delete first
+
 		Iterator<ContactEntity> iterator = list.iterator();
 		ContactEntity cEntity = new ContactEntity();
 		while (iterator.hasNext()) {
@@ -330,41 +334,41 @@ public void addAllRecentMsgList(String uid,List<RecentMsgEntity> list) {
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			Bitmap bmp = cEntity.getAvatar();
 			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
-			
+
 			values.put(KEY_AVATAR, os.toByteArray());
 			values.put(KEY_UID, uid);
 			values.put(KEY_CUID, cEntity.getUid());
 			values.put(KEY_NICK, cEntity.getNick());
 			values.put(KEY_NATIONALITY, cEntity.getNationality());
-			
+
 			db.insert(TABLE_CONTACT, null, values);
 		}
 	}
-	
+
 	/**
-	 * get contacs from local 
+	 * get contacs from local
+	 * 
 	 * @param list
 	 */
-	public void getContacts(String uid,List<ContactEntity> list)
-	{
+	public void getContacts(String uid, List<ContactEntity> list) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		String asql = "select* from " + TABLE_CONTACT+" where uid="+uid+" order by nick asc";
+		String asql = "select* from " + TABLE_CONTACT + " where uid=" + uid + " order by nick asc";
 		Cursor c = db.rawQuery(asql, null);
 		if (c != null) {
 			while (c.moveToNext()) {
 				ContactEntity cEntity = new ContactEntity();
-				cEntity.setUid(c.getString(c.getColumnIndex(KEY_UID)));
+				cEntity.setUid(c.getString(c.getColumnIndex(KEY_CUID)));
 				cEntity.setNick(c.getString(c.getColumnIndex(KEY_NICK)));
 				cEntity.setNationality(c.getString(c.getColumnIndex(KEY_NATIONALITY)));
-				
+
 				byte[] in = c.getBlob(c.getColumnIndex(KEY_AVATAR));
 				Bitmap bmp = BitmapFactory.decodeByteArray(in, 0, in.length);
 				cEntity.setAvatar(bmp);
-				
+
 				list.add(cEntity);
 			}
 		}
-		
+
 	}
 }
