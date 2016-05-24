@@ -122,16 +122,6 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		// get the current user id
 		getCurrentUid();
 		openHepler.updateDb();
-//		openHepler.getAllRecentMsgList(uid,list);
-//		recentMsgAdapter.notifyDataSetChanged();
-//		
-//		if(list.size()==0)
-//		{
-//			Toast toast=Toast.makeText(RecentMsgListActivity.this, "还没有消息，快找好友发起会话吧！(求产品组翻译)", Toast.LENGTH_LONG);
-//			 toast.setGravity(Gravity.CENTER, 0, 0);
-//			 toast.show();
-//		}
-	
 	}
 
 	/**

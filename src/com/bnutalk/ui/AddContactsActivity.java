@@ -69,6 +69,12 @@ public class AddContactsActivity extends Activity {
 		super.onResume();
 		android.util.Log.v(TAG,"onResume() called!");
 	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		android.util.Log.v(TAG, "onPause() called!");
+		helper.addUserCard(uid, list);
+	}
 	/**
 	 * init
 	 */
@@ -80,7 +86,6 @@ public class AddContactsActivity extends Activity {
 		music = (ImageView) findViewById(R.id.iv_card_flag6);
 		list = new ArrayList<UserEntity>();
 		adapter = new CardAdapter(AddContactsActivity.this, list);
-		
 		helper=new DBopenHelper(getApplicationContext());
 		
 		left.setOnClickListener(new OnClickListener() {
@@ -100,8 +105,10 @@ public class AddContactsActivity extends Activity {
 		defFling();
 		
 		//read user cards from local cache to show first
-		helper.getUserCard(list);
+		helper.getUserCard(uid,list);
 		adapter.notifyDataSetChanged();
+		
+		// get the current uid
 		pref = getSharedPreferences("user_login", 0);
 		editor = pref.edit();
 		String cacheUid = pref.getString("uid", "");
@@ -114,8 +121,6 @@ public class AddContactsActivity extends Activity {
 			 toast.setGravity(Gravity.CENTER, 0, 0);
 			 toast.show();
 		}
-		
-		
 	}
 	/**
 	 * define handler operation

@@ -74,7 +74,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	public static Socket socket;
 	private String uid;
 	private SharedPreferences msgListPref;
-	private DBopenHelper openHepler;
+	private DBopenHelper openHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +83,6 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_contacts);
 		initEvent();
-		// download msgfriends from server
-		
 	}
 
 	@Override
@@ -93,11 +91,12 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		android.util.Log.v(TAG, "onResume() called!");
 		getContact();
 		if (list.size() == 0)
-			new AHttpGetContacts(uid, handler, list, openHepler).getContactsRequest();
+			new AHttpGetContacts(uid, handler, list, openHelper).getContactsRequest();
 	}
+	
 
 	public void getContact() {
-		openHepler.getContacts(uid, list);
+		openHelper.getContacts(uid, list);
 		contactAdapter.notifyDataSetChanged();
 		if (list.size() == 0) {
 			Toast toast = Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_SHORT);
@@ -116,7 +115,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		listView.setAdapter(contactAdapter);
 
 		msgListPref = getSharedPreferences("recent_msg_list", 0);
-		openHepler = new DBopenHelper(getApplicationContext());
+		openHelper = new DBopenHelper(getApplicationContext());
 
 		// get the current user id
 		getCurrentUid();

@@ -120,11 +120,11 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param list
 	 */
-	public void addUserCard(List<UserEntity> list) {
+	public void addUserCard(String uid,List<UserEntity> list) {
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		ContentValues values = new ContentValues();
-		db.execSQL("delete from " + TABLE_USER_CARD);// delete first
+		db.execSQL("delete from " + TABLE_USER_CARD+" where uid="+uid);// delete first
 
 		Iterator<UserEntity> iterator = list.iterator();
 		UserEntity uEntity = new UserEntity();
@@ -136,7 +136,8 @@ public class DBopenHelper extends SQLiteOpenHelper {
 			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
 
 			values.put(KEY_AVATAR, os.toByteArray());
-			values.put(KEY_UID, uEntity.getUid());
+			values.put(KEY_UID, uid);
+			values.put(KEY_CUID, uEntity.getUid());
 			values.put(KEY_NICK, uEntity.getNick());
 			values.put(KEY_SEX, uEntity.getSex());
 			values.put(KEY_AGE, uEntity.getAge());
@@ -154,15 +155,15 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param list
 	 */
-	public void getUserCard(List<UserEntity> list) {
+	public void getUserCard(String uid,List<UserEntity> list) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		String asql = "select* from " + TABLE_USER_CARD;
+		String asql = "select* from " + TABLE_USER_CARD+" where uid="+uid;
 		Cursor c = db.rawQuery(asql, null);
 		if (c != null) {
 			while (c.moveToNext()) {
 				UserEntity uEntity = new UserEntity();
-				uEntity.setUid(c.getString(c.getColumnIndex(KEY_UID)));
+				uEntity.setUid(c.getString(c.getColumnIndex(KEY_CUID)));
 				uEntity.setAge(c.getInt(c.getColumnIndex(KEY_AGE)));
 				uEntity.setNick(c.getString(c.getColumnIndex(KEY_NICK)));
 				uEntity.setFaculty(c.getString(c.getColumnIndex(KEY_FACULTY)));
