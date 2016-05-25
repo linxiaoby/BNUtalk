@@ -90,7 +90,7 @@ public class RecentMsgEntity implements Comparable<RecentMsgEntity> {
 
 	@Override
 	public int compareTo(RecentMsgEntity a) {
-		return CommonUtil.compareTime(this.time, a.time);
+		return CommonUtil.compareTime(a.time,this.time);
 	}
 
 }

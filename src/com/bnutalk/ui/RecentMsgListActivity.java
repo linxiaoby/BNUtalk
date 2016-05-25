@@ -91,6 +91,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	public void getRecentMsg()
 	{
 		openHepler.getAllRecentMsgList(uid,list);
+		CommonUtil.sortListByTime(list);
 		recentMsgAdapter.notifyDataSetChanged();
 		if(list.size()==0)
 		{

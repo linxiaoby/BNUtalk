@@ -9,7 +9,7 @@ import android.graphics.Bitmap;
  * Author:linxiaoby
  * contact entity
  */
-public class ContactEntity implements Serializable {
+public class ContactEntity implements Serializable,Comparable<ContactEntity> {
 	private static final long serialVersionUID = 1L;
 	private Bitmap avatar;
 	private String uid;
