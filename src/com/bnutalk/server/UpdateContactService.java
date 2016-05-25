@@ -69,7 +69,7 @@ public class UpdateContactService extends Service {
 		
 		/*start a thread*/
 		AlarmManager manager=(AlarmManager) getSystemService(ALARM_SERVICE);
-		int anHour=1000;//1min
+		int anHour=1000*15;//15s
 		long triggerAtTime=SystemClock.elapsedRealtime()+anHour;
 //		Intent i=new Intent(this, );
 		Intent in=new Intent("android.intent.action.contact");

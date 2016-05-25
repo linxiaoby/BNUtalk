@@ -78,9 +78,6 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_recent_msglist);
 		initEvent();
-		// download msgfriends from server
-//		new AHttpMsgFriendDload(uid, handler, list,openHepler).msgFriDloadRequest();
-		
 		// get socket with server
 		serverConn();
 	}

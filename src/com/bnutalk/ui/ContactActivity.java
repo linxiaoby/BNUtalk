@@ -101,7 +101,9 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		listView.setOnScrollListener(this);
 		myApp = (MyApplication) getApplicationContext();
 		list = new ArrayList<ContactEntity>();
-		contactAdapter = new ContactAdapter(ContactActivity.this,list);
+//		contactAdapter = new ContactAdapter(ContactActivity.this, list);
+		contactAdapter = new ContactAdapter(ContactActivity.this, myApp.getConList());
+		
 		listView.setAdapter(contactAdapter);
 
 		msgListPref = getSharedPreferences("recent_msg_list", 0);
@@ -110,7 +112,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		// get the current user id
 		getCurrentUid();
 		// handler operation
-//		defHandler();
+		// defHandler();
 
 		// start service,update ui
 		Intent intent = new Intent(this, UpdateContactService.class);
@@ -127,20 +129,14 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	public class AlarmReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			list.clear();
-			list.addAll(myApp.getConList());
-			
+//			list.clear();
+//			list.addAll(myApp.getConList());
+
 			listView.setAdapter(contactAdapter);
 			contactAdapter.notifyDataSetChanged();
 			Log.v("contact changed", new Date().toString());
-			//start a thread to save contact to local 
-			new Thread( new Runnable() {
-				@Override
-				public void run() {
-					openHelper.addContacts(uid, list);
-				}
-			}).start();
-			Intent intent2= new Intent(context, UpdateContactService.class);
+
+			Intent intent2 = new Intent(context, UpdateContactService.class);
 			intent.putExtra("uid", uid);
 			startService(intent2);
 		}
@@ -150,16 +146,28 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	protected void onResume() {
 		super.onResume();
 		android.util.Log.v(TAG, "onResume() called!");
-		 getContact();
-		// if (list.size() == 0)
-		// new AHttpGetContacts(uid, handler, list,
-		// openHelper).getContactsRequest();
+//		getContact();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		android.util.Log.v(TAG, "onResume() called!");
+		// start a thread to save contact to local
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				List<ContactEntity> tmpList=new ArrayList<ContactEntity>();
+				tmpList.addAll(myApp.getConList());
+				openHelper.addContacts(uid, tmpList);
+			}
+		}).start();
 	}
 
 	public void getContact() {
-		openHelper.getContacts(uid, myApp.getConList());
+		openHelper.getContacts(uid, list);
 		contactAdapter.notifyDataSetChanged();
-		if (myApp.getConList().size() == 0) {
+		if (list.size() == 0) {
 			Toast toast = Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
