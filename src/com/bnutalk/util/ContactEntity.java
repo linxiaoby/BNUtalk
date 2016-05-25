@@ -1,5 +1,7 @@
 package com.bnutalk.util;
 
+import java.io.Serializable;
+
 import com.bnutalk.util.CommonUtil;
 import android.graphics.Bitmap;
 /**
@@ -7,7 +9,8 @@ import android.graphics.Bitmap;
  * Author:linxiaoby
  * contact entity
  */
-public class ContactEntity implements Comparable<ContactEntity> {
+public class ContactEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private Bitmap avatar;
 	private String uid;
 	private String nick;
@@ -53,12 +56,6 @@ public class ContactEntity implements Comparable<ContactEntity> {
 		this.nationality = nationality;
 	}
 
-	/**
-	 * sort by nick
-	 */
-	@Override
-	public int compareTo(ContactEntity a) {
-		return CommonUtil.compareTime(this.nick, a.nick);
-	}
+	
 
 }

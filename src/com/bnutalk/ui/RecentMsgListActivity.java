@@ -1,13 +1,13 @@
 package com.bnutalk.ui;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
 /*
  * Author:by linxiaobai 2016/04/30
  * 功能：聊天好友列表
  */
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +45,6 @@ import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 
-import com.bnutalk.server.AHttpMsgFriendDload;
 import com.bnutalk.server.GetServerIp;
 import com.bnutalk.server.ReadFromServThread;
 import com.bnutalk.ui.LoginActivity;

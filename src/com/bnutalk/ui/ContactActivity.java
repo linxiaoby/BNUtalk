@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,7 +24,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -47,16 +51,18 @@ import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 
 import com.bnutalk.server.AHttpGetContacts;
-import com.bnutalk.server.AHttpMsgFriendDload;
 import com.bnutalk.server.GetServerIp;
 import com.bnutalk.server.ReadFromServThread;
+import com.bnutalk.server.UpdateContactService;
 import com.bnutalk.ui.LoginActivity;
 import com.bnutalk.ui.R;
 import com.bnutalk.ui.SignUpPersInfoActivity;
+import com.bnutalk.ui.TestActivity.AlarmReceiver;
 import com.bnutalk.util.CommonUtil;
 import com.bnutalk.util.ContactEntity;
 import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.MsgEntity;
+import com.bnutalk.util.MyApplication;
 import com.bnutalk.util.RecentMsgAdapter;
 import com.bnutalk.util.RecentMsgEntity;
 import com.google.gson.Gson;
@@ -64,6 +70,7 @@ import com.google.gson.Gson;
 public class ContactActivity extends Activity implements OnItemClickListener, OnScrollListener {
 	private static final String TAG = "ContactActivity";
 	private ListView listView;
+
 	private List<ContactEntity> list;
 	private int i = 0;
 	private Handler handler;
@@ -75,6 +82,8 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	private String uid;
 	private SharedPreferences msgListPref;
 	private DBopenHelper openHelper;
+	private MyApplication myApp;
+	private AlarmReceiver receiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,33 +94,14 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		initEvent();
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		android.util.Log.v(TAG, "onResume() called!");
-		getContact();
-		if (list.size() == 0)
-			new AHttpGetContacts(uid, handler, list, openHelper).getContactsRequest();
-	}
-	
-
-	public void getContact() {
-		openHelper.getContacts(uid, list);
-		contactAdapter.notifyDataSetChanged();
-		if (list.size() == 0) {
-			Toast toast = Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_SHORT);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
-		}
-	}
-
 	public void initEvent() {
 		// 匹配布局文件中的ListView控件
 		listView = (ListView) findViewById(R.id.lsContacts);
 		listView.setOnItemClickListener(this);
 		listView.setOnScrollListener(this);
+		myApp = (MyApplication) getApplicationContext();
 		list = new ArrayList<ContactEntity>();
-		contactAdapter = new ContactAdapter(ContactActivity.this, list);
+		contactAdapter = new ContactAdapter(ContactActivity.this,list);
 		listView.setAdapter(contactAdapter);
 
 		msgListPref = getSharedPreferences("recent_msg_list", 0);
@@ -119,18 +109,61 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 
 		// get the current user id
 		getCurrentUid();
-
 		// handler operation
-		defHandler();
-		// openHepler.getContacts(uid,list);
-		// contactAdapter.notifyDataSetChanged();
-		// if(list.size()==0)
-		// {
-		// Toast toast=Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧",
-		// Toast.LENGTH_SHORT);
-		// toast.setGravity(Gravity.CENTER, 0, 0);
-		// toast.show();
-		// }
+//		defHandler();
+
+		// start service,update ui
+		Intent intent = new Intent(this, UpdateContactService.class);
+		intent.putExtra("uid", uid);
+		startService(intent);
+
+		// registerReceiver
+		receiver = new AlarmReceiver();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("android.intent.action.contact");
+		registerReceiver(receiver, filter);
+	}
+
+	public class AlarmReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			list.clear();
+			list.addAll(myApp.getConList());
+			
+			listView.setAdapter(contactAdapter);
+			contactAdapter.notifyDataSetChanged();
+			Log.v("contact changed", new Date().toString());
+			//start a thread to save contact to local 
+			new Thread( new Runnable() {
+				@Override
+				public void run() {
+					openHelper.addContacts(uid, list);
+				}
+			}).start();
+			Intent intent2= new Intent(context, UpdateContactService.class);
+			intent.putExtra("uid", uid);
+			startService(intent2);
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		android.util.Log.v(TAG, "onResume() called!");
+		 getContact();
+		// if (list.size() == 0)
+		// new AHttpGetContacts(uid, handler, list,
+		// openHelper).getContactsRequest();
+	}
+
+	public void getContact() {
+		openHelper.getContacts(uid, myApp.getConList());
+		contactAdapter.notifyDataSetChanged();
+		if (myApp.getConList().size() == 0) {
+			Toast toast = Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+		}
 	}
 
 	/**
@@ -146,7 +179,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 				switch (msg.what) {
 				case 0x001:// friend list download success
 					contactAdapter.notifyDataSetChanged();
-					if (list.size() == 0) {
+					if (myApp.getConList().size() == 0) {
 						Toast toast = Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_LONG);
 						toast.setGravity(Gravity.CENTER, 0, 0);
 						toast.show();

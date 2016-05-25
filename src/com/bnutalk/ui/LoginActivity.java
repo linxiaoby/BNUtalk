@@ -22,6 +22,7 @@ import org.apache.http.Header;
 import com.bnutalk.server.AHttpLoginCheck;
 import com.bnutalk.server.GetServerIp;
 import com.bnutalk.ui.R;
+import com.bnutalk.util.MyApplication;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -100,7 +101,9 @@ public class LoginActivity extends Activity {
 				switch (msg.what) {
 				case 1:
 					Toast.makeText(LoginActivity.this, "login success!", Toast.LENGTH_LONG).show();
-					// info right,save uid into user_login
+					// info right,save uid into user_login,set final varable uid
+					MyApplication myApp=(MyApplication) getApplicationContext();
+					myApp.setUid(uid);
 					writeUidToCache();
 					// jump into MainActivity
 					Intent intent = new Intent();

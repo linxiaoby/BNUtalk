@@ -16,8 +16,8 @@ import org.json.JSONObject;
 import com.bnutalk.util.CommonUtil;
 import com.bnutalk.util.ContactEntity;
 import com.bnutalk.util.DBopenHelper;
+import com.bnutalk.util.MyApplication;
 import com.bnutalk.util.RecentMsgEntity;
-import com.bnutalk.util.SaveRecentMsgList;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -51,18 +51,14 @@ public class AHttpGetContacts{
 	private String uid;// send uid to server
 	private SharedPreferences pref = null;
 	private DBopenHelper openHelper;
-
+	private MyApplication myApp;
 	public AHttpGetContacts() {
 	}
-
-	public AHttpGetContacts(String uid, Handler handler, List<ContactEntity> list, DBopenHelper openHelper) {
-		this.uid = uid;
-		this.handler = handler;
-		this.list = list;
-		this.strJson = null;
-		this.openHelper = openHelper;
+	public AHttpGetContacts(String uid,List<ContactEntity> list) {
+		this.uid=uid;
+		this.list=list;
 	}
-
+	
 	// send a doget to the server
 	public void getContactsRequest() {
 		list.clear();
@@ -74,16 +70,16 @@ public class AHttpGetContacts{
 			public void onSuccess(int status, Header[] header, byte[] response) {
 				// Json解析
 				strJson = new String(response);
-				CommonUtil.parseJsonContact(strJson, list);
-				msg.what = 0x001;
-				handler.sendMessage(msg);
-				openHelper.addContacts(uid, list);
+				CommonUtil.parseJsonContact(strJson,list);
+//				msg.what = 0x001;
+//				handler.sendMessage(msg);
+//				openHelper.addContacts(uid, list);
 			}
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-				msg.what = 0x002;
-				handler.sendMessage(msg);
+//				msg.what = 0x002;
+//				handler.sendMessage(msg);
 			}
 		});
 	}

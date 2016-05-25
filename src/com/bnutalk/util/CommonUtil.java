@@ -146,6 +146,7 @@ public class CommonUtil {
 	 */
 	public static void parseJsonContact(String strJson,List<ContactEntity> list) {
 		try {
+			list.clear();
 			JSONArray jsonArray = new JSONArray(strJson);
 			for(int i=0;i<jsonArray.length();i++)
 			{
