@@ -9,6 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -58,6 +60,7 @@ public class UpdateContactService extends Service {
 					myApp.getConList().clear();
 					Log.v("myApp.conList", "size is"+myApp.getConList().size());
 					myApp.getConList().addAll(list);
+					Collections.sort(list);
 					Log.v("myApp.conList", "size is"+myApp.getConList().size());
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
@@ -69,7 +72,7 @@ public class UpdateContactService extends Service {
 		
 		/*start a thread*/
 		AlarmManager manager=(AlarmManager) getSystemService(ALARM_SERVICE);
-		int anHour=1000*15;//15s
+		int anHour=1000*60;//1min
 		long triggerAtTime=SystemClock.elapsedRealtime()+anHour;
 //		Intent i=new Intent(this, );
 		Intent in=new Intent("android.intent.action.contact");

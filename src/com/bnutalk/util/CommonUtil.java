@@ -110,6 +110,8 @@ public class CommonUtil {
 	 * @param list
 	 */
 	public static void parseJsonUser(String strJson,List<UserEntity> list) {
+		if(list.size()!=0)
+			list.clear();
 		try {
 			JSONArray jsonArray = new JSONArray(strJson);
 			for(int i=0;i<jsonArray.length();i++)

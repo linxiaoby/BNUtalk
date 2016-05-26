@@ -7,18 +7,28 @@ import android.app.Application;
 
 public class MyApplication extends Application {
 	private List<ContactEntity> conList;
+	private List<UserEntity> selfInfoList;
 	private String uid;
+	
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		conList=new ArrayList<ContactEntity>();
+		selfInfoList=new ArrayList<UserEntity>();
+	}
+	public List<UserEntity> getSelfInfoList() {
+		return selfInfoList;
+	}
+	public void setSelfInfoList(List<UserEntity> selfInfoList) {
+		this.selfInfoList = selfInfoList;
+	}
 	public String getUid() {
 		return uid;
 	}
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		conList=new ArrayList<ContactEntity>();
-	}
+	
 	public List<ContactEntity> getConList() {
 		return conList;
 	}

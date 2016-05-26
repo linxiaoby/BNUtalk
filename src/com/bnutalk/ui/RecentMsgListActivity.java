@@ -81,6 +81,27 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		// get socket with server
 		serverConn();
 	}
+	
+	
+	
+	public void initEvent() {
+		// 匹配布局文件中的ListView控件
+		listView = (ListView) findViewById(R.id.lvMsgFriend);
+		listView.setOnItemClickListener(this);
+		listView.setOnScrollListener(this);
+		list = new ArrayList<RecentMsgEntity>();
+		
+		recentMsgAdapter = new RecentMsgAdapter(RecentMsgListActivity.this, list);
+		listView.setAdapter(recentMsgAdapter);
+		
+		msgListPref = getSharedPreferences("recent_msg_list", 0);
+		defHandler();
+		openHepler=new DBopenHelper(getApplicationContext());
+		
+		// get the current user id
+		getCurrentUid();
+//		openHepler.updateDb();
+	}
 	@Override
 	protected void onResume()
 	{
@@ -100,27 +121,6 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 			 toast.show();
 		}
 	}
-	
-	
-	public void initEvent() {
-		// 匹配布局文件中的ListView控件
-		listView = (ListView) findViewById(R.id.lvMsgFriend);
-		listView.setOnItemClickListener(this);
-		listView.setOnScrollListener(this);
-		list = new ArrayList<RecentMsgEntity>();
-		
-		recentMsgAdapter = new RecentMsgAdapter(RecentMsgListActivity.this, list);
-		listView.setAdapter(recentMsgAdapter);
-		
-		msgListPref = getSharedPreferences("recent_msg_list", 0);
-		defHandler();
-		openHepler=new DBopenHelper(getApplicationContext());
-		
-		// get the current user id
-		getCurrentUid();
-		openHepler.updateDb();
-	}
-
 	/**
 	 * define handler server operation:get msgfriend data,and update ui
 	 */

@@ -70,7 +70,6 @@ import com.google.gson.Gson;
 public class ContactActivity extends Activity implements OnItemClickListener, OnScrollListener {
 	private static final String TAG = "ContactActivity";
 	private ListView listView;
-
 	private List<ContactEntity> list;
 	private int i = 0;
 	private Handler handler;
@@ -92,6 +91,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_contacts);
 		initEvent();
+		getContact();
 	}
 
 	public void initEvent() {
@@ -113,17 +113,18 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		getCurrentUid();
 		// handler operation
 		// defHandler();
-
-		// start service,update ui
-		Intent intent = new Intent(this, UpdateContactService.class);
-		intent.putExtra("uid", uid);
-		startService(intent);
-
+		
+		
 		// registerReceiver
-		receiver = new AlarmReceiver();
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("android.intent.action.contact");
-		registerReceiver(receiver, filter);
+//		receiver = new AlarmReceiver();
+//		IntentFilter filter = new IntentFilter();
+//		filter.addAction("android.intent.action.contact");
+//		registerReceiver(receiver, filter);
+		
+		// start service,update ui
+//		Intent intent = new Intent(this, UpdateContactService.class);
+//		intent.putExtra("uid", uid);
+//		startService(intent);
 	}
 
 	public class AlarmReceiver extends BroadcastReceiver {

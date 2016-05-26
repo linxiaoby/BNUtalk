@@ -55,7 +55,8 @@ public class ContactEntity implements Serializable,Comparable<ContactEntity> {
 	public void setNationality(String nationality) {
 		this.nationality = nationality;
 	}
-
-	
-
+	@Override
+	public int compareTo(ContactEntity a) {
+		return this.nick.compareTo(a.nick);
+	}
 }

@@ -1,8 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
+    android:background="@drawable/blue_background">
+    <ImageView
+        android:id="@+id/helloText"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:gravity="center"
+        android:layout_above="@+id/helloText1"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textSize="30sp"
+        android:layout_below="@+id/helloText"
+        android:layout_centerHorizontal="true" />
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/word_list"
+        android:id="@+id/imageView2"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/helloText"
+        android:layout_toStartOf="@+id/helloText" />
+    <TextView
+        android:id="@+id/word_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="word list"
+        android:textColor="#fff"
+        android:textSize="28sp"
+        android:layout_alignBottom="@+id/imageView2"
+        android:layout_centerHorizontal="true" />
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/setting"
+        android:id="@+id/imageView4"
+        android:layout_below="@+id/imageView2"
+        android:layout_marginTop="20dp"
+        android:layout_toLeftOf="@+id/helloText"
+        android:layout_toStartOf="@+id/helloText"/>
+    <TextView
+        android:id="@+id/setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="settings"
+        android:textColor="#fff"
+        android:textSize="28sp"
+        android:layout_alignBottom="@+id/imageView4"
+        android:layout_centerHorizontal="true" />
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/location"
+        android:id="@+id/imageView6"
+        android:layout_below="@+id/imageView4"
+        android:layout_marginTop="20dp"
+        android:layout_toLeftOf="@+id/helloText"
+        android:layout_toStartOf="@+id/helloText" />
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="location"
+        android:textColor="#fff"
+        android:textSize="28sp"
+        android:layout_alignBottom="@+id/imageView6"
+        android:layout_centerHorizontal="true" />
+    <ImageView
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/microphone"
+        android:id="@+id/imageView3"
+        android:layout_below="@+id/imageView6"
+        android:layout_marginTop="20dp"
+        android:layout_toLeftOf="@+id/helloText"
+        android:layout_toStartOf="@+id/helloText"/>
+    <TextView
+        android:id="@+id/sound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sound"
+        android:textColor="#fff"
+        android:textSize="28sp"
+        android:layout_alignBottom="@+id/imageView3"
+        android:layout_centerHorizontal="true" />
 
-</LinearLayout>
+</RelativeLayout>

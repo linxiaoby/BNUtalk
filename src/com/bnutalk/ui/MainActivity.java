@@ -28,13 +28,7 @@ public class MainActivity extends TabActivity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-
 		initEvent();
-
-		// tabhost.addTab(tabhost.newTabSpec("tag2").setIndicator("1").setContent(new
-		// Intent(this,Activity2.class)));
-		// tabhost.addTab(tabhost.newTabSpec("tag3").setIndicator("2").setContent(new
-		// Intent(this,Activity3.class)));
 		checkListener checkradio = new checkListener();
 		main_radiogroup.setOnCheckedChangeListener(checkradio);
 	}
@@ -51,18 +45,19 @@ public class MainActivity extends TabActivity {
 				tabhost.newTabSpec("tag1").setIndicator("0").setContent(new Intent(this, RecentMsgListActivity.class)));
 		tabhost.addTab(
 				tabhost.newTabSpec("tag2").setIndicator("1").setContent(new Intent(this, ContactActivity.class)));
-	
+		tabhost.addTab(
+				tabhost.newTabSpec("tag3").setIndicator("2").setContent(new Intent(this, SettingsAcitivity.class)));
+
 		addFriend.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent=new Intent();
+				Intent intent = new Intent();
 				intent.setClass(MainActivity.this, AddContactsActivity.class);
 				startActivity(intent);
 			}
 		});
 	}
 
-	// ������
 	public class checkListener implements OnCheckedChangeListener {
 		@Override
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -76,7 +71,7 @@ public class MainActivity extends TabActivity {
 				tabhost.setCurrentTab(1);
 				break;
 			case R.id.tab_icon_settings:
-				tabhost.setCurrentTab(3);
+				tabhost.setCurrentTab(2);
 				break;
 			}
 

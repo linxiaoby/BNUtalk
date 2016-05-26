@@ -30,6 +30,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	private static final String TABLE_RECENT_MSG = "rencent_message";
 	private static final String TABLE_USER_CARD = "user_card";
 	private static final String TABLE_CONTACT = "contacts";
+	private static final String TABLE_SELF_INFO = "self_info";
 
 	private static final int DATABASE_VERSION = 1;
 
@@ -72,6 +73,9 @@ public class DBopenHelper extends SQLiteOpenHelper {
 
 		db.execSQL("create table if not exists contacts" + "(uid text,cuid text," + "nick text," + "nationality text,"
 				+ "avatar blob)");
+
+		db.execSQL("create table if not exists self_info(uid text," + "sex int,nick text,age int,faculty text,"
+				+ "nationality text," + "native_language text," + "like_language text," + "place text,avatar blob)");
 	}
 
 	@Override
@@ -100,7 +104,6 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		db.execSQL("drop table rencent_message");
 		db.execSQL("drop table user_card");
 		db.execSQL("drop table contacts");
-
 		db.execSQL("create table if not exists message_history (" + "uid text,cuid text," + "content text,"
 				+ "time text," + "type integer,isread integer)");
 
@@ -113,6 +116,68 @@ public class DBopenHelper extends SQLiteOpenHelper {
 
 		db.execSQL("create table if not exists contacts" + "(uid text,cuid text," + "nick text," + "nationality text,"
 				+ "avatar blob)");
+
+		db.execSQL("create table if not exists self_info(uid text," + "sex int,nick text,age int,faculty text,"
+				+ "nationality text," + "native_language text," + "like_language text," + "place text,avatar blob)");
+	}
+	/**
+	 * save selfinfo to local cache
+	 * @param uid
+	 * @param list
+	 */
+	public void addSelfInfo(String uid,List<UserEntity> list)
+	{
+		SQLiteDatabase db = this.getReadableDatabase();
+		ContentValues values = new ContentValues();
+		db.execSQL("delete from " + TABLE_SELF_INFO + " where uid=" + uid);// delete first
+
+		Iterator<UserEntity> iterator = list.iterator();
+		UserEntity uEntity = new UserEntity();
+		while (iterator.hasNext()) {
+			uEntity = iterator.next();
+			
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			Bitmap bmp = uEntity.getAvatar();
+			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
+
+			values.put(KEY_AVATAR, os.toByteArray());
+			values.put(KEY_UID, uid);
+			values.put(KEY_NICK, uEntity.getNick());
+			values.put(KEY_SEX, uEntity.getSex());
+			values.put(KEY_AGE, uEntity.getAge());
+			values.put(KEY_FACULTY, uEntity.getFaculty());
+			values.put(KEY_NATIVE_LANGUAGE, uEntity.getMotherTone());
+			values.put(KEY_LIKE_LANGUAGE, uEntity.getLikeLanguage());
+			values.put(KEY_PLACE, uEntity.getPlace());
+
+			db.insert(TABLE_SELF_INFO, null, values);
+		}
+		
+	}
+	public void getSelfInfo(String uid, List<UserEntity> list) {
+		if (list.size() != 0)
+			list.clear();
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		String asql = "select* from " + TABLE_SELF_INFO + " where uid=" + uid;
+		Cursor c = db.rawQuery(asql, null);
+		if (c != null) {
+			while (c.moveToNext()) {
+				UserEntity uEntity = new UserEntity();
+				uEntity.setUid(c.getString(c.getColumnIndex(KEY_UID)));
+				uEntity.setAge(c.getInt(c.getColumnIndex(KEY_AGE)));
+				uEntity.setNick(c.getString(c.getColumnIndex(KEY_NICK)));
+				uEntity.setFaculty(c.getString(c.getColumnIndex(KEY_FACULTY)));
+				uEntity.setMotherTone(c.getString(c.getColumnIndex(KEY_NATIVE_LANGUAGE)));
+				uEntity.setLikeLanguage(c.getString(c.getColumnIndex(KEY_LIKE_LANGUAGE)));
+				uEntity.setSex(c.getInt(c.getColumnIndex(KEY_SEX)));
+				uEntity.setPlace(c.getString(c.getColumnIndex(KEY_PLACE)));
+				byte[] in = c.getBlob(c.getColumnIndex(KEY_AVATAR));
+				Bitmap bmp = BitmapFactory.decodeByteArray(in, 0, in.length);
+				uEntity.setAvatar(bmp);
+				list.add(uEntity);
+			}
+		}
 	}
 
 	/**
@@ -120,11 +185,11 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param list
 	 */
-	public void addUserCard(String uid,List<UserEntity> list) {
+	public void addUserCard(String uid, List<UserEntity> list) {
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		ContentValues values = new ContentValues();
-		db.execSQL("delete from " + TABLE_USER_CARD+" where uid="+uid);// delete first
+		db.execSQL("delete from " + TABLE_USER_CARD + " where uid=" + uid);// delete
 
 		Iterator<UserEntity> iterator = list.iterator();
 		UserEntity uEntity = new UserEntity();
@@ -155,10 +220,10 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param list
 	 */
-	public void getUserCard(String uid,List<UserEntity> list) {
+	public void getUserCard(String uid, List<UserEntity> list) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		String asql = "select* from " + TABLE_USER_CARD+" where uid="+uid;
+		String asql = "select* from " + TABLE_USER_CARD + " where uid=" + uid;
 		Cursor c = db.rawQuery(asql, null);
 		if (c != null) {
 			while (c.moveToNext()) {
@@ -306,11 +371,10 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				rEntity.setRead(c.getInt(c.getColumnIndex(KEY_ISREAD)));
 
 				byte[] in = c.getBlob(c.getColumnIndex(KEY_AVATAR));
-				if(in!=null)
-				{
+				if (in != null) {
 					Bitmap bmp = BitmapFactory.decodeByteArray(in, 0, in.length);
 					rEntity.setAvatar(bmp);
-				}	
+				}
 				list.add(rEntity);
 			}
 		}
@@ -326,7 +390,8 @@ public class DBopenHelper extends SQLiteOpenHelper {
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		ContentValues values = new ContentValues();
-		db.execSQL("delete from " + TABLE_CONTACT + " where uid=" + uid);// delete first
+		db.execSQL("delete from " + TABLE_CONTACT + " where uid=" + uid);// delete
+																			// first
 
 		Iterator<ContactEntity> iterator = list.iterator();
 		ContactEntity cEntity = new ContactEntity();
