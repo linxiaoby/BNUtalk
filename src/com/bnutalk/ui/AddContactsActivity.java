@@ -59,20 +59,21 @@ public class AddContactsActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_addfriend_main);
 		initEvent();
-//		new AHttpAddContacts(list, uid, handler,helper).getAllUser();
-		new AHttpAddContacts(list, uid, handler, helper).getAllUser();
+		
 	}
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
 		android.util.Log.v(TAG,"onResume() called!");
+		getUserCard();
+		helper.getUserCard(uid, list);
 	}
 	@Override
 	protected void onPause() {
 		super.onPause();
 		android.util.Log.v(TAG, "onPause() called!");
-		helper.addUserCard(uid, list);
+		saveUserCard();
 	}
 	/**
 	 * init
@@ -121,6 +122,28 @@ public class AddContactsActivity extends Activity {
 			 toast.show();
 		}
 	}
+	
+	public void getUserCard()
+	{
+		helper.getUserCard(uid, list);
+		if(list.size()==0)//read from server
+		{
+			new AHttpAddContacts(list, uid, handler, helper).getAllUser();
+		}
+		else 
+			adapter.notifyDataSetChanged();
+			
+	}
+	public void saveUserCard()
+	{
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				helper.addUserCard(uid, list);
+			}
+		}).start();
+	}
+	
 	/**
 	 * define handler operation
 	 */
@@ -132,8 +155,9 @@ public class AddContactsActivity extends Activity {
 				switch (msg.what) {
 				case AHttpAddContacts.GET_USER_SUCCESS:
 					android.util.Log.v("msg.what", "AHttpGetAllUser.GET_USER_SUCCESS");
-					// show listview
 					adapter.notifyDataSetChanged();
+					if(list.size()!=0)
+						saveUserCard();
 					break;
 				case AHttpAddContacts.GET_USER_FAILED:
 					// unable to access server
