@@ -125,7 +125,7 @@ public class CommonUtil {
 				uEntity.setFaculty(user.getString("faculty"));
 				uEntity.setLikeLanguage(user.getString("likeLanguage"));
 				uEntity.setMotherTone(user.getString("motherTone"));
-				
+				uEntity.setNationality(user.getString("nationality"));
 				uEntity.setPlace("BNU");//
 //				uEntity.setVoice(voice);
 				
@@ -141,35 +141,6 @@ public class CommonUtil {
 
 	}
 	
-	/**
-	 * transfer json to List<ContactEntity> list
-	 * @param strJson
-	 * @param list
-	 */
-	public static void parseJsonContact(String strJson,List<ContactEntity> list) {
-		try {
-			list.clear();
-			JSONArray jsonArray = new JSONArray(strJson);
-			for(int i=0;i<jsonArray.length();i++)
-			{
-				ContactEntity cEntity=new ContactEntity();
-				JSONObject contact = jsonArray.getJSONObject(i);
-				cEntity.setUid(contact.getString("uid"));
-				cEntity.setNick(contact.getString("nick"));
-				cEntity.setNationality(contact.getString("nationality"));
-				
-				String strPhoto=contact.getString("avatar");
-				Bitmap avatar=CommonUtil.imgStrToBitmap(strPhoto);
-				cEntity.setAvatar(avatar);
-				
-				list.add(cEntity);
-			}
-			Log.v("parseJsonContact", "parseJsonContact success");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-	}
 	
 
 }

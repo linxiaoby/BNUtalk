@@ -31,29 +31,6 @@
             android:layout_toRightOf="@+id/card_mother_lanuage"
             android:layout_toEndOf="@+id/card_mother_lanuage" />
 
-        <TextView
-            android:id="@+id/card_year"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="18"
-            android:textColor="#878787"
-            android:textSize="22sp"
-             android:layout_marginLeft="22dp"
-            android:layout_toRightOf="@id/card_name"
-            android:layout_alignBottom="@+id/card_name"
-            android:layout_centerHorizontal="true" />
-
-        <ImageView
-            android:id="@+id/iv_card_gender"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/man"
-            android:layout_marginStart="30dp"
-            android:layout_alignTop="@+id/card_year"
-            android:layout_toRightOf="@+id/card_year"
-            android:layout_toEndOf="@+id/card_year"
-            android:layout_marginLeft="39dp" />
-
 
         <ImageView
             android:id="@+id/iv_card_flag1"
@@ -92,6 +69,30 @@
             android:text="中文"
             android:textColor="#878787"
             android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/card_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/card_name"
+            android:layout_alignBottom="@+id/card_name"
+            android:layout_marginLeft="24dp"
+            android:layout_toRightOf="@+id/card_name"
+            android:text="18"
+            android:textColor="#878787"
+            android:textSize="22sp" />
+
+        <ImageView
+            android:id="@+id/iv_card_gender"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_alignBottom="@+id/card_year"
+            android:layout_marginLeft="24dp"
+            android:layout_marginStart="30dp"
+            android:layout_toEndOf="@+id/card_year"
+            android:layout_toRightOf="@+id/card_year"
+            android:src="@drawable/man" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -163,11 +164,13 @@
     </RelativeLayout>
 
     <Button
+         android:id="@+id/bt_chat"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/login_button"
         android:layout_marginBottom="40dp"
-        android:text="send a message"/>
+        android:text="send a message"
+        />
 
 </RelativeLayout>

@@ -71,8 +71,9 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				+ "sex int,nick text,age int,faculty text," + "nationality text," + "native_language text,"
 				+ "like_language text," + "place text,avatar blob)");
 
-		db.execSQL("create table if not exists contacts" + "(uid text,cuid text," + "nick text," + "nationality text,"
-				+ "avatar blob)");
+		db.execSQL("create table if not exists contacts(uid text,cuid text,"
+				+ "sex int,nick text,age int,faculty text," + "nationality text," + "native_language text,"
+				+ "like_language text," + "place text,avatar blob)");
 
 		db.execSQL("create table if not exists self_info(uid text," + "sex int,nick text,age int,faculty text,"
 				+ "nationality text," + "native_language text," + "like_language text," + "place text,avatar blob)");
@@ -104,6 +105,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		db.execSQL("drop table rencent_message");
 		db.execSQL("drop table user_card");
 		db.execSQL("drop table contacts");
+		
 		db.execSQL("create table if not exists message_history (" + "uid text,cuid text," + "content text,"
 				+ "time text," + "type integer,isread integer)");
 
@@ -114,8 +116,9 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				+ "sex int,nick text,age int,faculty text," + "nationality text," + "native_language text,"
 				+ "like_language text," + "place text,avatar blob)");
 
-		db.execSQL("create table if not exists contacts" + "(uid text,cuid text," + "nick text," + "nationality text,"
-				+ "avatar blob)");
+		db.execSQL("create table if not exists contacts(uid text,cuid text,"
+				+ "sex int,nick text,age int,faculty text," + "nationality text," + "native_language text,"
+				+ "like_language text," + "place text,avatar blob)");
 
 		db.execSQL("create table if not exists self_info(uid text," + "sex int,nick text,age int,faculty text,"
 				+ "nationality text," + "native_language text," + "like_language text," + "place text,avatar blob)");
@@ -382,61 +385,70 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * save contacs to local cache
+	 * save user cards to local cache
 	 * 
 	 * @param list
 	 */
-	public void addContacts(String uid, List<ContactEntity> list) {
+	public void addContacts(String uid, List<UserEntity> list) {
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		ContentValues values = new ContentValues();
 		db.execSQL("delete from " + TABLE_CONTACT + " where uid=" + uid);// delete
-																			// first
 
-		Iterator<ContactEntity> iterator = list.iterator();
-		ContactEntity cEntity = new ContactEntity();
+		Iterator<UserEntity> iterator = list.iterator();
+		UserEntity uEntity = new UserEntity();
 		while (iterator.hasNext()) {
-			cEntity = iterator.next();
+			uEntity = iterator.next();
 
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			Bitmap bmp = cEntity.getAvatar();
+			Bitmap bmp = uEntity.getAvatar();
 			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
 
 			values.put(KEY_AVATAR, os.toByteArray());
 			values.put(KEY_UID, uid);
-			values.put(KEY_CUID, cEntity.getUid());
-			values.put(KEY_NICK, cEntity.getNick());
-			values.put(KEY_NATIONALITY, cEntity.getNationality());
+			values.put(KEY_CUID, uEntity.getUid());
+			values.put(KEY_NICK, uEntity.getNick());
+			values.put(KEY_SEX, uEntity.getSex());
+			values.put(KEY_AGE, uEntity.getAge());
+			values.put(KEY_FACULTY, uEntity.getFaculty());
+			values.put(KEY_NATIVE_LANGUAGE, uEntity.getMotherTone());
+			values.put(KEY_LIKE_LANGUAGE, uEntity.getLikeLanguage());
+			values.put(KEY_PLACE, uEntity.getPlace());
+			values.put(KEY_NATIONALITY, uEntity.getNationality());
 
 			db.insert(TABLE_CONTACT, null, values);
 		}
 	}
 
 	/**
-	 * get contacs from local
+	 * get user card from TABLE_USER_CARD,this will be called when adding friend
 	 * 
 	 * @param list
 	 */
-	public void getContacts(String uid, List<ContactEntity> list) {
-		list.clear();
+	public void getContacts(String uid, List<UserEntity> list) {
+		if(list.size()!=0)
+			list.clear();
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		String asql = "select* from " + TABLE_CONTACT + " where uid=" + uid + " order by nick asc";
+		String asql = "select* from " + TABLE_CONTACT + " where uid=" + uid;
 		Cursor c = db.rawQuery(asql, null);
 		if (c != null) {
 			while (c.moveToNext()) {
-				ContactEntity cEntity = new ContactEntity();
-				cEntity.setUid(c.getString(c.getColumnIndex(KEY_CUID)));
-				cEntity.setNick(c.getString(c.getColumnIndex(KEY_NICK)));
-				cEntity.setNationality(c.getString(c.getColumnIndex(KEY_NATIONALITY)));
-
+				UserEntity uEntity = new UserEntity();
+				uEntity.setUid(c.getString(c.getColumnIndex(KEY_CUID)));
+				uEntity.setAge(c.getInt(c.getColumnIndex(KEY_AGE)));
+				uEntity.setNick(c.getString(c.getColumnIndex(KEY_NICK)));
+				uEntity.setFaculty(c.getString(c.getColumnIndex(KEY_FACULTY)));
+				uEntity.setMotherTone(c.getString(c.getColumnIndex(KEY_NATIVE_LANGUAGE)));
+				uEntity.setLikeLanguage(c.getString(c.getColumnIndex(KEY_LIKE_LANGUAGE)));
+				uEntity.setSex(c.getInt(c.getColumnIndex(KEY_SEX)));
+				uEntity.setPlace(c.getString(c.getColumnIndex(KEY_PLACE)));
+				uEntity.setNationality(c.getString(c.getColumnIndex(KEY_NATIONALITY)));
 				byte[] in = c.getBlob(c.getColumnIndex(KEY_AVATAR));
 				Bitmap bmp = BitmapFactory.decodeByteArray(in, 0, in.length);
-				cEntity.setAvatar(bmp);
-
-				list.add(cEntity);
+				uEntity.setAvatar(bmp);
+				list.add(uEntity);
 			}
 		}
-
 	}
 }

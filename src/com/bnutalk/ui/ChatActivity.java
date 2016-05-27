@@ -85,7 +85,7 @@ public class ChatActivity extends Activity {
 
 		Bundle bundle = this.getIntent().getExtras();
 		uid = bundle.getString("uid");
-		fuid = bundle.getString("fuid");
+		fuid = bundle.getString("cuid");
 		
 		dbOpenHelper=new DBopenHelper(ChatActivity.this);
 		dbOpenHelper.getAllMsgHistory(uid,fuid, msgList);//get all history message from the local db

@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.bnutalk.server.AHttpAddContacts;
 import com.bnutalk.ui.R;
-import com.bnutalk.util.ContactEntity;
 import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.FlingAdapterView;
 import com.bnutalk.util.UserEntity;

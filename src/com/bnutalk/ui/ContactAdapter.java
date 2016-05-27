@@ -11,8 +11,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bnutalk.ui.R;
-import com.bnutalk.util.ContactEntity;
 import com.bnutalk.util.RecentMsgEntity;
+import com.bnutalk.util.UserEntity;
 /**
  * created by linxiaobai 2016-05-21
  * @author 王琳—PC
@@ -20,10 +20,10 @@ import com.bnutalk.util.RecentMsgEntity;
  */
 public class ContactAdapter extends BaseAdapter{
 	private Context context;
-	private List<ContactEntity> list;
+	private List<UserEntity> list;
 	LayoutInflater inflater;
 	
-	public ContactAdapter(Context context,List<ContactEntity> list){
+	public ContactAdapter(Context context,List<UserEntity> list){
 		this.context = context;
 		this.list = list;
 		inflater = LayoutInflater.from(context);
@@ -38,7 +38,7 @@ public class ContactAdapter extends BaseAdapter{
 		TextView nick=(TextView) convertView.findViewById(R.id.tvNick);
 		TextView nationality=(TextView) convertView.findViewById(R.id.tvContent);
 
-		ContactEntity re=list.get(position);
+		UserEntity re=list.get(position);
 		
 		avatar.setImageBitmap(re.getAvatar());
 		nick.setText(re.getNick());

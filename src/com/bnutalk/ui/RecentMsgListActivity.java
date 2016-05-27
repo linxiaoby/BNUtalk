@@ -206,7 +206,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		// 弹出聊天窗口
 		Bundle bundle = new Bundle();
 		bundle.putString("uid", uid);
-		bundle.putString("fuid", fuid);
+		bundle.putString("cuid", fuid);
 		Intent intent = new Intent();
 		intent.setClass(this, ChatActivity.class);
 		intent.putExtras(bundle);

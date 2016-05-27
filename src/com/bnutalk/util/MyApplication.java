@@ -6,14 +6,14 @@ import java.util.List;
 import android.app.Application;
 
 public class MyApplication extends Application {
-	private List<ContactEntity> conList;
+	private List<UserEntity> conList;
 	private List<UserEntity> selfInfoList;
 	private String uid;
 	
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		conList=new ArrayList<ContactEntity>();
+		conList=new ArrayList<UserEntity>();
 		selfInfoList=new ArrayList<UserEntity>();
 	}
 	public List<UserEntity> getSelfInfoList() {
@@ -29,11 +29,11 @@ public class MyApplication extends Application {
 		this.uid = uid;
 	}
 	
-	public List<ContactEntity> getConList() {
+	public List<UserEntity> getConList() {
 		return conList;
 	}
 
-	public void setConList(List<ContactEntity> conList) {
+	public void setConList(List<UserEntity> conList) {
 		this.conList.clear();
 		this.conList.addAll(conList);
 	}

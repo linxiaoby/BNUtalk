@@ -19,9 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.http.Header;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.SyncStateContract.Helpers;
 import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -59,19 +62,19 @@ import com.bnutalk.ui.R;
 import com.bnutalk.ui.SignUpPersInfoActivity;
 import com.bnutalk.ui.TestActivity.AlarmReceiver;
 import com.bnutalk.util.CommonUtil;
-import com.bnutalk.util.ContactEntity;
 import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.MsgEntity;
 import com.bnutalk.util.MyApplication;
 import com.bnutalk.util.RecentMsgAdapter;
 import com.bnutalk.util.RecentMsgEntity;
+import com.bnutalk.util.UserEntity;
 import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class ContactActivity extends Activity implements OnItemClickListener, OnScrollListener {
 	private static final String TAG = "ContactActivity";
 	private ListView listView;
-	private List<ContactEntity> list;
-	private int i = 0;
 	private Handler handler;
 	private ContactAdapter contactAdapter;
 
@@ -80,9 +83,10 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	public static Socket socket;
 	private String uid;
 	private SharedPreferences msgListPref;
-	private DBopenHelper openHelper;
+	private DBopenHelper helper;
 	private MyApplication myApp;
 	private AlarmReceiver receiver;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +95,6 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_contacts);
 		initEvent();
-		getContact();
 	}
 
 	public void initEvent() {
@@ -100,103 +103,43 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		listView.setOnItemClickListener(this);
 		listView.setOnScrollListener(this);
 		myApp = (MyApplication) getApplicationContext();
-		list = new ArrayList<ContactEntity>();
-//		contactAdapter = new ContactAdapter(ContactActivity.this, list);
 		contactAdapter = new ContactAdapter(ContactActivity.this, myApp.getConList());
-		
 		listView.setAdapter(contactAdapter);
-
-		msgListPref = getSharedPreferences("recent_msg_list", 0);
-		openHelper = new DBopenHelper(getApplicationContext());
-
-		// get the current user id
+		defHandler();
+		helper=new DBopenHelper(getApplicationContext());
 		getCurrentUid();
-		// handler operation
-		// defHandler();
-		
-		
-		// registerReceiver
-//		receiver = new AlarmReceiver();
-//		IntentFilter filter = new IntentFilter();
-//		filter.addAction("android.intent.action.contact");
-//		registerReceiver(receiver, filter);
-		
-		// start service,update ui
-//		Intent intent = new Intent(this, UpdateContactService.class);
-//		intent.putExtra("uid", uid);
-//		startService(intent);
+
 	}
-
-	public class AlarmReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-//			list.clear();
-//			list.addAll(myApp.getConList());
-
-			listView.setAdapter(contactAdapter);
-			contactAdapter.notifyDataSetChanged();
-			Log.v("contact changed", new Date().toString());
-
-			Intent intent2 = new Intent(context, UpdateContactService.class);
-			intent.putExtra("uid", uid);
-			startService(intent2);
-		}
-	}
-
 	@Override
 	protected void onResume() {
 		super.onResume();
 		android.util.Log.v(TAG, "onResume() called!");
-//		getContact();
+		getContact();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		android.util.Log.v(TAG, "onResume() called!");
-		// start a thread to save contact to local
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				List<ContactEntity> tmpList=new ArrayList<ContactEntity>();
-				tmpList.addAll(myApp.getConList());
-				openHelper.addContacts(uid, tmpList);
-			}
-		}).start();
 	}
-
-	public void getContact() {
-		openHelper.getContacts(uid, list);
-		contactAdapter.notifyDataSetChanged();
-		if (list.size() == 0) {
-			Toast toast = Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_SHORT);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
-		}
-	}
-
 	/**
-	 * define handler server operation:get msgfriend data,and update ui
+	 * define handler server operation:get contacts data,and update ui
 	 */
 	public void defHandler() {
-		/* server operation:get msgfriend data,and update ui */
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				Log.v("handler", "handler called");
-				System.out.println("msgwhat" + msg.what);
 				switch (msg.what) {
-				case 0x001:// friend list download success
-					contactAdapter.notifyDataSetChanged();
-					if (myApp.getConList().size() == 0) {
-						Toast toast = Toast.makeText(ContactActivity.this, "还没有好友，赶快点击右上角添加吧", Toast.LENGTH_LONG);
-						toast.setGravity(Gravity.CENTER, 0, 0);
-						toast.show();
+				case 0x001:// contacts list download success
+					if (myApp.getConList().size() == 0) 
+						showToast("还没有好友，赶快点击右上角添加吧");
+					else 
+					{
+						saveContact();
+						contactAdapter.notifyDataSetChanged();
 					}
 					break;
-
-				case 0x002:// there is a new message arrived
-					// save message to local file
+				case 0x002:
 
 					break;
 				default:
@@ -205,32 +148,87 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 			}
 		};
 	}
-
+	public void getContact() {
+		helper.getContacts(uid, myApp.getConList());
+		if (myApp.getConList().size() != 0)
+			contactAdapter.notifyDataSetChanged();
+		else // load from server
+			getServContact(handler);
+	}
+	/**
+	 * download contacts from server
+	 * @param handler
+	 */
+	public void getServContact(final Handler handler) {
+		String ip = GetServerIp.serverIp;
+		String url = "http://" + ip + ":8080/web/getContactServlet?&uid=" + uid;
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.get(url, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(int status, Header[] header, byte[] response) {
+				// Json解析
+				String strJson = new String(response);
+				List<UserEntity> list = new ArrayList<UserEntity>();
+				CommonUtil.parseJsonUser(strJson,myApp.getConList());
+				Message tmsg=new Message();
+				tmsg.what=0x001;
+				handler.sendMessage(tmsg);
+			}
+			@Override
+			public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
+			}
+		});
+	}
+	/**
+	 *open a thread to save contacts into  local cache 
+	 */
+	public void saveContact()
+	{
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				helper.addContacts(uid, myApp.getConList());
+			}
+		}).start();
+	}
+	
+	public void showToast(String text)
+	{
+		Toast toast = Toast.makeText(ContactActivity.this,text,Toast.LENGTH_SHORT);
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		toast.show();
+	}
 	/**
 	 * get the current user uid from the local cache
 	 */
 	public void getCurrentUid() {
 		SharedPreferences pref = getSharedPreferences("user_login", 0);
 		uid = pref.getString("uid", "");
-		// uid = "201211011063";
-		Log.v("get current uid", uid);
 	}
 
-	// (5)事件处理监听器方法
+	/**
+	 * show person info card
+	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		// 获取点击ListView item中的内容信息
-		ContactEntity cEntity = (ContactEntity) listView.getItemAtPosition(position);
-		String fuid = cEntity.getUid();
-		// 弹出Toast信息显示点击位置和内容
-		Toast.makeText(ContactActivity.this, "position=" + position + " content=" + fuid, 0).show();
-
-		// 弹出聊天窗口
+//		ContactEntity cEntity = (ContactEntity) listView.getItemAtPosition(position);
+//		String fuid = cEntity.getUid();
+//		Toast.makeText(ContactActivity.this, "position=" + position + " content=" + fuid, 0).show();
+//
+//		// 弹出聊天窗口
+//		Bundle bundle = new Bundle();
+//		bundle.putString("uid", uid);
+//		bundle.putString("fuid", fuid);
+//		
+//		Intent intent = new Intent();
+//		intent.setClass(this, ChatActivity.class);
+//		intent.putExtras(bundle);
+//		startActivity(intent);
+		
 		Bundle bundle = new Bundle();
-		bundle.putString("uid", uid);
-		bundle.putString("fuid", fuid);
+		bundle.putInt("index", position);
 		Intent intent = new Intent();
-		intent.setClass(this, ChatActivity.class);
+		intent.setClass(this, ContactInfoCardActivity.class);
 		intent.putExtras(bundle);
 		startActivity(intent);
 	}
@@ -238,29 +236,12 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 		// TODO Auto-generated method stub
-		// 手指离开屏幕前，用力滑了一下
-		// if (scrollState == SCROLL_STATE_FLING) {
-		// Toast.makeText(MsgFriendListActivity.this, "用力滑一下",0).show();
-		// Map<String, Object> map = new HashMap<String, Object>();
-		// map.put("text", "滚动添加 "+i++);
-		// map.put("image", R.drawable.ic_launcher);
-		// list.add(map);
-		// listView.setAdapter(simple_adapter);
-		// simple_adapter.notifyDataSetChanged();
-		// } else
-		// // 停止滚动
-		// if (scrollState == SCROLL_STATE_IDLE) {
-		//
-		// } else
-		// // 正在滚动
-		// if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-		//
-		// }
+		
 	}
 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 		// TODO Auto-generated method stub
-
+		
 	}
 }
