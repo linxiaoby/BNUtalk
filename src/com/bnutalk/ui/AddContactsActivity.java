@@ -14,7 +14,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -33,16 +32,20 @@ import org.apache.commons.logging.Log;
 
 public class AddContactsActivity extends Activity {
 	private static final String TAG="AddContactsActivity";
+	// private ArrayList<CardMode> al;
 	private List<UserEntity> list;
+
+	// private ArrayList<ImageView> iv;
 	// 定义一个cardmode的数组al
 	private CardAdapter adapter;
 	// 定义一个card的适配器
 	private int i;
 	// 定义滑动卡片的容器
 	private FlingAdapterView flingContainer;
-	// 定义下面的左右喜欢和不喜欢的图片
+	// 定义一个string类型的数组
+	// private List<List<String>> list = new ArrayList<>();
+	// 定义下面的左右喜欢喝不喜欢的图片
 	private ImageView left, right, music;
-	private Button back;
 	private Handler handler;
 	private String uid,cuid,nick;
 	private DBopenHelper helper;
@@ -56,6 +59,7 @@ public class AddContactsActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_addfriend_main);
 		initEvent();
+//		new AHttpAddContacts(list, uid, handler,helper).getAllUser();
 		new AHttpAddContacts(list, uid, handler, helper).getAllUser();
 	}
 	@Override
@@ -63,7 +67,6 @@ public class AddContactsActivity extends Activity {
 	{
 		super.onResume();
 		android.util.Log.v(TAG,"onResume() called!");
-		helper.getUserCard(uid, list);
 	}
 	@Override
 	protected void onPause() {
@@ -71,21 +74,15 @@ public class AddContactsActivity extends Activity {
 		android.util.Log.v(TAG, "onPause() called!");
 		helper.addUserCard(uid, list);
 	}
-	@Override
-	protected void onDestroy() {
-		super.onPause();//preserve resource
-		android.util.Log.v(TAG, "onDestroy() called!");
-	}
-	
 	/**
 	 * init
 	 */
 	public void initEvent() {
+		uid = "201211011063";
 		// 定义左边和右边的图片，和监听
 		left = (ImageView) findViewById(R.id.left);
 		right = (ImageView) findViewById(R.id.right);
 		music = (ImageView) findViewById(R.id.iv_card_flag6);
-		back=(Button) findViewById(R.id.btAddConBack);
 		list = new ArrayList<UserEntity>();
 		adapter = new CardAdapter(AddContactsActivity.this, list);
 		helper=new DBopenHelper(getApplicationContext());
@@ -102,12 +99,7 @@ public class AddContactsActivity extends Activity {
 				right();
 			}
 		});
-		back.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				AddContactsActivity.this.finish();
-			}
-		});
+		
 		defHandler();
 		defFling();
 		
@@ -122,7 +114,6 @@ public class AddContactsActivity extends Activity {
 		if (cacheUid != null) {
 			uid=cacheUid;
 		}
-		helper.getUserCard(uid, list);
 		if(list.size()==0)
 		{
 			Toast toast=Toast.makeText(AddContactsActivity.this, "正在加载数据，请耐心等待！(产品组帮我翻译成英文！)", Toast.LENGTH_LONG);

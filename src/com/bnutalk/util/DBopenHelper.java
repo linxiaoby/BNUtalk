@@ -199,11 +199,14 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		while (iterator.hasNext()) {
 			uEntity = iterator.next();
 
+			if(uEntity.getAvatar().equals("null"))//avatar is not null
+			{
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			Bitmap bmp = uEntity.getAvatar();
 			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
-
 			values.put(KEY_AVATAR, os.toByteArray());
+			}
+			
 			values.put(KEY_UID, uid);
 			values.put(KEY_CUID, uEntity.getUid());
 			values.put(KEY_NICK, uEntity.getNick());

@@ -77,8 +77,6 @@ public class AHttpAddContacts {
 				msg.what = GET_USER_SUCCESS;
 				msg.obj = list;
 				handler.sendMessage(msg);
-				// save data to local info
-				helper.addUserCard(uid,list);
 			}
 
 			@Override
