@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+    android:layout_gravity="center"
+    android:background="@drawable/congrats_background">
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="100dp"
+        android:src="@drawable/congrats"
+        android:id="@+id/imageView"
+        android:layout_above="@+id/user1"
+        android:layout_alignRight="@+id/user2" />
+    <ImageView
+        android:id="@+id/user1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_launcher"
+        android:layout_alignTop="@+id/user2"
+        android:layout_toLeftOf="@+id/imageView5" />
+    <ImageView
+        android:id="@+id/user2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_launcher"
+        android:layout_above="@+id/imageView5"
+        android:layout_toRightOf="@+id/imageView5" />
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="90dp"
+        android:background="@drawable/switch_match"
+        android:id="@+id/imageView5"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You have been matched"
+        android:textSize="20sp"
+        android:id="@+id/textView6"
+        android:layout_below="@+id/imageView5"
+        android:layout_centerHorizontal="true" />
+    <Button
+        android:layout_width="35dp"
+        android:layout_height="25dp"
+        android:id="@+id/back"
+        android:background="@drawable/back"
+        android:layout_below="@+id/textView6"
+        android:layout_alignLeft="@+id/imageView5"
+        android:layout_alignStart="@+id/imageView5" />
+    <Button
+        android:layout_width="35dp"
+        android:layout_height="25dp"
+        android:id="@+id/send_message"
+        android:background="@drawable/send_message"
+        android:layout_alignTop="@+id/back"
+        android:layout_alignRight="@+id/imageView5"
+        android:layout_alignEnd="@+id/imageView5" />
+</RelativeLayout>

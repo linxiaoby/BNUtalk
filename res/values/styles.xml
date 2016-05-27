@@ -11,7 +11,7 @@
             backward-compatibility can go here.
         -->
     </style>
-
+	
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
@@ -43,5 +43,9 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:button">@null</item>
         <item name="android:layout_weight">1</item> 
+    </style>
+     <style name="match" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@animator/pop_in_2</item>
+        <item name="android:windowExitAnimation">@animator/pop_out_2</item>
     </style>
 </resources>

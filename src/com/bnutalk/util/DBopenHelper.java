@@ -222,6 +222,8 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * @param list
 	 */
 	public void getUserCard(String uid, List<UserEntity> list) {
+		if(list.size()!=0)
+			list.clear();
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		String asql = "select* from " + TABLE_USER_CARD + " where uid=" + uid;
