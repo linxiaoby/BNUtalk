@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -48,6 +49,7 @@ public class AddContactsActivity extends Activity {
 	private ImageView left, right, music;
 	private Handler handler;
 	private String uid,cuid,nick;
+	private Button back;
 	private DBopenHelper helper;
 	private SharedPreferences pref;
 	private Editor editor;
@@ -84,6 +86,7 @@ public class AddContactsActivity extends Activity {
 		left = (ImageView) findViewById(R.id.left);
 		right = (ImageView) findViewById(R.id.right);
 		music = (ImageView) findViewById(R.id.iv_card_flag6);
+		back=(Button) findViewById(R.id.btAddConBack);
 		list = new ArrayList<UserEntity>();
 		adapter = new CardAdapter(AddContactsActivity.this, list);
 		helper=new DBopenHelper(getApplicationContext());
@@ -100,7 +103,12 @@ public class AddContactsActivity extends Activity {
 				right();
 			}
 		});
-		
+		back.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				AddContactsActivity.this.finish();
+			}
+		});
 		defHandler();
 		defFling();
 		
