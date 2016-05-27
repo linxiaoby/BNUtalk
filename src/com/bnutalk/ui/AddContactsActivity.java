@@ -81,7 +81,6 @@ public class AddContactsActivity extends Activity {
 	 * init
 	 */
 	public void initEvent() {
-		uid = "201211011063";
 		// 定义左边和右边的图片，和监听
 		left = (ImageView) findViewById(R.id.left);
 		right = (ImageView) findViewById(R.id.right);

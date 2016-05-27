@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 public class ContactInfoCardActivity extends Activity {
 	private DBopenHelper helper;
-	private String uid, nick;
+	private String uid,cuid,nick;
 	private ImageView ivAvatar,ivSex;
 	private TextView tvNick,tvAge,tvMother,tvLike,tvPlace,tvFaculty;
 	private Button btChat;
@@ -54,10 +54,14 @@ public class ContactInfoCardActivity extends Activity {
 		tvMother = (TextView) findViewById(R.id.card_mother_lanuage);
 		btChat=(Button) findViewById(R.id.bt_chat);
 		
+		
 		myApp=(MyApplication) getApplicationContext();
 		Bundle bundle = this.getIntent().getExtras();
 		int index = bundle.getInt("index");
 		uEntity=myApp.getConList().get(index);
+		
+		uid=myApp.getUid();
+		cuid=uEntity.getUid();
 		btChat.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -104,6 +108,7 @@ public class ContactInfoCardActivity extends Activity {
 	{
 		Bundle bundle=new Bundle();
 		bundle.putString("uid", uid);
+		bundle.putString("cuid", cuid);
 		Intent intent = new Intent();
 		intent.setClass(this, ChatActivity.class);
 		intent.putExtras(bundle);
