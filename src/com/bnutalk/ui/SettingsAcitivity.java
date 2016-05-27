@@ -16,13 +16,16 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +57,13 @@ public class SettingsAcitivity extends Activity {
 		tvNick = (TextView) findViewById(R.id.user_name);
 		helper = new DBopenHelper(SettingsAcitivity.this);
 		myApp=(MyApplication) getApplicationContext();
+		ivAvatar.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showSelfCard();
+			}
+		});
+		
 		defHandler();
 		getCurrentUid();
 	}
@@ -75,7 +85,12 @@ public class SettingsAcitivity extends Activity {
 		else
 			showSelfInfo();
 	}
-
+	public void showSelfCard()
+	{
+		Intent intent=new Intent();
+		intent.setClass(SettingsAcitivity.this,SettingSelfCardActivity.class);
+		startActivity(intent);
+	}
 	public void getServerInfo(String uid,final Handler thandler) {
 		String ip = GetServerIp.serverIp;
 		String url = "http://" + ip + ":8080/web/GetSelfInfoServlet?&uid=" + uid;

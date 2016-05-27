@@ -35,7 +35,7 @@
         <activity android:name="com.bnutalk.ui.AddContactsActivity"></activity>
         <activity android:name="com.bnutalk.ui.SettingsAcitivity"></activity>
         <activity android:name="com.bnutalk.ui.ContactInfoCardActivity"></activity>
-        
+        <activity android:name="com.bnutalk.ui.SettingSelfCardActivity"></activity>
         
         <service android:name="com.bnutalk.server.UpdateContactService"></service>
         </application>

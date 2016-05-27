@@ -4,32 +4,103 @@
         android:layout_height="match_parent"
         android:background="@drawable/material_card"
         android:padding="10dp" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/helloText1"
+            android:layout_centerHorizontal="true" >
+
+            <ImageView
+                android:id="@+id/iv_card_flag3"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/address_picture" />
+
+            <TextView
+                android:id="@+id/card_address"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@id/iv_card_flag3"
+                android:text="北京师范大学东操场"
+                android:textColor="#878787"
+                android:textSize="17sp" />
+
+            <ImageView
+                android:id="@+id/iv_card_flag4"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_below="@id/iv_card_flag3"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/college" />
+
+            <TextView
+                android:id="@+id/card_college"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/iv_card_flag4"
+                android:layout_toRightOf="@id/iv_card_flag4"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true"
+                android:text="经济与工商管理学院"
+                android:textColor="#878787"
+                android:textSize="17sp" />
+
+            <ImageView
+                android:id="@+id/iv_card_flag5"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_below="@id/card_college"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/music" />
+
+            <ImageView
+                android:id="@+id/iv_card_flag6"
+                android:layout_width="220dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/card_college"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@id/iv_card_flag5"
+                android:background="@drawable/music_borcast" />
+        </RelativeLayout>
+
         <ImageView
             android:id="@+id/helloText"
-            android:layout_width="200dp"
-            android:layout_height="180dp"
-            android:gravity="center"
-            android:src="@drawable/card_bg"
+            android:layout_width="160dp"
+            android:layout_height="140dp"
             android:layout_above="@+id/helloText1"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="14dp"
+            android:gravity="center"
+            android:src="@drawable/card_bg" />
 
         <RelativeLayout
             android:id="@+id/helloText1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/relativeLayout2"
             android:layout_alignLeft="@+id/relativeLayout2"
-            android:layout_alignStart="@+id/relativeLayout2">
+            android:layout_alignStart="@+id/relativeLayout2"
+            android:layout_centerVertical="true" >
+
             <TextView
                 android:id="@+id/card_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/card_mother_lanuage"
+                android:layout_toRightOf="@+id/card_mother_lanuage"
                 android:text="兔兔"
                 android:textColor="#333"
-                android:textSize="23sp"
-                android:layout_toRightOf="@+id/card_mother_lanuage"
-                android:layout_toEndOf="@+id/card_mother_lanuage" />
+                android:textSize="23sp" />
 
             <TextView
                 android:id="@+id/card_year"
@@ -48,9 +119,8 @@
                 android:layout_height="22dp"
                 android:layout_marginLeft="22dp"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/man"
-                android:layout_toRightOf="@id/card_year" />
-
+                android:layout_toRightOf="@id/card_year"
+                android:src="@drawable/man" />
 
             <ImageView
                 android:id="@+id/iv_card_flag1"
@@ -89,71 +159,6 @@
                 android:text="中文"
                 android:textColor="#878787"
                 android:textSize="17sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/relativeLayout2"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true">
-
-            <ImageView
-                android:id="@+id/iv_card_flag3"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/address_picture" />
-
-            <TextView
-                android:id="@+id/card_address"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_toRightOf="@id/iv_card_flag3"
-                android:text="北京师范大学东操场"
-                android:textColor="#878787"
-                android:textSize="17sp" />
-
-            <ImageView
-                android:id="@+id/iv_card_flag4"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_below="@id/iv_card_flag3"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/college" />
-
-            <TextView
-                android:id="@+id/card_college"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="经济与工商管理学院"
-                android:textColor="#878787"
-                android:textSize="17sp"
-                android:layout_alignBottom="@+id/iv_card_flag4"
-                android:layout_centerHorizontal="true" />
-
-            <ImageView
-                android:id="@+id/iv_card_flag5"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_below="@id/card_college"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="30dp"
-                android:background="@drawable/music" />
-
-            <ImageView
-                android:id="@+id/iv_card_flag6"
-                android:layout_width="220dp"
-                android:layout_height="40dp"
-                android:layout_below="@id/card_college"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_toRightOf="@id/iv_card_flag5"
-                android:background="@drawable/music_borcast" />
         </RelativeLayout>
 
 </RelativeLayout>
