@@ -1,5 +1,6 @@
 package com.bnutalk.util;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -77,6 +78,20 @@ public class CommonUtil {
 			}
 		}
 		return BitmapFactory.decodeByteArray(photoimg, 0, photoimg.length);
+	}
+
+	public static byte[] Bitmap2Bytes(Bitmap bm) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+		return baos.toByteArray();
+	}
+
+	public static Bitmap Bytes2Bimap(byte[] b) {
+		if (b.length != 0) {
+			return BitmapFactory.decodeByteArray(b, 0, b.length);
+		} else {
+			return null;
+		}
 	}
 
 	/**

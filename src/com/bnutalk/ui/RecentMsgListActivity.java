@@ -82,8 +82,6 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		serverConn();
 	}
 	
-	
-	
 	public void initEvent() {
 		// 匹配布局文件中的ListView控件
 		listView = (ListView) findViewById(R.id.lvMsgFriend);
@@ -97,7 +95,6 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		msgListPref = getSharedPreferences("recent_msg_list", 0);
 		defHandler();
 		openHepler=new DBopenHelper(getApplicationContext());
-		
 		// get the current user id
 		getCurrentUid();
 //		openHepler.updateDb();
@@ -195,9 +192,9 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		// 获取点击ListView item中的内容信息
 		RecentMsgEntity rEntity = (RecentMsgEntity) listView.getItemAtPosition(position);
-		String fuid = rEntity.getUid();
+		String cuid = rEntity.getUid();
 		// 弹出Toast信息显示点击位置和内容
-		Toast.makeText(RecentMsgListActivity.this, "position=" + position + " content=" + fuid, 0).show();
+		Toast.makeText(RecentMsgListActivity.this, "position=" + position + " content=" + cuid, 0).show();
 
 		// update listview:clear badge
 		rEntity.setRead(RecentMsgEntity.READ);
@@ -205,8 +202,9 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 
 		// 弹出聊天窗口
 		Bundle bundle = new Bundle();
-		bundle.putString("uid", uid);
-		bundle.putString("cuid", fuid);
+		bundle.putString("cuid", cuid);
+		bundle.putString("cnick", rEntity.getNick());
+		bundle.putByteArray("cavatar", CommonUtil.Bitmap2Bytes(rEntity.getAvatar()));
 		Intent intent = new Intent();
 		intent.setClass(this, ChatActivity.class);
 		intent.putExtras(bundle);
@@ -215,30 +213,10 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		// TODO Auto-generated method stub
-		// 手指离开屏幕前，用力滑了一下
-		// if (scrollState == SCROLL_STATE_FLING) {
-		// Toast.makeText(MsgFriendListActivity.this, "用力滑一下",0).show();
-		// Map<String, Object> map = new HashMap<String, Object>();
-		// map.put("text", "滚动添加 "+i++);
-		// map.put("image", R.drawable.ic_launcher);
-		// list.add(map);
-		// listView.setAdapter(simple_adapter);
-		// simple_adapter.notifyDataSetChanged();
-		// } else
-		// // 停止滚动
-		// if (scrollState == SCROLL_STATE_IDLE) {
-		//
-		// } else
-		// // 正在滚动
-		// if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-		//
-		// }
 	}
 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		// TODO Auto-generated method stub
 
 	}
 

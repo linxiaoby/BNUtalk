@@ -107,8 +107,9 @@ public class ContactInfoCardActivity extends Activity {
 	public void doChat()
 	{
 		Bundle bundle=new Bundle();
-		bundle.putString("uid", uid);
 		bundle.putString("cuid", cuid);
+		bundle.putString("cnick", uEntity.getNick());
+		bundle.putByteArray("cavatar", CommonUtil.Bitmap2Bytes(uEntity.getAvatar()));
 		Intent intent = new Intent();
 		intent.setClass(this, ChatActivity.class);
 		intent.putExtras(bundle);

@@ -276,7 +276,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * @param fuid
 	 * @param list
 	 */
-	public void getAllMsgHistory(String uid, String cuid, List<MsgEntity> list) {
+	public void getAllMsgHistory(String uid, String cuid, List<MsgEntity> list,Bitmap avatar,Bitmap cavatar) {
 		// Integer id = Integer.valueOf(fuid);
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -290,6 +290,11 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				mEntity.setContent(cursor.getString(cursor.getColumnIndex(KEY_CONTENT)));
 				mEntity.setTime(cursor.getString(cursor.getColumnIndex(KEY_TIME)));
 				mEntity.setType(cursor.getInt(cursor.getColumnIndex(KEY_TYPE)));
+				if(mEntity.getType()==MsgEntity.TYPE_RECEIVED)
+					mEntity.setCavatar(cavatar);
+				else {
+					mEntity.setAvatar(avatar);
+				}
 				list.add(mEntity);
 			} while (cursor.moveToNext());
 		}
@@ -368,7 +373,12 @@ public class DBopenHelper extends SQLiteOpenHelper {
 			while (c.moveToNext()) {
 				RecentMsgEntity rEntity = new RecentMsgEntity();
 				rEntity.setUid(c.getString(c.getColumnIndex(KEY_CUID)));
-				rEntity.setMsgContent(c.getString(c.getColumnIndex(KEY_CONTENT)));
+				String content=c.getString(c.getColumnIndex(KEY_CONTENT));
+				if(content.length()>15)
+				{
+					content=content.substring(0, 15)+"...";
+				}
+				rEntity.setMsgContent(content);
 				rEntity.setNick(c.getString(c.getColumnIndex(KEY_NICK)));
 				rEntity.setTime(c.getString(c.getColumnIndex(KEY_TIME)));
 				rEntity.setRead(c.getInt(c.getColumnIndex(KEY_ISREAD)));

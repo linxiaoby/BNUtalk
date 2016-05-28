@@ -6,6 +6,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Calendar;
+
+import android.graphics.Bitmap;
+
 import java.io.InputStream;
 
 /**
@@ -19,6 +22,34 @@ public class MsgEntity implements Serializable {
 	private String content;
 	private int type;
 	private int isRead;
+	private Bitmap avatar,cavatar;
+
+
+	public Bitmap getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(Bitmap avatar) {
+		this.avatar = avatar;
+	}
+
+	public Bitmap getCavatar() {
+		return cavatar;
+	}
+
+	public void setCavatar(Bitmap cavatar) {
+		this.cavatar = cavatar;
+	}
+
+	public Bitmap getSender_image() {
+		return sender_image;
+	}
+
+	public void setSender_image(Bitmap sender_image) {
+		this.sender_image = sender_image;
+	}
+
+	private Bitmap sender_image;
 	public MsgEntity() {
 	}
 	

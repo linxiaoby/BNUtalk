@@ -211,20 +211,6 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//		ContactEntity cEntity = (ContactEntity) listView.getItemAtPosition(position);
-//		String fuid = cEntity.getUid();
-//		Toast.makeText(ContactActivity.this, "position=" + position + " content=" + fuid, 0).show();
-//
-//		// 弹出聊天窗口
-//		Bundle bundle = new Bundle();
-//		bundle.putString("uid", uid);
-//		bundle.putString("fuid", fuid);
-//		
-//		Intent intent = new Intent();
-//		intent.setClass(this, ChatActivity.class);
-//		intent.putExtras(bundle);
-//		startActivity(intent);
-		
 		Bundle bundle = new Bundle();
 		bundle.putInt("index", position);
 		Intent intent = new Intent();

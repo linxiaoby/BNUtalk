@@ -9,6 +9,7 @@ import android.database.CursorJoiner.Result;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.SyncStateContract.Helpers;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -17,12 +18,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import org.apache.http.Header;
 
 import com.bnutalk.server.AHttpLoginCheck;
 import com.bnutalk.server.GetServerIp;
 import com.bnutalk.ui.R;
+import com.bnutalk.util.CommonUtil;
+import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.MyApplication;
+import com.bnutalk.util.UserEntity;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -39,6 +45,8 @@ public class LoginActivity extends Activity {
 
 	private SharedPreferences pref;
 	private Editor editor;
+	private MyApplication myApp;
+	private DBopenHelper helper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +71,12 @@ public class LoginActivity extends Activity {
 		tvSignUp.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent1=new Intent(LoginActivity.this,SignUpAcitivity.class);
+				Intent intent1 = new Intent(LoginActivity.this, SignUpAcitivity.class);
 				startActivity(intent1);
 			}
 		});
+		myApp = (MyApplication) getApplicationContext();
+		helper = new DBopenHelper(LoginActivity.this);
 	}
 
 	/**
@@ -100,15 +110,7 @@ public class LoginActivity extends Activity {
 				System.out.println("msgwhat" + msg.what);
 				switch (msg.what) {
 				case 1:
-					Toast.makeText(LoginActivity.this, "login success!", Toast.LENGTH_LONG).show();
-					// info right,save uid into user_login,set final varable uid
-					MyApplication myApp=(MyApplication) getApplicationContext();
-					myApp.setUid(uid);
-					writeUidToCache();
-					// jump into MainActivity
-					Intent intent = new Intent();
-					intent.setClass(LoginActivity.this, MainActivity.class);
-					startActivity(intent);
+					handlerLogSuccess();
 					break;
 				case 2:
 					Toast.makeText(LoginActivity.this, "usename or password error!", Toast.LENGTH_LONG).show();
@@ -122,6 +124,44 @@ public class LoginActivity extends Activity {
 			}
 		};
 
+	}
+
+	public void handlerLogSuccess() {
+		Toast.makeText(LoginActivity.this, "login success!", Toast.LENGTH_LONG).show();
+		// info right,save uid into user_login,set final varable uid
+		MyApplication myApp = (MyApplication) getApplicationContext();
+		myApp.setUid(uid);
+		writeUidToCache();
+		getSelfInfo(uid, myApp.getSelfInfoList());
+		// jump into MainActivity
+		Intent intent = new Intent();
+		intent.setClass(LoginActivity.this, MainActivity.class);
+		startActivity(intent);
+	}
+
+	public void getSelfInfo(String uid, List<UserEntity> list) {
+		helper.getSelfInfo(uid, myApp.getSelfInfoList());
+		if (myApp.getSelfInfoList().size() == 0) {
+			getServerInfo(uid);
+		}
+	}
+
+	public void getServerInfo(final String uid) {
+		String ip = GetServerIp.serverIp;
+		String url = "http://" + ip + ":8080/web/GetSelfInfoServlet?&uid=" + uid;
+		final Message tmsg = new Message();
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.get(url, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(int status, Header[] header, byte[] response) {
+				String strJson = new String(response);
+				CommonUtil.parseJsonUser(strJson, myApp.getSelfInfoList());
+				helper.addSelfInfo(uid, myApp.getSelfInfoList());// save self
+			}
+			@Override
+			public void onFailure(int status, Header[] header, byte[] response, Throwable error) {
+			}
+		});
 	}
 
 	public void forgetClick(View v) {
@@ -139,7 +179,7 @@ public class LoginActivity extends Activity {
 
 		// 服务器操作：用户合法性验证+其他（待写）
 		doLogin(uid, passwd);
-		
+
 	}
 
 	/**
@@ -150,6 +190,5 @@ public class LoginActivity extends Activity {
 	 */
 	public void doLogin(String strUid, String strPasswd) {
 		new AHttpLoginCheck(handler, strUid, strPasswd).doLoginCheck();
-
 	}
 }
