@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import android.R.integer;
 import android.R.menu;
 import android.content.ContentValues;
 import android.content.Context;
@@ -269,6 +270,19 @@ public class DBopenHelper extends SQLiteOpenHelper {
 
 		db.close();
 		return ret;
+	}
+	/**
+	 * update MsgHistory from UNREAD　to ISREAD
+	 * @param uid
+	 * @param cuid
+	 */
+	public void updateMsgHistory(String uid,String cuid)
+	{
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		String whereClause="where uid=" + uid + " and cuid=" +cuid+" and "+KEY_ISREAD+"="+0;
+		values.put(KEY_ISREAD, 1);
+		long res= db.update(TABLE_MESSAGE_HISTOTY,values, whereClause, null);
 	}
 
 	/**

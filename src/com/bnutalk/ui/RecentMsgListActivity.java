@@ -67,7 +67,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	private static final String TAG="RecentMsgListActivity";
 	private ListView listView;
 	private List<RecentMsgEntity> list;
-	private int i = 0;
+	private int i=0;
 	private Handler handler;
 	private RecentMsgAdapter recentMsgAdapter;
 	private String uid;
@@ -214,13 +214,20 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		// 获取点击ListView item中的内容信息
 		RecentMsgEntity rEntity = (RecentMsgEntity) listView.getItemAtPosition(position);
-		String cuid = rEntity.getUid();
+		final String cuid = rEntity.getUid();
 		// 弹出Toast信息显示点击位置和内容
 		Toast.makeText(RecentMsgListActivity.this, "position=" + position + " content=" + cuid, 0).show();
 
 		// update listview:clear badge
 		rEntity.setRead(RecentMsgEntity.READ);
 		recentMsgAdapter.notifyDataSetChanged();
+		//update table msgHistory,change UNREAD to ISREAD
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				openHepler.updateMsgHistory(uid, cuid);
+			}
+		}).start();
 
 		// 弹出聊天窗口
 		Bundle bundle = new Bundle();
