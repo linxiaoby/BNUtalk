@@ -32,7 +32,7 @@ public class RecentMsgAdapter extends BaseAdapter{
 		ImageView avatar=(ImageView) convertView.findViewById(R.id.ivAvatar);
 		TextView nick=(TextView) convertView.findViewById(R.id.tvNick);
 		TextView content=(TextView) convertView.findViewById(R.id.tvContent);
-		ImageView isRead=(ImageView) convertView.findViewById(R.id.ivTipMes);
+		ImageView isRead=(ImageView) convertView.findViewById(R.id.ivTipMsg);
 		TextView time=(TextView) convertView.findViewById(R.id.tvTime);
 
 		RecentMsgEntity re=list.get(position);
