@@ -32,6 +32,7 @@ import android.content.SharedPreferences.Editor;
 import android.database.CursorJoiner.Result;
 import android.database.DefaultDatabaseErrorHandler;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -59,6 +60,7 @@ import com.bnutalk.util.MsgEntity;
 import com.bnutalk.util.MyApplication;
 import com.bnutalk.util.RecentMsgAdapter;
 import com.bnutalk.util.RecentMsgEntity;
+import com.bnutalk.util.SmsgEntity;
 import com.google.gson.Gson;
 
 public class RecentMsgListActivity extends Activity implements OnItemClickListener, OnScrollListener {
@@ -113,14 +115,21 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.v("Receiver", "RecentMsgReceiver is called!");
-			// show msg
-			new Thread(new Runnable() {
-				public void run() {
-					Toast.makeText(getApplicationContext(), "you have new messages!", Toast.LENGTH_SHORT).show();
-					getRecentMsg();
-				}
-			}).start();
+			SmsgEntity sEntity = (SmsgEntity) SmsgEntity.ByteToObject(intent.getByteArrayExtra("message"));
+			handleMsgReceive(sEntity);
 		}
+	}
+	public void handleMsgReceive(SmsgEntity sEntity) {
+		// show msg
+		Toast.makeText(RecentMsgListActivity.this, "you have new messages!", Toast.LENGTH_SHORT).show();
+		MsgEntity msgEntity = new MsgEntity();
+		msgEntity.setIsRead(MsgEntity.UNREAD);
+		msgEntity.setType(MsgEntity.TYPE_RECEIVED);
+		msgEntity.setSendToUid(sEntity.getFromUid());
+		msgEntity.setContent(sEntity.getContent());
+		msgEntity.setTime(CommonUtil.getCurrentTime());
+		openHepler.addMsgHistory(uid, msgEntity);
+		getRecentMsg();
 	}
 	@Override
 	protected void onResume()
@@ -136,6 +145,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	}
 	public void getRecentMsg()
 	{
+		Log.v("getRecentMsg","getRecentMsg is called!");
 		openHepler.getAllRecentMsgList(uid,list);
 		CommonUtil.sortListByTime(list);
 		recentMsgAdapter.notifyDataSetChanged();

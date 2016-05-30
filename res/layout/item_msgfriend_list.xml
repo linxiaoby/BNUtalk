@@ -23,13 +23,13 @@
                 android:id="@+id/tvNick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-               android:textSize="20sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tvContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                 android:textSize="15sp"/>
+                android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -39,18 +39,17 @@
         android:layout_alignParentRight="true"
         android:gravity="right"
         android:orientation="vertical" >
-
-        <ImageView
-            android:id="@+id/ivTipMes"
-           android:layout_width="20px"
-            android:layout_height="20px" />
-
         <TextView
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:text="2016-5-15" />
+
+        <ImageView
+            android:id="@+id/ivTipMes"
+            android:layout_width="30px"
+            android:layout_height="30px" />
     </LinearLayout>
 
 </RelativeLayout>

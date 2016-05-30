@@ -54,7 +54,7 @@ public class MsgService extends Service {
 		}).start();
 		return super.onStartCommand(intent, flags, startId);
 	}
-	public  void handleMsgRecive(final SmsgEntity sEntity, byte[] b) {
+	public  void handleMsgRecive(final SmsgEntity sEntity, final byte[] b) {
 		final MyApplication myApp = (MyApplication) getApplicationContext();
 		final Intent intent = new Intent();
 		// check FromUid
@@ -68,17 +68,21 @@ public class MsgService extends Service {
 		else// user is not chating with sender
 		{
 			// save msg to histoty,set type as "unread"
-			new Thread(new Runnable() {
-				public void run() {
-					MsgEntity msgEntity=new MsgEntity();
-					msgEntity.setIsRead(MsgEntity.UNREAD);
-					msgEntity.setType(msgEntity.TYPE_RECEIVED);
-					msgEntity.setSendToUid(msgEntity.getFromUid());
-					msgEntity.setContent(msgEntity.getContent());
-					msgEntity.setTime(msgEntity.getTime());
-					helper.addMsgHistory(myApp.getUid(), msgEntity);
-				}
-			}).start();
+//			new Thread(new Runnable() {
+//				public void run() {
+//					MsgEntity msgEntity=new MsgEntity();
+//					msgEntity.setIsRead(MsgEntity.UNREAD);
+//					msgEntity.setType(msgEntity.TYPE_RECEIVED);
+//					msgEntity.setSendToUid(msgEntity.getFromUid());
+//					msgEntity.setContent(msgEntity.getContent());
+//					msgEntity.setTime(msgEntity.getTime());
+//					helper.addMsgHistory(myApp.getUid(), msgEntity);
+//					
+//					intent.putExtra("message", b);
+//					intent.setAction("recentMsgReceiver");// this can be receive by Main
+//				}
+//			}).start();
+			intent.putExtra("message", b);
 			intent.setAction("recentMsgReceiver");// this can be receive by Main
 		}
 		sendBroadcast(intent);

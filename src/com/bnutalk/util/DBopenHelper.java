@@ -357,6 +357,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * @param list
 	 */
 	public void getAllRecentMsgList(String uid, List<RecentMsgEntity> list) {
+		if(list.size()!=0)
 		list.clear();
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
