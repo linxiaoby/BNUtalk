@@ -116,6 +116,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 			// show msg
 			new Thread(new Runnable() {
 				public void run() {
+					Toast.makeText(getApplicationContext(), "you have new messages!", Toast.LENGTH_SHORT).show();
 					getRecentMsg();
 				}
 			}).start();

@@ -108,8 +108,7 @@ public class ChatActivity extends Activity {
 			MsgEntity msgEntity = new MsgEntity();
 			msgEntity.setIsRead(MsgEntity.ISREAD);
 			msgEntity.setType(MsgEntity.TYPE_RECEIVED);
-			//msgEntity.setFromUid(sEntity.getFromUid());
-			//msgEntity.setSendToUid(sEntity.getSendToUid());
+			msgEntity.setSendToUid(sEntity.getFromUid());
 			msgEntity.setContent(sEntity.getContent());
 			msgEntity.setTime(sEntity.getTime());
 			msgEntity.setCavatar(cavatar);
@@ -117,6 +116,7 @@ public class ChatActivity extends Activity {
 			adapter.notifyDataSetChanged();
 //			adapter.notifyDataSetInvalidated();
 			msgListView.setSelection(msgList.size());
+			saveMsgHistory(uid,msgEntity);
 		}
 	}
 
