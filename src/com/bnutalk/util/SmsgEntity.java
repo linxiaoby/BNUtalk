@@ -12,67 +12,53 @@ import android.graphics.Bitmap;
 
 import java.io.InputStream;
 
-/**
- * Created by huangtianyous on 2016/4/9.
- */
-public class MsgEntity {
 
-	public static final int ISREAD = 1;
-	public static final int UNREAD = 0;
+/**
+ * Created On 2016/05/29
+ * @author 王琳—PC
+ *
+ */
+public class SmsgEntity implements Serializable {
+	
+	private static final long serialVersionUID=-3982748458049500750L;
+	public static final int ISREAD=1;
+	public static final int UNREAD=0;
 	public static final int TYPE_RECEIVED = 0;
 	public static final int TYPE_SENT = 1;
 	private String fromUid, sendToUid, time;
 	private String content;
 	private int type;
 	private int isRead;
-	private Bitmap avatar, cavatar;
 
-	public MsgEntity() {
-
-	}
-
-	public MsgEntity(String content, int type) {
-		this.content = content;
-		this.type = type;
-	}
-
-	public MsgEntity(String content, String time, int type) {
-
-		this.content = content;
-		this.time = time;
-		this.type = type;
-	}
-
-	public MsgEntity(String fromUid, String sendToUid, String time, String content, int type) {
-		this.fromUid = fromUid;
-		this.sendToUid = sendToUid;
-		this.time = time;
-		this.content = content;
-		this.type = type;
-	}
-
-	public Bitmap getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(Bitmap avatar) {
-		this.avatar = avatar;
-	}
-
-	public Bitmap getCavatar() {
-		return cavatar;
-	}
-
-	public void setCavatar(Bitmap cavatar) {
-		this.cavatar = cavatar;
-	}
-
+	
 	public int getIsRead() {
 		return isRead;
 	}
 
 	public void setIsRead(int isRead) {
 		this.isRead = isRead;
+	}
+	public  SmsgEntity() {
+	}
+	public SmsgEntity(String content,int type) {
+		this.content = content;
+		this.type = type;
+	}
+
+
+	public SmsgEntity(String content, String time,int type) {
+		
+		this.content = content;
+		this.time=time;
+		this.type = type;
+	}
+
+	public SmsgEntity(String fromUid, String sendToUid, String time, String content, int type) {
+		this.fromUid = fromUid;
+		this.sendToUid = sendToUid;
+		this.time = time;
+		this.content = content;
+		this.type = type;
 	}
 
 	/**
@@ -120,7 +106,8 @@ public class MsgEntity {
 		}
 		return obj;
 	}
-
+	
+	
 	public String getFromUid() {
 		return fromUid;
 	}

@@ -66,7 +66,7 @@ public class AHttpAddContacts {
 	}
 
 	public void getAllUser() {
-		String ip = GetServerIp.serverIp;
+		String ip = ServerConn.serverIp;
 		String url = "http://" + ip + ":8080/web/GetAllUserServlet?&uid=" + uid;
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(url, new AsyncHttpResponseHandler() {
@@ -93,7 +93,7 @@ public class AHttpAddContacts {
 	 * @param cuid
 	 */
 	public void rightOperation(String cuid) {
-		String ip = GetServerIp.serverIp;
+		String ip = ServerConn.serverIp;
 		String url = "http://" + ip + ":8080/web/AddConRightServlet?&uid=" + uid + "&cuid=" + cuid;
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(url, new AsyncHttpResponseHandler() {
@@ -120,7 +120,7 @@ public class AHttpAddContacts {
 	 * @return true if exits
 	 */
 	public Boolean checkLike(String cuid) {
-		String ip = GetServerIp.serverIp;
+		String ip = ServerConn.serverIp;
 		String url = "http://" + ip + ":8080/web/CheckLikeServlet?&uid=" + uid + "&cuid=" + cuid;
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(url, new AsyncHttpResponseHandler() {
@@ -146,7 +146,7 @@ public class AHttpAddContacts {
 	 * @param cuid
 	 */
 	public void deleteLike(String cuid) {
-		String ip = GetServerIp.serverIp;
+		String ip = ServerConn.serverIp;
 		String url = "http://" + ip + ":8080/web/DeleteLikeServlet?&uid=" + uid + "&cuid=" + cuid;
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(url, new AsyncHttpResponseHandler() {
@@ -166,7 +166,7 @@ public class AHttpAddContacts {
 	 * @param cuid
 	 */
 	public void saveLikeUid(String cuid) {
-		String ip = GetServerIp.serverIp;
+		String ip = ServerConn.serverIp;
 		String url = "http://" + ip + ":8080/web/SaveLikeServerlet";
 		AsyncHttpClient client = new AsyncHttpClient();
 

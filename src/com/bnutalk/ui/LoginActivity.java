@@ -18,12 +18,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.List;
 
 import org.apache.http.Header;
 
 import com.bnutalk.server.AHttpLoginCheck;
-import com.bnutalk.server.GetServerIp;
+import com.bnutalk.server.MsgService;
+import com.bnutalk.server.ServerConn;
 import com.bnutalk.ui.R;
 import com.bnutalk.util.CommonUtil;
 import com.bnutalk.util.DBopenHelper;
@@ -47,7 +51,8 @@ public class LoginActivity extends Activity {
 	private Editor editor;
 	private MyApplication myApp;
 	private DBopenHelper helper;
-
+	private MsgService msgService;
+	// server operation：用于socket的成员变量
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -127,16 +132,25 @@ public class LoginActivity extends Activity {
 	}
 
 	public void handlerLogSuccess() {
+		getSocketConn(this);
 		Toast.makeText(LoginActivity.this, "login success!", Toast.LENGTH_LONG).show();
 		// info right,save uid into user_login,set final varable uid
 		MyApplication myApp = (MyApplication) getApplicationContext();
 		myApp.setUid(uid);
+
 		writeUidToCache();
 		getSelfInfo(uid, myApp.getSelfInfoList());
 		// jump into MainActivity
 		Intent intent = new Intent();
 		intent.setClass(LoginActivity.this, MainActivity.class);
 		startActivity(intent);
+	}
+	
+	public void getSocketConn(Context context) {
+//		if (myApp.getSocket() == null) {
+			ServerConn.serverConn(uid, context,helper);
+//			ServerConn.ReadFromServ(LoginActivity.this, helper);
+//		}
 	}
 
 	public void getSelfInfo(String uid, List<UserEntity> list) {
@@ -146,8 +160,20 @@ public class LoginActivity extends Activity {
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (myApp.getSocket() != null)
+			try {
+				myApp.getSocket().close();
+			} catch (IOException e) {
+				Log.v("socket", "socket close error!");
+				e.printStackTrace();
+			}
+	}
+
 	public void getServerInfo(final String uid) {
-		String ip = GetServerIp.serverIp;
+		String ip = ServerConn.serverIp;
 		String url = "http://" + ip + ":8080/web/GetSelfInfoServlet?&uid=" + uid;
 		final Message tmsg = new Message();
 		AsyncHttpClient client = new AsyncHttpClient();
@@ -158,6 +184,7 @@ public class LoginActivity extends Activity {
 				CommonUtil.parseJsonUser(strJson, myApp.getSelfInfoList());
 				helper.addSelfInfo(uid, myApp.getSelfInfoList());// save self
 			}
+
 			@Override
 			public void onFailure(int status, Header[] header, byte[] response, Throwable error) {
 			}
@@ -176,10 +203,8 @@ public class LoginActivity extends Activity {
 	public void signInClick(View v) {
 		uid = etUid.getText().toString();
 		passwd = etPasswd.getText().toString();
-
 		// 服务器操作：用户合法性验证+其他（待写）
 		doLogin(uid, passwd);
-
 	}
 
 	/**

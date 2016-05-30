@@ -95,7 +95,7 @@ public class AHttpPersInfoUpload {
 
 	// �ϴ���ݵ�������
 	public void sendPersInfo() {
-		String ip = new GetServerIp().getServerIp();
+		String ip = new ServerConn().getServerIp();
 		String url = "http://" + ip + ":8080/web/PersInfoUploadServlet";
 		RequestParams params = new RequestParams();
 		params.put("strUid", strUid);

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.http.Header;
 
-import com.bnutalk.server.GetServerIp;
+import com.bnutalk.server.ServerConn;
 import com.bnutalk.util.CommonUtil;
 import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.MyApplication;
@@ -92,7 +92,7 @@ public class SettingsAcitivity extends Activity {
 		startActivity(intent);
 	}
 	public void getServerInfo(String uid,final Handler thandler) {
-		String ip = GetServerIp.serverIp;
+		String ip = ServerConn.serverIp;
 		String url = "http://" + ip + ":8080/web/GetSelfInfoServlet?&uid=" + uid;
 		final Message tmsg=new Message();
 		AsyncHttpClient client = new AsyncHttpClient();

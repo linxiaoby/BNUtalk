@@ -1,9 +1,5 @@
 package com.bnutalk.ui;
 
-/*
- * Author:by linxiaobai 2016/04/30
- * 功能：聊天好友列表
- */
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -54,8 +50,7 @@ import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 
 import com.bnutalk.server.AHttpGetContacts;
-import com.bnutalk.server.GetServerIp;
-import com.bnutalk.server.ReadFromServThread;
+import com.bnutalk.server.ServerConn;
 import com.bnutalk.server.UpdateContactService;
 import com.bnutalk.ui.LoginActivity;
 import com.bnutalk.ui.R;
@@ -71,33 +66,31 @@ import com.bnutalk.util.UserEntity;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-
+/**
+ *  Created On 2016/04/30
+ * @author 王琳—PC
+ *
+ */
 public class ContactActivity extends Activity implements OnItemClickListener, OnScrollListener {
 	private static final String TAG = "ContactActivity";
 	private ListView listView;
 	private Handler handler;
 	private ContactAdapter contactAdapter;
-
-	// server operation：用于socket的成员变量
-	public static OutputStream os;
-	public static Socket socket;
 	private String uid;
 	private SharedPreferences msgListPref;
 	private DBopenHelper helper;
 	private MyApplication myApp;
-	private AlarmReceiver receiver;
-	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		android.util.Log.v(TAG, "onCreate() called!");
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_contacts);
-		initEvent();
+		initView();
+		defHandler();
 	}
 
-	public void initEvent() {
+	public void initView() {
 		// 匹配布局文件中的ListView控件
 		listView = (ListView) findViewById(R.id.lsContacts);
 		listView.setOnItemClickListener(this);
@@ -105,10 +98,8 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		myApp = (MyApplication) getApplicationContext();
 		contactAdapter = new ContactAdapter(ContactActivity.this, myApp.getConList());
 		listView.setAdapter(contactAdapter);
-		defHandler();
 		helper=new DBopenHelper(getApplicationContext());
-		getCurrentUid();
-
+		uid=MainActivity.uid;
 	}
 	@Override
 	protected void onResume() {
@@ -160,7 +151,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	 * @param handler
 	 */
 	public void getServContact(final Handler handler) {
-		String ip = GetServerIp.serverIp;
+		String ip = ServerConn.serverIp;
 		String url = "http://" + ip + ":8080/web/getContactServlet?&uid=" + uid;
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(url, new AsyncHttpResponseHandler() {
@@ -198,13 +189,6 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();
 	}
-	/**
-	 * get the current user uid from the local cache
-	 */
-	public void getCurrentUid() {
-		SharedPreferences pref = getSharedPreferences("user_login", 0);
-		uid = pref.getString("uid", "");
-	}
 
 	/**
 	 * show person info card
@@ -221,13 +205,9 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		// TODO Auto-generated method stub
-		
 	}
-
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		// TODO Auto-generated method stub
 		
 	}
 }

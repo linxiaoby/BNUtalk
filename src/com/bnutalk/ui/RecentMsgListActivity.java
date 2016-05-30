@@ -22,7 +22,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -45,14 +48,15 @@ import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 
-import com.bnutalk.server.GetServerIp;
-import com.bnutalk.server.ReadFromServThread;
+import com.bnutalk.server.ServerConn;
 import com.bnutalk.ui.LoginActivity;
 import com.bnutalk.ui.R;
 import com.bnutalk.ui.SignUpPersInfoActivity;
+import com.bnutalk.ui.ChatActivity.ChatReceiver;
 import com.bnutalk.util.CommonUtil;
 import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.MsgEntity;
+import com.bnutalk.util.MyApplication;
 import com.bnutalk.util.RecentMsgAdapter;
 import com.bnutalk.util.RecentMsgEntity;
 import com.google.gson.Gson;
@@ -64,13 +68,10 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 	private int i = 0;
 	private Handler handler;
 	private RecentMsgAdapter recentMsgAdapter;
-
-	// server operation：用于socket的成员变量
-	public static OutputStream os;
-	public static Socket socket;
 	private String uid;
-	private SharedPreferences msgListPref;
 	private DBopenHelper openHepler;
+	private RecentMsgReceiver recentMsgReceiver;
+	private MyApplication myApp;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.v(TAG,"onCreate() called!");
@@ -78,8 +79,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_recent_msglist);
 		initEvent();
-		// get socket with server
-		serverConn();
+		registerRecentMsgReceiver();// register receiver for listening msg receive
 	}
 	
 	public void initEvent() {
@@ -88,16 +88,38 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		listView.setOnItemClickListener(this);
 		listView.setOnScrollListener(this);
 		list = new ArrayList<RecentMsgEntity>();
-		
 		recentMsgAdapter = new RecentMsgAdapter(RecentMsgListActivity.this, list);
 		listView.setAdapter(recentMsgAdapter);
-		
-		msgListPref = getSharedPreferences("recent_msg_list", 0);
 		defHandler();
 		openHepler=new DBopenHelper(getApplicationContext());
-		// get the current user id
-		getCurrentUid();
-//		openHepler.updateDb();
+		myApp=(MyApplication) getApplicationContext();
+		uid=myApp.getUid();
+	}
+	/**
+	 * register receiver for listening msg receive
+	 */
+	public void registerRecentMsgReceiver() {
+		// registerReceiver
+		recentMsgReceiver = new RecentMsgReceiver();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("recentMsgReceiver");
+		registerReceiver(recentMsgReceiver, filter);
+	}
+	/**
+	 * listening a new msg received
+	 * @author 王琳—PC
+	 */
+	public class RecentMsgReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.v("Receiver", "RecentMsgReceiver is called!");
+			// show msg
+			new Thread(new Runnable() {
+				public void run() {
+					getRecentMsg();
+				}
+			}).start();
+		}
 	}
 	@Override
 	protected void onResume()
@@ -105,6 +127,11 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		super.onResume();
 		Log.v(TAG,"onResume() called!");
 		getRecentMsg();
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(recentMsgReceiver);
 	}
 	public void getRecentMsg()
 	{
@@ -170,22 +197,6 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		if (strJson != null)
 			CommonUtil.parseJsonMsg(strJson, list);
 	}
-
-	/**
-	 * get the current user uid from the local cache
-	 */
-	public void getCurrentUid() {
-		SharedPreferences pref = getSharedPreferences("user_login", 0);
-		uid = pref.getString("uid", "");
-		Log.v("get current uid", uid);
-	}
-
-	// @Override
-	// public boolean onCreateOptionsMenu(Menu menu) {
-	// // Inflate the menu; this adds items to the action bar if it is present.
-	// getMenuInflater().inflate(R.menu.main, menu);
-	// return true;
-	// }
 
 	// (5)事件处理监听器方法
 	@Override
@@ -253,41 +264,5 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 
 	public void getFriendInfo() {
 
-	}
-
-	/*
-	 * 服务器操作：建立和服务器的socket连接 功能：创建一个线程，用来建立socket==>每次加载聊天消息界面都会重新建立socket
-	 */
-	public void serverConn() {
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					// check network state
-					boolean flag = new GetServerIp().checkNetworkState(RecentMsgListActivity.this);
-					if (flag) {
-						Log.v("network state", "network is  available");
-					} else
-						Log.v("network state", "network is unavailable");
-
-					String servIp = new GetServerIp().getServerIp();
-					int servPort = new GetServerIp().getServScoketPrt();
-					socket = new Socket(servIp, servPort);
-					Log.v("Socket线程", "socket建立成功");
-					os = socket.getOutputStream();
-					// 在创建socket的时候发送uid
-					os.write((uid + "\r\n").getBytes());
-					os.flush();
-
-					// read message from server
-					new Thread(new ReadFromServThread(handler)).start();
-				} catch (UnknownHostException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}).start();
 	}
 }

@@ -57,7 +57,7 @@ public class MsgAdapter extends ArrayAdapter<MsgEntity> {
 			viewHolder.photo_receiver.setVisibility(View.VISIBLE);
 			viewHolder.photo_sender.setVisibility(View.GONE);
 			viewHolder.leftMsg.setText(msg.getContent());
-			viewHolder.photo_receiver.setImageBitmap(msg.getAvatar());
+			viewHolder.photo_receiver.setImageBitmap(msg.getCavatar());
 		} else if (msg.getType() == MsgEntity.TYPE_SENT) {
 			viewHolder.rightLayout.setVisibility(View.VISIBLE);
 			viewHolder.leftLayout.setVisibility(View.GONE);

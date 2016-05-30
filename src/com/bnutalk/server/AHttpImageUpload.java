@@ -42,7 +42,7 @@ public class AHttpImageUpload {
 			params.put("strPhoto", strPhoto);
 			params.put("strUid", strUid);// 传输的字符数据
 			
-			String ip = new GetServerIp().getServerIp();
+			String ip = new ServerConn().getServerIp();
 			String url = "http://" + ip + ":8080/web/ImageUploadServlet";
 			AsyncHttpClient client = new AsyncHttpClient();
 			client.post(url, params, new AsyncHttpResponseHandler() {

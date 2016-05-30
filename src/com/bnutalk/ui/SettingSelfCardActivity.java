@@ -2,7 +2,7 @@ package com.bnutalk.ui;
 
 import org.apache.http.Header;
 
-import com.bnutalk.server.GetServerIp;
+import com.bnutalk.server.ServerConn;
 import com.bnutalk.util.CommonUtil;
 import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.MyApplication;
