@@ -241,6 +241,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				uEntity.setLikeLanguage(c.getString(c.getColumnIndex(KEY_LIKE_LANGUAGE)));
 				uEntity.setSex(c.getInt(c.getColumnIndex(KEY_SEX)));
 				uEntity.setPlace(c.getString(c.getColumnIndex(KEY_PLACE)));
+				uEntity.setNationality(c.getString(c.getColumnIndex(KEY_NATIONALITY)));
 				byte[] in = c.getBlob(c.getColumnIndex(KEY_AVATAR));
 				Bitmap bmp = BitmapFactory.decodeByteArray(in, 0, in.length);
 				uEntity.setAvatar(bmp);

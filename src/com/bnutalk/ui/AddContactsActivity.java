@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.DefaultDatabaseErrorHandler;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.bnutalk.server.AHttpAddContacts;
 import com.bnutalk.ui.R;
+import com.bnutalk.util.CommonUtil;
 import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.FlingAdapterView;
 import com.bnutalk.util.MyApplication;
@@ -60,7 +62,7 @@ public class AddContactsActivity extends Activity {
 	private Editor editor;
 	private PopupWindow popupWindow;
 	private MyApplication myApp;
-
+	private Bitmap avatar;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		android.util.Log.v(TAG, "onCreate() called!");
@@ -69,13 +71,16 @@ public class AddContactsActivity extends Activity {
 		setContentView(R.layout.activity_addfriend_main);
 		initView();
 	}
-
+	public void getSelfInfo() {
+		helper.getSelfInfo(uid, myApp.getSelfInfoList());
+		avatar=myApp.getSelfInfoList().get(0).getAvatar();
+	}
 	@Override
 	protected void onResume() {
 		super.onResume();
 		android.util.Log.v(TAG, "onResume() called!");
+		getSelfInfo();
 		getUserCard();
-		helper.getUserCard(uid, list);
 	}
 
 	@Override
@@ -196,12 +201,13 @@ public class AddContactsActivity extends Activity {
 		View popupWindow_view = getLayoutInflater().inflate(R.layout.item_match, null, false);
 		popupWindow = new PopupWindow(popupWindow_view, 800, 800, true);
 		popupWindow.setAnimationStyle(R.style.match);
-		ImageView user1 = (ImageView) findViewById(R.id.user1);
-		ImageView user2 = (ImageView) findViewById(R.id.user2);
-		user1.setImageBitmap(myApp.getSelfInfoList().get(0).getAvatar());
+		ImageView user1 = (ImageView) popupWindow_view.findViewById(R.id.user1);
+		ImageView user2 = (ImageView)  popupWindow_view.findViewById(R.id.user2);
+		// read self info from local,else it can be nullpoint
+		user1.setImageBitmap(avatar);
 		user2.setImageBitmap(uEntity.getAvatar());
-		Button back = (Button) findViewById(R.id.back);
-		Button sendMsg = (Button) findViewById(R.id.send_message);
+		Button back = (Button)  popupWindow_view.findViewById(R.id.back);
+		Button sendMsg = (Button)  popupWindow_view.findViewById(R.id.send_message);
 		back.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -214,7 +220,13 @@ public class AddContactsActivity extends Activity {
 			public void onClick(View v) {
 				popupWindow.dismiss();
 				popupWindow = null;
+				
+				Bundle bundle = new Bundle();
+				bundle.putString("cuid", uEntity.getUid());
+				bundle.putString("cnick", uEntity.getNick());
+				bundle.putByteArray("cavatar", CommonUtil.Bitmap2Bytes(uEntity.getAvatar()));
 				Intent intent = new Intent();
+				intent.putExtras(bundle);
 				intent.setClass(AddContactsActivity.this, ChatActivity.class);
 				startActivity(intent);
 			}
