@@ -151,7 +151,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		recentMsgAdapter.notifyDataSetChanged();
 		if(list.size()==0)
 		{
-			Toast toast=Toast.makeText(RecentMsgListActivity.this, "还没有消息，快找好友发起会话吧！(求产品组翻译)", Toast.LENGTH_LONG);
+			Toast toast=Toast.makeText(RecentMsgListActivity.this, "find friends to chat!", Toast.LENGTH_SHORT);
 			 toast.setGravity(Gravity.CENTER, 0, 0);
 			 toast.show();
 		}

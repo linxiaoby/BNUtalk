@@ -273,12 +273,12 @@ public class AddContactsActivity extends Activity {
 
 			@Override
 			public void onLeftCardExit(Object dataObject) {
-				makeToast(AddContactsActivity.this, "不喜欢");
+				makeToast(AddContactsActivity.this, "dislike");
 			}
 
 			@Override
 			public void onRightCardExit(Object dataObject) {
-				makeToast(AddContactsActivity.this, "喜欢");
+				makeToast(AddContactsActivity.this, "like");
 
 				// server operation
 				new AHttpAddContacts(list, uid, handler, helper).rightOperation(cuid);
@@ -310,7 +310,7 @@ public class AddContactsActivity extends Activity {
 		flingContainer.setOnItemClickListener(new FlingAdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClicked(int itemPosition, Object dataObject) {
-				makeToast(AddContactsActivity.this, "点击图片");
+//				makeToast(AddContactsActivity.this, "clike image");
 			}
 		});
 	}

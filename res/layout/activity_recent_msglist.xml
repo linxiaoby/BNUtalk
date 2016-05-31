@@ -34,8 +34,7 @@
 	        android:layout_height="40dp"
 	        android:text="@string/empty" 
 	        android:textSize="@dimen/text_size" 
-	        android:background="@drawable/sp" 
-	        android:onClick="onSearch" />
+	        android:background="@drawable/sp" />
 	</LinearLayout>
 	<ListView
         android:id="@+id/lvMsgFriend"

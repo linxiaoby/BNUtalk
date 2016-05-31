@@ -34,7 +34,7 @@ public class MainActivity extends TabActivity {
 	private RadioGroup main_radiogroup;
 	private RadioButton tab_icon_chats, tab_icon_contacs, tab_icon_settings;
 	private Button addFriend;
-	public static String uid;
+	public String uid;
 	private Handler handler;
 	private MyApplication myApp;
 	private DBopenHelper helper;

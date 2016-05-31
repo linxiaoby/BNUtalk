@@ -66,8 +66,10 @@ import com.bnutalk.util.UserEntity;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+
 /**
- *  Created On 2016/04/30
+ * Created On 2016/04/30
+ * 
  * @author 王琳—PC
  *
  */
@@ -80,6 +82,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	private SharedPreferences msgListPref;
 	private DBopenHelper helper;
 	private MyApplication myApp;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		android.util.Log.v(TAG, "onCreate() called!");
@@ -98,9 +101,10 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		myApp = (MyApplication) getApplicationContext();
 		contactAdapter = new ContactAdapter(ContactActivity.this, myApp.getConList());
 		listView.setAdapter(contactAdapter);
-		helper=new DBopenHelper(getApplicationContext());
-		uid=MainActivity.uid;
+		helper = new DBopenHelper(getApplicationContext());
+		uid = myApp.getUid();
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -112,7 +116,10 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	protected void onPause() {
 		super.onPause();
 		android.util.Log.v(TAG, "onResume() called!");
+		// save contact
+		saveContact(myApp.getConList());
 	}
+
 	/**
 	 * define handler server operation:get contacts data,and update ui
 	 */
@@ -122,13 +129,9 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
 				case 0x001:// contacts list download success
-					if (myApp.getConList().size() == 0) 
-						showToast("还没有好友，赶快点击右上角添加吧");
-					else 
-					{
-						saveContact();
-						contactAdapter.notifyDataSetChanged();
-					}
+						// saveContact();
+//						showToast("you have new friends!");
+//						contactAdapter.notifyDataSetChanged();
 					break;
 				case 0x002:
 
@@ -139,15 +142,21 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 			}
 		};
 	}
+
+	/**
+	 * load contact read local first,and then read from server
+	 */
 	public void getContact() {
 		helper.getContacts(uid, myApp.getConList());
 		if (myApp.getConList().size() != 0)
-			contactAdapter.notifyDataSetChanged();
-		else // load from server
-			getServContact(handler);
+		contactAdapter.notifyDataSetChanged();
+		// else // load from server
+		getServContact(handler);
 	}
+
 	/**
 	 * download contacts from server
+	 * 
 	 * @param handler
 	 */
 	public void getServContact(final Handler handler) {
@@ -158,34 +167,44 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 			@Override
 			public void onSuccess(int status, Header[] header, byte[] response) {
 				// Json解析
+				Log.v("getServContact", "success!");
 				String strJson = new String(response);
 				List<UserEntity> list = new ArrayList<UserEntity>();
-				CommonUtil.parseJsonUser(strJson,myApp.getConList());
-				Message tmsg=new Message();
-				tmsg.what=0x001;
-				handler.sendMessage(tmsg);
+				CommonUtil.parseJsonUser(strJson, list);
+//				if (list.size() > myApp.getConList().size()) {
+					Log.v("getServContact", "handler send msg!");
+					myApp.getConList().clear();
+					myApp.getConList().addAll(list);
+					contactAdapter.notifyDataSetChanged();
+					saveContact(list);
+					
+//					Message tmsg = new Message();
+//					tmsg.what = 0x001;
+//					handler.sendMessage(tmsg);
+//					
+//				}
 			}
+
 			@Override
 			public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
 			}
 		});
 	}
+
 	/**
-	 *open a thread to save contacts into  local cache 
+	 * open a thread to save contacts into local cache
 	 */
-	public void saveContact()
-	{
+	public void saveContact(final List<UserEntity> list) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				helper.addAllContacts(uid, myApp.getConList());
+				helper.addAllContacts(uid, list);
 			}
 		}).start();
 	}
-	
-	public void showToast(String text)
-	{
-		Toast toast = Toast.makeText(ContactActivity.this,text,Toast.LENGTH_SHORT);
+
+	public void showToast(String text) {
+		Toast toast = Toast.makeText(ContactActivity.this, text, Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();
 	}
@@ -206,8 +225,9 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 	}
+
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		
+
 	}
 }

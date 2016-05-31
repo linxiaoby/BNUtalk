@@ -26,6 +26,7 @@ public class MsgService extends Service {
 		helper=new DBopenHelper(getApplicationContext());
 		return null;
 	}
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		new Thread(new Runnable() {
