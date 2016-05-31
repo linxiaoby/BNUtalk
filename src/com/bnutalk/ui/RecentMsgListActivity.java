@@ -216,7 +216,6 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		RecentMsgEntity rEntity = (RecentMsgEntity) listView.getItemAtPosition(position);
 		final String cuid = rEntity.getUid();
 		// 弹出Toast信息显示点击位置和内容
-		Toast.makeText(RecentMsgListActivity.this, "position=" + position + " content=" + cuid, 0).show();
 
 		// update listview:clear badge
 		rEntity.setRead(RecentMsgEntity.READ);

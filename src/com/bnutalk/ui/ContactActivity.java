@@ -116,8 +116,6 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	protected void onPause() {
 		super.onPause();
 		android.util.Log.v(TAG, "onResume() called!");
-		// save contact
-		saveContact(myApp.getConList());
 	}
 
 	/**
@@ -131,7 +129,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 				case 0x001:// contacts list download success
 						// saveContact();
 //						showToast("you have new friends!");
-//						contactAdapter.notifyDataSetChanged();
+						contactAdapter.notifyDataSetChanged();
 					break;
 				case 0x002:
 
@@ -147,9 +145,14 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 	 * load contact read local first,and then read from server
 	 */
 	public void getContact() {
-		helper.getContacts(uid, myApp.getConList());
-		if (myApp.getConList().size() != 0)
+		List<UserEntity> list=new ArrayList<UserEntity>();
+		helper.getContacts(uid, list);
+		if (list.size() != myApp.getConList().size())
+		{
+		myApp.getConList().clear();
+		myApp.getConList().addAll(list);
 		contactAdapter.notifyDataSetChanged();
+		}
 		// else // load from server
 		getServContact(handler);
 	}
@@ -171,18 +174,17 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 				String strJson = new String(response);
 				List<UserEntity> list = new ArrayList<UserEntity>();
 				CommonUtil.parseJsonUser(strJson, list);
-//				if (list.size() > myApp.getConList().size()) {
+				if (list.size()!=myApp.getConList().size()) {
 					Log.v("getServContact", "handler send msg!");
 					myApp.getConList().clear();
 					myApp.getConList().addAll(list);
 					contactAdapter.notifyDataSetChanged();
-					saveContact(list);
 					
-//					Message tmsg = new Message();
-//					tmsg.what = 0x001;
-//					handler.sendMessage(tmsg);
-//					
-//				}
+					Message tmsg = new Message();
+					tmsg.what = 0x001;
+					handler.sendMessage(tmsg);
+					saveContact(list);
+				}
 			}
 
 			@Override
