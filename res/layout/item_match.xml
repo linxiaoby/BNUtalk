@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageView5"
         android:layout_centerHorizontal="true"
-        android:text="You have been matched"
+        android:text="you two have been friends"
         android:textSize="20sp" />
 
     <Button

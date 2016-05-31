@@ -149,6 +149,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		helper.getContacts(uid, list);
 		if (list.size() != myApp.getConList().size())
 		{
+		CommonUtil.sortListByNick(list);
 		myApp.getConList().clear();
 		myApp.getConList().addAll(list);
 		contactAdapter.notifyDataSetChanged();
@@ -176,10 +177,10 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 				CommonUtil.parseJsonUser(strJson, list);
 				if (list.size()!=myApp.getConList().size()) {
 					Log.v("getServContact", "handler send msg!");
+					CommonUtil.sortListByNick(list);
 					myApp.getConList().clear();
 					myApp.getConList().addAll(list);
 					contactAdapter.notifyDataSetChanged();
-					
 					Message tmsg = new Message();
 					tmsg.what = 0x001;
 					handler.sendMessage(tmsg);

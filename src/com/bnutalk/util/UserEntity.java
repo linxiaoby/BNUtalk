@@ -5,7 +5,7 @@ package com.bnutalk.util;
  */
 import android.graphics.Bitmap;
 
-public class UserEntity {
+public class UserEntity implements Comparable<UserEntity>{
 	private static final int FEMAL = 1;
 	private static final int MAL = 0;
 
@@ -117,4 +117,8 @@ public class UserEntity {
 		return MAL;
 	}
 
+	@Override
+	public int compareTo(UserEntity a) {
+		return this.nick.compareTo(a.nick);
+	}
 }

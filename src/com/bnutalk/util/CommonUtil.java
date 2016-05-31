@@ -9,11 +9,13 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.BlockingDeque;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bnutalk.server.User;
 import com.google.gson.Gson;
 
 import android.content.Context;
@@ -68,7 +70,10 @@ public class CommonUtil {
 	public static void sortListByTime(List<RecentMsgEntity> list) {
 		Collections.sort(list);
 	}
-
+	public static void sortListByNick(List<UserEntity> list)
+	{
+		Collections.sort(list);
+	}
 	public static Bitmap imgStrToBitmap(String strPhoto) {
 		byte[] photoimg = Base64.decode(strPhoto, 0);
 		for (int i = 0; i < photoimg.length; ++i) {

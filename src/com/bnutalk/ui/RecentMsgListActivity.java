@@ -97,6 +97,19 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		myApp=(MyApplication) getApplicationContext();
 		uid=myApp.getUid();
 	}
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		Log.v(TAG,"onResume() called!");
+		getRecentMsg();
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(recentMsgReceiver);
+	}
+	
 	/**
 	 * register receiver for listening msg receive
 	 */
@@ -107,6 +120,7 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		filter.addAction("recentMsgReceiver");
 		registerReceiver(recentMsgReceiver, filter);
 	}
+	
 	/**
 	 * listening a new msg received
 	 * @author 王琳—PC
@@ -131,18 +145,6 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		openHepler.addMsgHistory(uid, msgEntity);
 		getRecentMsg();
 	}
-	@Override
-	protected void onResume()
-	{
-		super.onResume();
-		Log.v(TAG,"onResume() called!");
-		getRecentMsg();
-	}
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		unregisterReceiver(recentMsgReceiver);
-	}
 	public void getRecentMsg()
 	{
 		Log.v("getRecentMsg","getRecentMsg is called!");
@@ -152,8 +154,8 @@ public class RecentMsgListActivity extends Activity implements OnItemClickListen
 		if(list.size()==0)
 		{
 			Toast toast=Toast.makeText(RecentMsgListActivity.this, "find friends to chat!", Toast.LENGTH_SHORT);
-			 toast.setGravity(Gravity.CENTER, 0, 0);
-			 toast.show();
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
 		}
 	}
 	/**
