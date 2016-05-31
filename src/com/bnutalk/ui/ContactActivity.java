@@ -178,7 +178,7 @@ public class ContactActivity extends Activity implements OnItemClickListener, On
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				helper.addContacts(uid, myApp.getConList());
+				helper.addAllContacts(uid, myApp.getConList());
 			}
 		}).start();
 	}

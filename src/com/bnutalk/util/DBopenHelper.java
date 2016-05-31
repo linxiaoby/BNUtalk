@@ -72,9 +72,8 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				+ "sex int,nick text,age int,faculty text," + "nationality text," + "native_language text,"
 				+ "like_language text," + "place text,avatar blob)");
 
-		db.execSQL("create table if not exists contacts(uid text,cuid text,"
-				+ "sex int,nick text,age int,faculty text," + "nationality text," + "native_language text,"
-				+ "like_language text," + "place text,avatar blob)");
+		db.execSQL("create table if not exists contacts(uid text,cuid text," + "sex int,nick text,age int,faculty text,"
+				+ "nationality text," + "native_language text," + "like_language text," + "place text,avatar blob)");
 
 		db.execSQL("create table if not exists self_info(uid text," + "sex int,nick text,age int,faculty text,"
 				+ "nationality text," + "native_language text," + "like_language text," + "place text,avatar blob)");
@@ -106,7 +105,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		db.execSQL("drop table rencent_message");
 		db.execSQL("drop table user_card");
 		db.execSQL("drop table contacts");
-		
+
 		db.execSQL("create table if not exists message_history (" + "uid text,cuid text," + "content text,"
 				+ "time text," + "type integer,isread integer)");
 
@@ -117,29 +116,30 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				+ "sex int,nick text,age int,faculty text," + "nationality text," + "native_language text,"
 				+ "like_language text," + "place text,avatar blob)");
 
-		db.execSQL("create table if not exists contacts(uid text,cuid text,"
-				+ "sex int,nick text,age int,faculty text," + "nationality text," + "native_language text,"
-				+ "like_language text," + "place text,avatar blob)");
+		db.execSQL("create table if not exists contacts(uid text,cuid text," + "sex int,nick text,age int,faculty text,"
+				+ "nationality text," + "native_language text," + "like_language text," + "place text,avatar blob)");
 
 		db.execSQL("create table if not exists self_info(uid text," + "sex int,nick text,age int,faculty text,"
 				+ "nationality text," + "native_language text," + "like_language text," + "place text,avatar blob)");
 	}
+
 	/**
 	 * save selfinfo to local cache
+	 * 
 	 * @param uid
 	 * @param list
 	 */
-	public void addSelfInfo(String uid,List<UserEntity> list)
-	{
+	public void addSelfInfo(String uid, List<UserEntity> list) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		ContentValues values = new ContentValues();
-		db.execSQL("delete from " + TABLE_SELF_INFO + " where uid=" + uid);// delete first
+		db.execSQL("delete from " + TABLE_SELF_INFO + " where uid=" + uid);// delete
+																			// first
 
 		Iterator<UserEntity> iterator = list.iterator();
 		UserEntity uEntity = new UserEntity();
 		while (iterator.hasNext()) {
 			uEntity = iterator.next();
-			
+
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			Bitmap bmp = uEntity.getAvatar();
 			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
@@ -156,8 +156,9 @@ public class DBopenHelper extends SQLiteOpenHelper {
 
 			db.insert(TABLE_SELF_INFO, null, values);
 		}
-		
+
 	}
+
 	public void getSelfInfo(String uid, List<UserEntity> list) {
 		if (list.size() != 0)
 			list.clear();
@@ -223,7 +224,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * @param list
 	 */
 	public void getUserCard(String uid, List<UserEntity> list) {
-		if(list.size()!=0)
+		if (list.size() != 0)
 			list.clear();
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -271,18 +272,19 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		db.close();
 		return ret;
 	}
+
 	/**
-	 * update MsgHistory from UNREAD　to ISREAD
+	 * update MsgHistory from UNREAD to ISREAD
+	 * 
 	 * @param uid
 	 * @param cuid
 	 */
-	public void updateMsgHistory(String uid,String cuid)
-	{
+	public void updateMsgHistory(String uid, String cuid) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		String whereClause="where uid=" + uid + " and cuid=" +cuid+" and "+KEY_ISREAD+"="+0;
+		String whereClause = "uid=" + uid + " and cuid=" + cuid + " and " + KEY_ISREAD + "=" + 0;
 		values.put(KEY_ISREAD, 1);
-		long res= db.update(TABLE_MESSAGE_HISTOTY,values, whereClause, null);
+		long res = db.update(TABLE_MESSAGE_HISTOTY, values, whereClause, null);
 	}
 
 	/**
@@ -290,7 +292,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * @param fuid
 	 * @param list
 	 */
-	public void getAllMsgHistory(String uid, String cuid, List<MsgEntity> list,Bitmap avatar,Bitmap cavatar) {
+	public void getAllMsgHistory(String uid, String cuid, List<MsgEntity> list, Bitmap avatar, Bitmap cavatar) {
 		// Integer id = Integer.valueOf(fuid);
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -304,7 +306,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				mEntity.setContent(cursor.getString(cursor.getColumnIndex(KEY_CONTENT)));
 				mEntity.setTime(cursor.getString(cursor.getColumnIndex(KEY_TIME)));
 				mEntity.setType(cursor.getInt(cursor.getColumnIndex(KEY_TYPE)));
-				if(mEntity.getType()==MsgEntity.TYPE_RECEIVED)
+				if (mEntity.getType() == MsgEntity.TYPE_RECEIVED)
 					mEntity.setCavatar(cavatar);
 				else {
 					mEntity.setAvatar(avatar);
@@ -371,8 +373,8 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * @param list
 	 */
 	public void getAllRecentMsgList(String uid, List<RecentMsgEntity> list) {
-		if(list.size()!=0)
-		list.clear();
+		if (list.size() != 0)
+			list.clear();
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		String asql = "select a.cuid as cuid,nick,content,time,isread,avatar from"
@@ -388,10 +390,9 @@ public class DBopenHelper extends SQLiteOpenHelper {
 			while (c.moveToNext()) {
 				RecentMsgEntity rEntity = new RecentMsgEntity();
 				rEntity.setUid(c.getString(c.getColumnIndex(KEY_CUID)));
-				String content=c.getString(c.getColumnIndex(KEY_CONTENT));
-				if(content.length()>15)
-				{
-					content=content.substring(0, 15)+"...";
+				String content = c.getString(c.getColumnIndex(KEY_CONTENT));
+				if (content.length() > 15) {
+					content = content.substring(0, 15) + "...";
 				}
 				rEntity.setMsgContent(content);
 				rEntity.setNick(c.getString(c.getColumnIndex(KEY_NICK)));
@@ -408,13 +409,41 @@ public class DBopenHelper extends SQLiteOpenHelper {
 		}
 
 	}
+	/**
+	 * add a single contact to local db
+	 * @param uid
+	 * @param uEntity
+	 */
+	public void addContact(String uid,UserEntity uEntity) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		ContentValues values = new ContentValues();
+		db.execSQL("delete from " + TABLE_CONTACT + " where uid=" + uid+" and cuid="+uEntity.getUid());// delete
+		
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		Bitmap bmp = uEntity.getAvatar();
+		bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
+
+		values.put(KEY_AVATAR, os.toByteArray());
+		values.put(KEY_UID, uid);
+		values.put(KEY_CUID, uEntity.getUid());
+		values.put(KEY_NICK, uEntity.getNick());
+		values.put(KEY_SEX, uEntity.getSex());
+		values.put(KEY_AGE, uEntity.getAge());
+		values.put(KEY_FACULTY, uEntity.getFaculty());
+		values.put(KEY_NATIVE_LANGUAGE, uEntity.getMotherTone());
+		values.put(KEY_LIKE_LANGUAGE, uEntity.getLikeLanguage());
+		values.put(KEY_PLACE, uEntity.getPlace());
+		values.put(KEY_NATIONALITY, uEntity.getNationality());
+
+		db.insert(TABLE_CONTACT, null, values);
+	}
 
 	/**
 	 * save user cards to local cache
 	 * 
 	 * @param list
 	 */
-	public void addContacts(String uid, List<UserEntity> list) {
+	public void addAllContacts(String uid, List<UserEntity> list) {
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		ContentValues values = new ContentValues();
@@ -451,7 +480,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 	 * @param list
 	 */
 	public void getContacts(String uid, List<UserEntity> list) {
-		if(list.size()!=0)
+		if (list.size() != 0)
 			list.clear();
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();

@@ -58,7 +58,8 @@ public class MsgService extends Service {
 		final MyApplication myApp = (MyApplication) getApplicationContext();
 		final Intent intent = new Intent();
 		// check FromUid
-		if (sEntity.getFromUid().equals(myApp.getChatUid()))// user is chating
+	
+		if ((sEntity!=null)&&sEntity.getFromUid().equals(myApp.getChatUid()))// user is chating
 		{
 			// send message
 			intent.putExtra("message", b);

@@ -39,12 +39,14 @@
         android:layout_alignParentRight="true"
         android:gravity="right"
         android:orientation="vertical" >
+
         <TextView
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:text="2016-5-15" />
+
         <ImageView
             android:id="@+id/ivTipMsg"
             android:layout_width="40px"

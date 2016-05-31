@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,7 +41,7 @@ import java.util.List;
 public class ChatActivity extends Activity {
 	private ListView msgListView;
 	private EditText inputText;
-	private Button send;
+	private Button send,back;
 	private MsgAdapter adapter;
 	private TextView userName;
 	private Handler handler;
@@ -56,7 +57,6 @@ public class ChatActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_sendmsg);
-		initMsgs();
 		initView();
 		registerChatReceiver();// register receiver for listening msg receive
 		getUserInfo();
@@ -68,6 +68,7 @@ public class ChatActivity extends Activity {
 		send = (Button) findViewById(R.id.send);
 		userName = (TextView) findViewById(R.id.user_name);
 		msgListView = (ListView) findViewById(R.id.msg_list_view);
+		back=(Button) findViewById(R.id.bt_chat_back);
 		myApp = (MyApplication) getApplicationContext();
 		adapter = new MsgAdapter(ChatActivity.this, R.layout.item_message, msgList);
 		msgListView.setAdapter(adapter);
@@ -78,6 +79,13 @@ public class ChatActivity extends Activity {
 				handleSendMsg();
 			}
 		});
+		back.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ChatActivity.this.finish();
+			}
+		});
+		
 		helper = new DBopenHelper(ChatActivity.this);
 		defHandler();
 	}
@@ -110,7 +118,7 @@ public class ChatActivity extends Activity {
 			msgEntity.setType(MsgEntity.TYPE_RECEIVED);
 			msgEntity.setSendToUid(sEntity.getFromUid());
 			msgEntity.setContent(sEntity.getContent());
-			msgEntity.setTime(sEntity.getTime());
+			msgEntity.setTime(CommonUtil.getCurrentTime());
 			msgEntity.setCavatar(cavatar);
 			msgList.add(msgEntity);
 			adapter.notifyDataSetChanged();
@@ -216,7 +224,6 @@ public class ChatActivity extends Activity {
 		new Thread(new Runnable() {
 			public void run() {
 				helper.addMsgHistory(uid, msg);// save message history to the
-												// local bd
 			}
 		}).start();
 	}

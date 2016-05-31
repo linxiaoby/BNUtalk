@@ -2,6 +2,7 @@ package com.bnutalk.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.DefaultDatabaseErrorHandler;
@@ -25,6 +26,7 @@ import com.bnutalk.server.AHttpAddContacts;
 import com.bnutalk.ui.R;
 import com.bnutalk.util.DBopenHelper;
 import com.bnutalk.util.FlingAdapterView;
+import com.bnutalk.util.MyApplication;
 import com.bnutalk.util.UserEntity;
 
 import java.security.PublicKey;
@@ -38,7 +40,7 @@ public class AddContactsActivity extends Activity {
 	private static final String TAG = "AddContactsActivity";
 	// private ArrayList<CardMode> al;
 	private List<UserEntity> list;
-
+	private UserEntity uEntity;
 	// private ArrayList<ImageView> iv;
 	// 定义一个cardmode的数组al
 	private CardAdapter adapter;
@@ -57,6 +59,7 @@ public class AddContactsActivity extends Activity {
 	private SharedPreferences pref;
 	private Editor editor;
 	private PopupWindow popupWindow;
+	private MyApplication myApp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +67,7 @@ public class AddContactsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_addfriend_main);
-		initEvent();
-
+		initView();
 	}
 
 	@Override
@@ -86,8 +88,7 @@ public class AddContactsActivity extends Activity {
 	/**
 	 * init
 	 */
-	public void initEvent() {
-		uid = "201211011063";
+	public void initView() {
 		// 定义左边和右边的图片，和监听
 		left = (ImageView) findViewById(R.id.left);
 		right = (ImageView) findViewById(R.id.right);
@@ -95,7 +96,6 @@ public class AddContactsActivity extends Activity {
 		back = (Button) findViewById(R.id.btAddConBack);
 		list = new ArrayList<UserEntity>();
 		adapter = new CardAdapter(AddContactsActivity.this, list);
-		helper = new DBopenHelper(getApplicationContext());
 
 		left.setOnClickListener(new OnClickListener() {
 			@Override
@@ -117,23 +117,9 @@ public class AddContactsActivity extends Activity {
 		});
 		defHandler();
 		defFling();
-
-		// read user cards from local cache to show first
-		helper.getUserCard(uid, list);
-		adapter.notifyDataSetChanged();
-
-		// get the current uid
-		pref = getSharedPreferences("user_login", 0);
-		editor = pref.edit();
-		String cacheUid = pref.getString("uid", "");
-		if (cacheUid != null) {
-			uid = cacheUid;
-		}
-		if (list.size() == 0) {
-			Toast toast = Toast.makeText(AddContactsActivity.this, "正在加载数据，请耐心等待！(产品组帮我翻译成英文！)", Toast.LENGTH_LONG);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
-		}
+		myApp = (MyApplication) getApplicationContext();
+		uid=myApp.getUid();
+		helper = new DBopenHelper(getApplicationContext());
 	}
 
 	public void getUserCard() {
@@ -175,6 +161,7 @@ public class AddContactsActivity extends Activity {
 				case AHttpAddContacts.NOT_BEFRIEND:
 					break;
 				case AHttpAddContacts.BEFRIEND:
+					saveContact();
 					showMatchTip();
 					break;
 				default:
@@ -209,6 +196,29 @@ public class AddContactsActivity extends Activity {
 		View popupWindow_view = getLayoutInflater().inflate(R.layout.item_match, null, false);
 		popupWindow = new PopupWindow(popupWindow_view, 800, 800, true);
 		popupWindow.setAnimationStyle(R.style.match);
+		ImageView user1 = (ImageView) findViewById(R.id.user1);
+		ImageView user2 = (ImageView) findViewById(R.id.user2);
+		user1.setImageBitmap(myApp.getSelfInfoList().get(0).getAvatar());
+		user2.setImageBitmap(uEntity.getAvatar());
+		Button back = (Button) findViewById(R.id.back);
+		Button sendMsg = (Button) findViewById(R.id.send_message);
+		back.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				popupWindow.dismiss();
+				popupWindow = null;
+			}
+		});
+		sendMsg.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				popupWindow.dismiss();
+				popupWindow = null;
+				Intent intent = new Intent();
+				intent.setClass(AddContactsActivity.this, ChatActivity.class);
+				startActivity(intent);
+			}
+		});
 		popupWindow_view.setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -220,12 +230,21 @@ public class AddContactsActivity extends Activity {
 			}
 		});
 	}
-	public void showToast(String text)
-	{
-		Toast toast = Toast.makeText(AddContactsActivity.this, text,Toast.LENGTH_SHORT);
+
+	public void saveContact() {
+		new Thread(new Runnable() {
+			public void run() {
+				helper.addContact(uid, uEntity);
+			}
+		}).start();
+	}
+
+	public void showToast(String text) {
+		Toast toast = Toast.makeText(AddContactsActivity.this, text, Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();
 	}
+
 	public void defFling() {
 		flingContainer = (FlingAdapterView) findViewById(R.id.frame);
 		flingContainer.setAdapter(adapter);
@@ -233,8 +252,9 @@ public class AddContactsActivity extends Activity {
 		flingContainer.setFlingListener(new FlingAdapterView.onFlingListener() {
 			@Override
 			public void removeFirstObjectInAdapter() {
-				cuid = list.get(0).getUid();
-				nick = list.get(0).getNick();
+				uEntity = list.get(0);
+				cuid = uEntity.getUid();
+				nick = uEntity.getNick();
 				list.remove(0);
 				adapter.notifyDataSetChanged();
 			}

@@ -82,6 +82,7 @@ public class LoginActivity extends Activity {
 		});
 		myApp = (MyApplication) getApplicationContext();
 		helper = new DBopenHelper(LoginActivity.this);
+//		helper.updateDb();//need to be deleteds
 	}
 
 	/**
