@@ -63,6 +63,7 @@ public class AddContactsActivity extends Activity {
 	private PopupWindow popupWindow;
 	private MyApplication myApp;
 	private Bitmap avatar;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		android.util.Log.v(TAG, "onCreate() called!");
@@ -71,10 +72,12 @@ public class AddContactsActivity extends Activity {
 		setContentView(R.layout.activity_addfriend_main);
 		initView();
 	}
+
 	public void getSelfInfo() {
 		helper.getSelfInfo(uid, myApp.getSelfInfoList());
-		avatar=myApp.getSelfInfoList().get(0).getAvatar();
+		avatar = myApp.getSelfInfoList().get(0).getAvatar();
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -105,13 +108,15 @@ public class AddContactsActivity extends Activity {
 		left.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				left();
+				if (list.size() > 0)
+					left();
 			}
 		});
 		right.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				right();
+				if (list.size() > 0)
+					right();
 			}
 		});
 		back.setOnClickListener(new OnClickListener() {
@@ -123,7 +128,7 @@ public class AddContactsActivity extends Activity {
 		defHandler();
 		defFling();
 		myApp = (MyApplication) getApplicationContext();
-		uid=myApp.getUid();
+		uid = myApp.getUid();
 		helper = new DBopenHelper(getApplicationContext());
 	}
 
@@ -202,12 +207,12 @@ public class AddContactsActivity extends Activity {
 		popupWindow = new PopupWindow(popupWindow_view, 800, 800, true);
 		popupWindow.setAnimationStyle(R.style.match);
 		ImageView user1 = (ImageView) popupWindow_view.findViewById(R.id.user1);
-		ImageView user2 = (ImageView)  popupWindow_view.findViewById(R.id.user2);
+		ImageView user2 = (ImageView) popupWindow_view.findViewById(R.id.user2);
 		// read self info from local,else it can be nullpoint
 		user1.setImageBitmap(avatar);
 		user2.setImageBitmap(uEntity.getAvatar());
-		Button back = (Button)  popupWindow_view.findViewById(R.id.back);
-		Button sendMsg = (Button)  popupWindow_view.findViewById(R.id.send_message);
+		Button back = (Button) popupWindow_view.findViewById(R.id.back);
+		Button sendMsg = (Button) popupWindow_view.findViewById(R.id.send_message);
 		back.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -220,7 +225,7 @@ public class AddContactsActivity extends Activity {
 			public void onClick(View v) {
 				popupWindow.dismiss();
 				popupWindow = null;
-				
+
 				Bundle bundle = new Bundle();
 				bundle.putString("cuid", uEntity.getUid());
 				bundle.putString("cnick", uEntity.getNick());
@@ -273,22 +278,25 @@ public class AddContactsActivity extends Activity {
 
 			@Override
 			public void onLeftCardExit(Object dataObject) {
-				makeToast(AddContactsActivity.this, "dislike");
+				if (list.size() == 0)
+				Toast.makeText(AddContactsActivity.this, "no more users!", Toast.LENGTH_LONG).show();
+				else
+					makeToast(AddContactsActivity.this, "dislike");
 			}
 
 			@Override
 			public void onRightCardExit(Object dataObject) {
-				makeToast(AddContactsActivity.this, "like");
-
-				// server operation
-				new AHttpAddContacts(list, uid, handler, helper).rightOperation(cuid);
+				if (list.size() == 0)
+					Toast.makeText(AddContactsActivity.this, "no more users!", Toast.LENGTH_LONG).show();
+				else {
+					makeToast(AddContactsActivity.this, "like");
+					// server operation
+					new AHttpAddContacts(list, uid, handler, helper).rightOperation(cuid);
+				}
 			}
 
 			@Override
 			public void onAdapterAboutToEmpty(int itemsInAdapter) {
-				// al.add(new CardMode("胡欣语", 21, R.drawable.picture_fisrt,
-				// "信息科学与技术", "中文", "英文", "男", "学五食堂"));
-
 				adapter.notifyDataSetChanged();
 				i++;
 			}
@@ -310,7 +318,7 @@ public class AddContactsActivity extends Activity {
 		flingContainer.setOnItemClickListener(new FlingAdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClicked(int itemPosition, Object dataObject) {
-//				makeToast(AddContactsActivity.this, "clike image");
+				// makeToast(AddContactsActivity.this, "clike image");
 			}
 		});
 	}
