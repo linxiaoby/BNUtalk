@@ -108,14 +108,14 @@ public class AddContactsActivity extends Activity {
 		left.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (list.size() > 0)
+				if (list.size() >0)
 					left();
 			}
 		});
 		right.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (list.size() > 0)
+				if (list.size() >0)
 					right();
 			}
 		});
@@ -160,10 +160,14 @@ public class AddContactsActivity extends Activity {
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
 				case AHttpAddContacts.GET_USER_SUCCESS:
+					if(list.size()!=0)
+					{
 					android.util.Log.v("msg.what", "AHttpGetAllUser.GET_USER_SUCCESS");
 					adapter.notifyDataSetChanged();
-					if (list.size() != 0)
-						saveUserCard();
+					saveUserCard();
+					}
+					else 
+					Toast.makeText(AddContactsActivity.this, "no more users!", Toast.LENGTH_LONG).show();	
 					break;
 				case AHttpAddContacts.GET_USER_FAILED:
 					showToast("unable to access server!");
@@ -225,11 +229,17 @@ public class AddContactsActivity extends Activity {
 			public void onClick(View v) {
 				popupWindow.dismiss();
 				popupWindow = null;
-
+				
+				UserEntity tEntity=new UserEntity();
+				tEntity=uEntity;
+				tEntity.setUid(uEntity.getUid());
+				tEntity.setNick(uEntity.getNick());
+				tEntity.setAvatar(uEntity.getAvatar());
+				
 				Bundle bundle = new Bundle();
-				bundle.putString("cuid", uEntity.getUid());
-				bundle.putString("cnick", uEntity.getNick());
-				bundle.putByteArray("cavatar", CommonUtil.Bitmap2Bytes(uEntity.getAvatar()));
+				bundle.putString("cuid", tEntity.getUid());
+				bundle.putString("cnick", tEntity.getNick());
+				bundle.putByteArray("cavatar", CommonUtil.Bitmap2Bytes(tEntity.getAvatar()));
 				Intent intent = new Intent();
 				intent.putExtras(bundle);
 				intent.setClass(AddContactsActivity.this, ChatActivity.class);
@@ -278,7 +288,7 @@ public class AddContactsActivity extends Activity {
 
 			@Override
 			public void onLeftCardExit(Object dataObject) {
-				if (list.size() == 0)
+				if (list.size() <0)
 				Toast.makeText(AddContactsActivity.this, "no more users!", Toast.LENGTH_LONG).show();
 				else
 					makeToast(AddContactsActivity.this, "dislike");
@@ -286,7 +296,7 @@ public class AddContactsActivity extends Activity {
 
 			@Override
 			public void onRightCardExit(Object dataObject) {
-				if (list.size() == 0)
+				if (list.size() < 0)
 					Toast.makeText(AddContactsActivity.this, "no more users!", Toast.LENGTH_LONG).show();
 				else {
 					makeToast(AddContactsActivity.this, "like");

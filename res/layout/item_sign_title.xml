@@ -18,7 +18,7 @@
         android:layout_gravity="center"
         android:layout_weight="20"
         android:layout_marginLeft="30dp"
-        android:text="Bnutalk"
+        android:text="BNUtalk"
         android:textColor="#fff"
         android:textSize="20sp"/>
 </LinearLayout>
