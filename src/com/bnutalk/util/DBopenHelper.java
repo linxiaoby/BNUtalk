@@ -213,7 +213,7 @@ public class DBopenHelper extends SQLiteOpenHelper {
 			values.put(KEY_NATIVE_LANGUAGE, uEntity.getMotherTone());
 			values.put(KEY_LIKE_LANGUAGE, uEntity.getLikeLanguage());
 			values.put(KEY_PLACE, uEntity.getPlace());
-
+			values.put(KEY_NATIONALITY, uEntity.getNationality());
 			db.insert(TABLE_USER_CARD, null, values);
 		}
 	}

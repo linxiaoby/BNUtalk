@@ -137,16 +137,18 @@ public class AddContactsActivity extends Activity {
 		if (list.size() == 0)// read from server
 		{
 			new AHttpAddContacts(list, uid, handler, helper).getAllUser();
+			Toast.makeText(AddContactsActivity.this, "Loading, please wait!", Toast.LENGTH_LONG).show();
 		} else
 			adapter.notifyDataSetChanged();
-
 	}
 
 	public void saveUserCard() {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				helper.addUserCard(uid, list);
+				List<UserEntity> tlist=new ArrayList<UserEntity>(); 
+				tlist.addAll(list);
+				helper.addUserCard(uid, tlist);
 			}
 		}).start();
 	}
@@ -235,7 +237,7 @@ public class AddContactsActivity extends Activity {
 				tEntity.setUid(uEntity.getUid());
 				tEntity.setNick(uEntity.getNick());
 				tEntity.setAvatar(uEntity.getAvatar());
-				
+				android.util.Log.v("uEntity3", uEntity.getNationality());
 				Bundle bundle = new Bundle();
 				bundle.putString("cuid", tEntity.getUid());
 				bundle.putString("cnick", tEntity.getNick());
@@ -261,6 +263,7 @@ public class AddContactsActivity extends Activity {
 	public void saveContact() {
 		new Thread(new Runnable() {
 			public void run() {
+				android.util.Log.v("uEntity2", uEntity.getNationality());
 				helper.addContact(uid, uEntity);
 			}
 		}).start();
@@ -280,10 +283,13 @@ public class AddContactsActivity extends Activity {
 			@Override
 			public void removeFirstObjectInAdapter() {
 				uEntity = list.get(0);
+				android.util.Log.v("uEntity1", uEntity.getNationality());
 				cuid = uEntity.getUid();
 				nick = uEntity.getNick();
 				list.remove(0);
 				adapter.notifyDataSetChanged();
+				if(list.size()==0)
+					Toast.makeText(AddContactsActivity.this, "no more users!", Toast.LENGTH_LONG).show();
 			}
 
 			@Override
