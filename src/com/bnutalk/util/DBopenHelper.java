@@ -4,9 +4,12 @@ package com.bnutalk.util;
  * create by linxiaobai 2016-05-17
  */
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.nfc.NfcAdapter.CreateBeamUrisCallback;
 import android.os.DropBoxManager;
+import android.util.Log;
 import android.widget.TableLayout;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -392,9 +396,18 @@ public class DBopenHelper extends SQLiteOpenHelper {
 				RecentMsgEntity rEntity = new RecentMsgEntity();
 				rEntity.setUid(c.getString(c.getColumnIndex(KEY_CUID)));
 				String content = c.getString(c.getColumnIndex(KEY_CONTENT));
-				if (content.length() > 15) {
-					content = content.substring(0, 15) + "...";
+//				BufferedReader reader = new BufferedReader(new StringReader(content));
+//				try {
+//				content = reader.readLine();
+//				} catch (IOException e) {
+//					Log.v("Content split", "failed!");
+//				}
+				String[] a=content.split("\\n");
+				if (a[0].length() > 15) {
+					content = a[0].substring(0, 15) + "...";
 				}
+				else if(a.length>1)
+					content=a[0]+"...";
 				rEntity.setMsgContent(content);
 				rEntity.setNick(c.getString(c.getColumnIndex(KEY_NICK)));
 				rEntity.setTime(c.getString(c.getColumnIndex(KEY_TIME)));
